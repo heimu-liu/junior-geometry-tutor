@@ -1,0 +1,223 @@
+{
+  "schema": "geometry-lesson/1",
+  "request_id": "811639c8-b824-46da-b383-364a77de0256",
+  "id": "base_angles",
+  "title": "求等腰三角形的两个底角",
+  "statement": "在三角形ABC中，AB=AC，∠BAC=70°。求∠ABC和∠ACB的度数。",
+  "givens": [
+    "AB = AC",
+    "∠BAC = 70°"
+  ],
+  "goal": "求∠ABC和∠ACB的度数。",
+  "status": "ready",
+  "message": "",
+  "questions": [],
+  "profile": {
+    "grade": "8",
+    "edition": "pep",
+    "chapter": "等腰三角形与全等三角形",
+    "knowledge": [
+      "angle",
+      "isosceles"
+    ],
+    "confirmed": true
+  },
+  "scene": {
+    "points": {
+      "A": [
+        500.0,
+        90.0
+      ],
+      "B": [
+        170.90245704,
+        560.0
+      ],
+      "C": [
+        829.09754296,
+        560.0
+      ]
+    },
+    "base": [
+      {
+        "id": "shape1",
+        "kind": "point",
+        "point": "A",
+        "label": "A"
+      },
+      {
+        "id": "shape2",
+        "kind": "point",
+        "point": "B",
+        "label": "B"
+      },
+      {
+        "id": "shape3",
+        "kind": "point",
+        "point": "C",
+        "label": "C"
+      },
+      {
+        "id": "shape4",
+        "kind": "line",
+        "a": "A",
+        "b": "B",
+        "color": "ink",
+        "dashed": false
+      },
+      {
+        "id": "shape5",
+        "kind": "line",
+        "a": "B",
+        "b": "C",
+        "color": "ink",
+        "dashed": false
+      },
+      {
+        "id": "shape6",
+        "kind": "line",
+        "a": "A",
+        "b": "C",
+        "color": "ink",
+        "dashed": false
+      },
+      {
+        "id": "shape7",
+        "kind": "label",
+        "at": [
+          490.0,
+          140.0
+        ],
+        "text": "70°"
+      }
+    ],
+    "constraints": []
+  },
+  "methods": [
+    {
+      "id": "m1",
+      "title": "等腰三角形底角相等",
+      "requires": [
+        "angle",
+        "isosceles"
+      ],
+      "steps": [
+        {
+          "title": "等腰三角形的两个底角相等",
+          "prompt": "相等的两条边，各自对着哪个角？",
+          "hint": "先找到相等的两条边，再找它们对着的角。",
+          "explanation": "已知或前面已经得到：AB = AC。\n因此，∠ABC = ∠ACB。",
+          "uses": [
+            "isosceles"
+          ],
+          "reason": "等腰三角形的两个底角相等",
+          "observe": [
+            {
+              "id": "shape8",
+              "kind": "line",
+              "a": "A",
+              "b": "B",
+              "color": "blue",
+              "width": 4
+            },
+            {
+              "id": "shape9",
+              "kind": "line",
+              "a": "B",
+              "b": "C",
+              "color": "blue",
+              "width": 4
+            },
+            {
+              "id": "shape10",
+              "kind": "line",
+              "a": "A",
+              "b": "C",
+              "color": "amber",
+              "width": 4
+            },
+            {
+              "id": "shape11",
+              "kind": "line",
+              "a": "C",
+              "b": "B",
+              "color": "amber",
+              "width": 4
+            }
+          ],
+          "reveal": []
+        },
+        {
+          "title": "三角形内角和为 180°，两个底角相等",
+          "prompt": "两个底角加起来有多少度？它们各是多少？",
+          "hint": "先从 180° 中减去顶角，再把余下的角度平分。",
+          "explanation": "已知或前面已经得到：∠ABC = ∠ACB；∠BAC = 70°。\n两个底角合起来是 180° − 70°，所以每个底角为 (180° − 70°) ÷ 2 = 55°。因此，∠ABC = 55°；∠ACB = 55°。",
+          "uses": [
+            "angle"
+          ],
+          "reason": "三角形内角和为 180°，两个底角相等",
+          "observe": [
+            {
+              "id": "shape12",
+              "kind": "line",
+              "a": "A",
+              "b": "B",
+              "color": "amber",
+              "width": 4
+            },
+            {
+              "id": "shape13",
+              "kind": "line",
+              "a": "A",
+              "b": "C",
+              "color": "amber",
+              "width": 4
+            },
+            {
+              "id": "shape14",
+              "kind": "line",
+              "a": "B",
+              "b": "C",
+              "color": "amber",
+              "width": 4
+            }
+          ],
+          "reveal": [
+            {
+              "id": "shape15",
+              "kind": "label",
+              "at": [
+                199.93093369986258,
+                545.6830610176985
+              ],
+              "text": "55°",
+              "color": "amber"
+            },
+            {
+              "id": "shape16",
+              "kind": "label",
+              "at": [
+                780.0690663001375,
+                545.6830610176985
+              ],
+              "text": "55°",
+              "color": "amber"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "audit": {
+    "summary": "本地构图与已知条件一致；每种解法的定理前提和目标已通过有限规则校验。",
+    "checks": [
+      "条件原文绑定",
+      "逐步前提校验",
+      "全部目标到达",
+      "学习范围检查",
+      "图形数值检查"
+    ],
+    "uncertainties": [
+      "请核对题面与提取的已知条件；这里只支持已收录的构造和定理。"
+    ]
+  }
+}

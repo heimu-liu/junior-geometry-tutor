@@ -1,0 +1,16 @@
+{
+  "schema": "geometry-request/1",
+  "id": "new-triangle-40",
+  "question": "在三角形ABC中，AB=AC，顶角∠BAC=40°，求两个底角∠ABC和∠ACB的度数。",
+  "profile": {
+    "grade": "7",
+    "edition": "人教版",
+    "chapter": "等腰三角形与三角形内角和",
+    "knowledge": [
+      "angle",
+      "isosceles"
+    ],
+    "confirmed": true
+  },
+  "photo": null
+}

@@ -1,0 +1,16 @@
+{
+  "schema": "geometry-request/1",
+  "id": "811639c8-b824-46da-b383-364a77de0256",
+  "question": "在三角形ABC中，AB=AC，∠BAC=70°。求∠ABC和∠ACB的度数。",
+  "profile": {
+    "grade": "8",
+    "edition": "pep",
+    "chapter": "等腰三角形与全等三角形",
+    "knowledge": [
+      "angle",
+      "isosceles"
+    ],
+    "confirmed": true
+  },
+  "photo": null
+}

@@ -1,0 +1,311 @@
+{
+  "schema": "geometry-lesson/1",
+  "request_id": "fc48af72-1fe4-47c6-b1ea-01df92e8a89f",
+  "id": "equilateral_congruence",
+  "title": "证明边长相等的两个等边三角形全等",
+  "statement": "△ABC是等边三角形，△DEF是等边三角形，AB=DE。求证△ABC≌△DEF。",
+  "givens": [
+    "△ABC 是等边三角形",
+    "△DEF 是等边三角形",
+    "AB = DE"
+  ],
+  "goal": "求△ABC≌△DEF。",
+  "status": "ready",
+  "message": "",
+  "questions": [],
+  "profile": {
+    "grade": "8",
+    "edition": "pep",
+    "chapter": "等腰三角形与全等三角形",
+    "knowledge": [
+      "angle",
+      "isosceles",
+      "congruence"
+    ],
+    "confirmed": true
+  },
+  "scene": {
+    "points": {
+      "A": [
+        254.11764706,
+        208.85071055
+      ],
+      "B": [
+        120.0,
+        441.14928945
+      ],
+      "C": [
+        388.23529412,
+        441.14928945
+      ],
+      "D": [
+        745.88235294,
+        208.85071055
+      ],
+      "E": [
+        611.76470588,
+        441.14928945
+      ],
+      "F": [
+        880.0,
+        441.14928945
+      ]
+    },
+    "base": [
+      {
+        "id": "shape1",
+        "kind": "point",
+        "point": "A",
+        "label": "A"
+      },
+      {
+        "id": "shape2",
+        "kind": "point",
+        "point": "B",
+        "label": "B"
+      },
+      {
+        "id": "shape3",
+        "kind": "point",
+        "point": "C",
+        "label": "C"
+      },
+      {
+        "id": "shape4",
+        "kind": "point",
+        "point": "D",
+        "label": "D"
+      },
+      {
+        "id": "shape5",
+        "kind": "point",
+        "point": "E",
+        "label": "E"
+      },
+      {
+        "id": "shape6",
+        "kind": "point",
+        "point": "F",
+        "label": "F"
+      },
+      {
+        "id": "shape7",
+        "kind": "line",
+        "a": "A",
+        "b": "B",
+        "color": "ink",
+        "dashed": false
+      },
+      {
+        "id": "shape8",
+        "kind": "line",
+        "a": "B",
+        "b": "C",
+        "color": "ink",
+        "dashed": false
+      },
+      {
+        "id": "shape9",
+        "kind": "line",
+        "a": "A",
+        "b": "C",
+        "color": "ink",
+        "dashed": false
+      },
+      {
+        "id": "shape10",
+        "kind": "line",
+        "a": "D",
+        "b": "E",
+        "color": "ink",
+        "dashed": false
+      },
+      {
+        "id": "shape11",
+        "kind": "line",
+        "a": "E",
+        "b": "F",
+        "color": "ink",
+        "dashed": false
+      },
+      {
+        "id": "shape12",
+        "kind": "line",
+        "a": "D",
+        "b": "F",
+        "color": "ink",
+        "dashed": false
+      }
+    ],
+    "constraints": []
+  },
+  "methods": [
+    {
+      "id": "m1",
+      "title": "利用等边三角形的边相等与SSS证明全等",
+      "requires": [
+        "congruence",
+        "isosceles"
+      ],
+      "steps": [
+        {
+          "title": "等边三角形的定义",
+          "prompt": "这里有哪些边的长度可以确定相等？",
+          "hint": "等边三角形的三条边有什么关系？",
+          "explanation": "已知或前面已经得到：△ABC 是等边三角形。\n因此，AB = BC；BC = AC。",
+          "uses": [
+            "isosceles"
+          ],
+          "reason": "等边三角形的定义",
+          "observe": [
+            {
+              "id": "shape13",
+              "kind": "line",
+              "a": "A",
+              "b": "B",
+              "color": "blue",
+              "width": 4
+            },
+            {
+              "id": "shape14",
+              "kind": "line",
+              "a": "B",
+              "b": "C",
+              "color": "amber",
+              "width": 4
+            }
+          ],
+          "reveal": []
+        },
+        {
+          "title": "等边三角形的定义",
+          "prompt": "这里有哪些边的长度可以确定相等？",
+          "hint": "等边三角形的三条边有什么关系？",
+          "explanation": "已知或前面已经得到：△DEF 是等边三角形。\n因此，DE = EF；EF = DF。",
+          "uses": [
+            "isosceles"
+          ],
+          "reason": "等边三角形的定义",
+          "observe": [
+            {
+              "id": "shape15",
+              "kind": "line",
+              "a": "D",
+              "b": "E",
+              "color": "blue",
+              "width": 4
+            },
+            {
+              "id": "shape16",
+              "kind": "line",
+              "a": "E",
+              "b": "F",
+              "color": "amber",
+              "width": 4
+            }
+          ],
+          "reveal": []
+        },
+        {
+          "title": "SSS",
+          "prompt": "这两个三角形有哪些已经能确认的边长关系？",
+          "hint": "按顶点顺序，逐一找齐三组相等的边。公共边也能算一组。",
+          "explanation": "已知或前面已经得到：AB = BC；BC = AC；DE = EF；EF = DF；AB = DE。\n按顶点顺序比较 △ABC 和 △DEF：AB = DE；BC = EF；AC = DF。三组对应边都相等。因此，△ABC ≌ △DEF。",
+          "uses": [
+            "congruence"
+          ],
+          "reason": "SSS：三组对应边分别相等",
+          "observe": [
+            {
+              "id": "shape17",
+              "kind": "line",
+              "a": "A",
+              "b": "B",
+              "color": "amber",
+              "width": 4
+            },
+            {
+              "id": "shape18",
+              "kind": "line",
+              "a": "A",
+              "b": "C",
+              "color": "amber",
+              "width": 4
+            },
+            {
+              "id": "shape19",
+              "kind": "line",
+              "a": "B",
+              "b": "C",
+              "color": "amber",
+              "width": 4
+            },
+            {
+              "id": "shape20",
+              "kind": "line",
+              "a": "D",
+              "b": "E",
+              "color": "amber",
+              "width": 4
+            },
+            {
+              "id": "shape21",
+              "kind": "line",
+              "a": "D",
+              "b": "F",
+              "color": "amber",
+              "width": 4
+            },
+            {
+              "id": "shape22",
+              "kind": "line",
+              "a": "E",
+              "b": "F",
+              "color": "amber",
+              "width": 4
+            }
+          ],
+          "reveal": [
+            {
+              "id": "shape23",
+              "kind": "polygon",
+              "points": [
+                "A",
+                "B",
+                "C"
+              ],
+              "fill": true,
+              "opacity": 1,
+              "color": "blue"
+            },
+            {
+              "id": "shape24",
+              "kind": "polygon",
+              "points": [
+                "D",
+                "E",
+                "F"
+              ],
+              "fill": true,
+              "opacity": 1,
+              "color": "amber"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "audit": {
+    "summary": "本地构图与已知条件一致；每种解法的定理前提和目标已通过有限规则校验。",
+    "checks": [
+      "条件原文绑定",
+      "逐步前提校验",
+      "全部目标到达",
+      "学习范围检查",
+      "图形数值检查"
+    ],
+    "uncertainties": [
+      "请核对题面与提取的已知条件；这里只支持已收录的构造和定理。"
+    ]
+  }
+}

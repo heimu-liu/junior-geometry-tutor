@@ -1,0 +1,16 @@
+{
+  "schema": "geometry-request/1",
+  "id": "acaf2380-8c37-4788-9cbb-64cdbbd01208",
+  "question": "四边形ABCD中，AB=CB，AD=CD。求证∠BAD=∠BCD。",
+  "profile": {
+    "grade": "8",
+    "edition": "pep",
+    "chapter": "等腰三角形与全等三角形",
+    "knowledge": [
+      "angle",
+      "congruence"
+    ],
+    "confirmed": true
+  },
+  "photo": null
+}

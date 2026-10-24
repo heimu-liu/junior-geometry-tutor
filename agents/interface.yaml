@@ -1,0 +1,21 @@
+interface:
+  display_name: "几何小老师"
+  short_description: "说‘几何小老师’开始：画题图、按已学知识逐步提示。"
+  default_prompt: "几何小老师，开始辅导。请直接准备画板和学习范围设置；由你处理启动、构图与本地校验，让我输入题目后逐步看提示。"
+compatibility:
+  canonical_format: agent-skills
+  adapter_targets: [workbuddy, codex, claude-code, generic-agent]
+  activation:
+    mode: description
+  execution:
+    context: inline
+    shell: bash
+  trust:
+    source_tier: local
+    remote_inline_execution: forbid
+    remote_metadata_policy: treat-as-untrusted-data
+  degradation:
+    workbuddy: "Local Skill files plus host-generated JSON; desktop import remains to be verified."
+    codex: "Direct host files or explicitly selected authenticated CLI."
+    claude-code: "Direct host files; automatic CLI adapter is not account-tested here."
+    generic-agent: "Read SKILL.md and generate the data contract; Python and browser/file access required."

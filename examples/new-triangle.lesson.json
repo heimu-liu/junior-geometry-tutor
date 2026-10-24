@@ -1,0 +1,240 @@
+{
+  "schema": "geometry-lesson/1",
+  "request_id": "new-triangle-40",
+  "id": "new-triangle-40-lesson",
+  "title": "顶角40°的等腰三角形",
+  "statement": "在三角形ABC中，AB=AC，顶角∠BAC=40°，求两个底角∠ABC和∠ACB的度数。",
+  "givens": [
+    "AB = AC",
+    "∠BAC = 40°"
+  ],
+  "goal": "求∠ABC和∠ACB的度数。",
+  "status": "ready",
+  "message": "这题保留一条完整可靠的解法：先找相等的底角，再用内角和。",
+  "questions": [],
+  "profile": {
+    "grade": "7",
+    "edition": "人教版",
+    "chapter": "等腰三角形与三角形内角和",
+    "knowledge": [
+      "angle",
+      "isosceles"
+    ],
+    "confirmed": true
+  },
+  "scene": {
+    "points": {
+      "A": [
+        500,
+        160
+      ],
+      "B": [
+        350,
+        572.121613
+      ],
+      "C": [
+        650,
+        572.121613
+      ]
+    },
+    "base": [
+      {
+        "id": "base-a",
+        "kind": "point",
+        "point": "A",
+        "dy": -18
+      },
+      {
+        "id": "base-b",
+        "kind": "point",
+        "point": "B",
+        "dx": -25,
+        "dy": 22
+      },
+      {
+        "id": "base-c",
+        "kind": "point",
+        "point": "C",
+        "dx": 12,
+        "dy": 22
+      },
+      {
+        "id": "base-ab",
+        "kind": "line",
+        "a": "A",
+        "b": "B"
+      },
+      {
+        "id": "base-ac",
+        "kind": "line",
+        "a": "A",
+        "b": "C"
+      },
+      {
+        "id": "base-bc",
+        "kind": "line",
+        "a": "B",
+        "b": "C"
+      },
+      {
+        "id": "given-top-angle",
+        "kind": "label",
+        "at": [
+          477,
+          228
+        ],
+        "text": "40°"
+      },
+      {
+        "id": "given-equal-sides",
+        "kind": "label",
+        "at": [
+          443,
+          640
+        ],
+        "text": "AB = AC"
+      }
+    ],
+    "constraints": [
+      {
+        "kind": "equal_length",
+        "points": [
+          "A",
+          "B",
+          "A",
+          "C"
+        ]
+      }
+    ]
+  },
+  "methods": [
+    {
+      "id": "equal-base-angles",
+      "title": "等角与三角形内角和",
+      "requires": [
+        "angle",
+        "isosceles"
+      ],
+      "steps": [
+        {
+          "title": "先找相等的两个角",
+          "prompt": "AB和AC相等，它们分别对着哪两个角？",
+          "hint": "找两条相等边各自对面的顶点。",
+          "explanation": "AB = AC，所以△ABC是等腰三角形。等边对等角，因此∠ABC = ∠ACB。先记住这两个底角相等。",
+          "uses": [
+            "isosceles"
+          ],
+          "reason": "等腰三角形的两个底角相等。",
+          "observe": [
+            {
+              "id": "step1-ab",
+              "kind": "line",
+              "a": "A",
+              "b": "B",
+              "color": "blue",
+              "width": 4
+            },
+            {
+              "id": "step1-ac",
+              "kind": "line",
+              "a": "A",
+              "b": "C",
+              "color": "amber",
+              "width": 4
+            }
+          ],
+          "reveal": []
+        },
+        {
+          "title": "算出两个底角合起来有多大",
+          "prompt": "三角形的三个内角一共180°。减去顶角后，还剩多少？",
+          "hint": "用180°减去40°。",
+          "explanation": "三角形内角和是180°。顶角∠BAC = 40°，所以两个底角的和是180° − 40° = 140°。",
+          "uses": [
+            "angle"
+          ],
+          "reason": "三角形三个内角的和等于180°。",
+          "observe": [
+            {
+              "id": "step2-region",
+              "kind": "polygon",
+              "points": [
+                "A",
+                "B",
+                "C"
+              ],
+              "color": "blue",
+              "fill": true,
+              "opacity": 0.12
+            }
+          ],
+          "reveal": [
+            {
+              "id": "step2-angle-sum",
+              "kind": "label",
+              "at": [
+                403,
+                610
+              ],
+              "text": "∠B + ∠C = 140°",
+              "color": "blue"
+            }
+          ]
+        },
+        {
+          "title": "把角度平分成两份",
+          "prompt": "两个底角相等，合起来140°。每个底角是多少？",
+          "hint": "把140°分成相等的两份。",
+          "explanation": "因为两个底角相等，每个底角都是140° ÷ 2 = 70°。因此∠ABC = ∠ACB = 70°。",
+          "uses": [
+            "angle",
+            "isosceles"
+          ],
+          "reason": "相等的两个角之和为140°，每个角等于其和的一半。",
+          "observe": [
+            {
+              "id": "step3-base",
+              "kind": "line",
+              "a": "B",
+              "b": "C",
+              "color": "amber",
+              "width": 4
+            }
+          ],
+          "reveal": [
+            {
+              "id": "step3-angle-b",
+              "kind": "label",
+              "at": [
+                369,
+                548
+              ],
+              "text": "70°",
+              "color": "amber"
+            },
+            {
+              "id": "step3-angle-c",
+              "kind": "label",
+              "at": [
+                597,
+                548
+              ],
+              "text": "70°",
+              "color": "amber"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "audit": {
+    "summary": "使用等腰三角形性质和内角和，保留一条完整解法；图形按顶角40°构造。",
+    "checks": [
+      "AB和AC的坐标长度相等。",
+      "两个底角相等，且40° + 70° + 70° = 180°。",
+      "仅使用已确认的angle、isosceles知识。",
+      "初始图只标已知40°，70°仅在最后一步展开后出现。"
+    ],
+    "uncertainties": []
+  }
+}

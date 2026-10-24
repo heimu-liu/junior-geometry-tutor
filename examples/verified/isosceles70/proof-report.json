@@ -1,0 +1,139 @@
+{
+  "engine": "local-geometry-proof/1",
+  "goal_reached": true,
+  "rules": [
+    "isosceles_base_angles",
+    "equal_base_angle_values"
+  ],
+  "methods": [
+    {
+      "id": "m1",
+      "steps": [
+        {
+          "id": "s1",
+          "rule": "isosceles_base_angles",
+          "premises": [
+            "g1"
+          ],
+          "derived": [
+            {
+              "kind": "angle_eq",
+              "points": [
+                "A",
+                "B",
+                "C",
+                "A",
+                "C",
+                "B"
+              ],
+              "value": ""
+            }
+          ]
+        },
+        {
+          "id": "s2",
+          "rule": "equal_base_angle_values",
+          "premises": [
+            "s1",
+            "g2"
+          ],
+          "derived": [
+            {
+              "kind": "angle_value",
+              "points": [
+                "A",
+                "B",
+                "C"
+              ],
+              "value": "55"
+            },
+            {
+              "kind": "angle_value",
+              "points": [
+                "A",
+                "C",
+                "B"
+              ],
+              "value": "55"
+            }
+          ]
+        }
+      ],
+      "goal_reached": true
+    }
+  ],
+  "boundary": "只校验支持的构造与定理；题意抽取仍需核对，不是通用自然语言证明器。",
+  "construction": [
+    {
+      "id": "c1",
+      "op": "isosceles_angle",
+      "points": [
+        "A",
+        "B",
+        "C"
+      ],
+      "arithmetic": "floating"
+    }
+  ],
+  "exact_coordinates": {
+    "A": [
+      "3",
+      "~4.28444402022634"
+    ],
+    "B": [
+      "0",
+      "0"
+    ],
+    "C": [
+      "6",
+      "0"
+    ]
+  },
+  "givens": [
+    {
+      "kind": "length_eq",
+      "points": [
+        "A",
+        "B",
+        "A",
+        "C"
+      ],
+      "value": "",
+      "id": "g1",
+      "source": "AB=AC"
+    },
+    {
+      "kind": "angle_value",
+      "points": [
+        "B",
+        "A",
+        "C"
+      ],
+      "value": "70",
+      "id": "g2",
+      "source": "∠BAC=70°"
+    }
+  ],
+  "goals": [
+    {
+      "kind": "angle_value",
+      "points": [
+        "A",
+        "B",
+        "C"
+      ],
+      "value": "55"
+    },
+    {
+      "kind": "angle_value",
+      "points": [
+        "A",
+        "C",
+        "B"
+      ],
+      "value": "55"
+    }
+  ],
+  "plan_sha256": "b25e54953483f1849d5d2af1f9318c1a60a77ac289785edd8f6d5412a9673db6",
+  "lesson_sha256": "486ea9402ba4bb779a19513c462bf00d7b37ca454e2448978dbe3cfc579861fd"
+}

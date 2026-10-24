@@ -1,0 +1,198 @@
+{
+  "engine": "local-geometry-proof/1",
+  "goal_reached": true,
+  "rules": [
+    "equilateral_sides",
+    "SSS"
+  ],
+  "methods": [
+    {
+      "id": "m1",
+      "steps": [
+        {
+          "id": "s1",
+          "rule": "equilateral_sides",
+          "premises": [
+            "g1"
+          ],
+          "derived": [
+            {
+              "kind": "length_eq",
+              "points": [
+                "A",
+                "B",
+                "B",
+                "C"
+              ],
+              "value": ""
+            },
+            {
+              "kind": "length_eq",
+              "points": [
+                "B",
+                "C",
+                "A",
+                "C"
+              ],
+              "value": ""
+            }
+          ]
+        },
+        {
+          "id": "s2",
+          "rule": "equilateral_sides",
+          "premises": [
+            "g2"
+          ],
+          "derived": [
+            {
+              "kind": "length_eq",
+              "points": [
+                "D",
+                "E",
+                "E",
+                "F"
+              ],
+              "value": ""
+            },
+            {
+              "kind": "length_eq",
+              "points": [
+                "E",
+                "F",
+                "D",
+                "F"
+              ],
+              "value": ""
+            }
+          ]
+        },
+        {
+          "id": "s3",
+          "rule": "SSS",
+          "premises": [
+            "s1",
+            "s2",
+            "g3"
+          ],
+          "derived": [
+            {
+              "kind": "congruent",
+              "points": [
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F"
+              ],
+              "value": ""
+            }
+          ]
+        }
+      ],
+      "goal_reached": true
+    }
+  ],
+  "boundary": "只校验支持的构造与定理；题意抽取仍需核对，不是通用自然语言证明器。",
+  "construction": [
+    {
+      "id": "c1",
+      "op": "triangle",
+      "points": [
+        "A",
+        "B",
+        "C"
+      ],
+      "arithmetic": "floating"
+    },
+    {
+      "id": "c2",
+      "op": "triangle",
+      "points": [
+        "D",
+        "E",
+        "F"
+      ],
+      "arithmetic": "floating"
+    }
+  ],
+  "exact_coordinates": {
+    "A": [
+      "3",
+      "~5.19615242270663"
+    ],
+    "B": [
+      "0",
+      "0"
+    ],
+    "C": [
+      "6",
+      "0"
+    ],
+    "D": [
+      "14",
+      "~5.19615242270663"
+    ],
+    "E": [
+      "11",
+      "0"
+    ],
+    "F": [
+      "17",
+      "0"
+    ]
+  },
+  "givens": [
+    {
+      "kind": "equilateral",
+      "points": [
+        "A",
+        "B",
+        "C"
+      ],
+      "value": "",
+      "id": "g1",
+      "source": "△ABC是等边三角形"
+    },
+    {
+      "kind": "equilateral",
+      "points": [
+        "D",
+        "E",
+        "F"
+      ],
+      "value": "",
+      "id": "g2",
+      "source": "△DEF是等边三角形"
+    },
+    {
+      "kind": "length_eq",
+      "points": [
+        "A",
+        "B",
+        "D",
+        "E"
+      ],
+      "value": "",
+      "id": "g3",
+      "source": "AB=DE"
+    }
+  ],
+  "goals": [
+    {
+      "kind": "congruent",
+      "points": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ],
+      "value": ""
+    }
+  ],
+  "plan_sha256": "1b36ad71dec7a202b87d57a76938da9163385ac0aee0bfcc3c96a58103dda2ed",
+  "lesson_sha256": "5000244f9774cb4ab5bbaa59a4eec6df09e420f66bc883f41b33c19980a2a142"
+}

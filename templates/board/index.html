@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>几何自习室</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="app-header">
+  <a class="brand" href="#" aria-label="几何自习室首页"><span class="brand-mark" aria-hidden="true">△<i></i></span><span>几何自习室</span></a>
+  <span class="prototype-label">Skill · Beta</span>
+  <div class="header-spacer"></div>
+  <button id="settingsButton" class="settings-button" aria-haspopup="dialog"><span class="profile-dot"></span><span id="profileSummary">设置学习范围</span><span data-icon="chevronDown"></span></button>
+  <button id="aboutButton" class="icon-button" aria-label="使用说明" title="使用说明" data-icon="info"></button>
+</header>
+
+<main id="workspace" class="workspace">
+  <aside class="question-panel" id="questionPanel" aria-label="题目">
+    <div class="panel-top"><span class="eyebrow">今天这道题</span><button id="collapseQuestion" class="icon-button" aria-label="收起题目" title="收起题目" data-icon="panelLeft"></button></div>
+    <div class="question-content">
+      <div class="lesson-number" id="lessonNumber">01</div>
+      <h1 id="questionTitle"></h1>
+      <div id="questionText" class="question-text"></div>
+      <div class="question-goal" id="questionGoal"></div>
+      <details id="parsedConditions" class="parsed-conditions" hidden><summary>核对已知条件</summary><ul id="parsedConditionList"></ul></details>
+      <div id="generationBox" class="generation-box" hidden><p id="generationStatus" role="status"></p><button id="cancelGeneration" class="quiet-button" hidden>取消生成</button></div>
+      <button id="generateCurrent" class="outline-button full-width" hidden>生成题图与提示</button>
+      <button id="editQuestion" class="quiet-button"><span data-icon="edit"></span>编辑题目</button>
+    </div>
+    <div class="question-bottom">
+      <button id="newQuestion" class="outline-button full-width"><span data-icon="plus"></span>换一道题</button>
+      <p class="local-note">草稿保存在这台设备上</p>
+    </div>
+  </aside>
+
+  <section class="board-panel" aria-label="几何画板">
+    <div class="board-header">
+      <button id="expandQuestion" class="icon-button" aria-label="展开题目" title="展开题目" data-icon="panelLeft" hidden></button>
+      <h2>我的画板</h2><span id="saveStatus" class="save-status" role="status">已保存</span>
+      <div class="header-spacer"></div>
+      <button id="photoButton" class="compact-button"><span data-icon="image"></span><span>题图</span></button>
+      <button id="exportButton" class="compact-button"><span data-icon="download"></span><span>导出</span></button>
+      <button id="moreButton" class="icon-button" aria-label="更多画板操作" title="更多画板操作" aria-expanded="false" data-icon="more"></button>
+      <div id="moreMenu" class="popover-menu" hidden>
+        <button id="saveSession">保存学习记录</button><button id="loadSession">打开学习记录</button>
+        <button id="exportRequest">交给其他 Agent</button><button id="importLesson">导入 Agent 解题</button>
+        <button id="clearDrawing">清空我的笔迹</button>
+      </div>
+    </div>
+    <div class="board-surface" id="boardSurface">
+      <svg id="drawingBoard" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" role="img" aria-label="几何题图与自由绘画区">
+        <defs><pattern id="dotGrid" width="25" height="25" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.7" fill="#c7d4c0"/></pattern></defs>
+        <rect id="boardBackground" x="-10000" y="-10000" width="20000" height="20000" fill="#f9fbf5"/>
+        <rect x="-10000" y="-10000" width="20000" height="20000" fill="url(#dotGrid)"/>
+        <g id="photoLayer"></g><g id="lessonLayer"></g><g id="userLayer"></g>
+      </svg>
+      <div class="drawing-toolbar" role="toolbar" aria-label="绘图工具">
+        <button data-tool="select" data-icon="cursor" aria-label="选择与移动" title="选择与移动 (V)"></button>
+        <button data-tool="pen" data-icon="pen" aria-label="自由书写" title="自由书写 (P)"></button>
+        <span class="tool-divider"></span>
+        <button data-tool="line" data-icon="line" aria-label="线段" title="线段 (L)"></button>
+        <button data-tool="straight" data-icon="straight" aria-label="直线" title="直线"></button>
+        <button data-tool="triangle" data-icon="triangle" aria-label="三角形" title="三角形"></button>
+        <button data-tool="rightTriangle" data-icon="rightTriangle" aria-label="直角三角形" title="直角三角形"></button>
+        <button data-tool="circle" data-icon="circle" aria-label="圆" title="圆 (C)"></button>
+        <span class="tool-divider"></span>
+        <button data-tool="text" data-icon="text" aria-label="文字标注" title="文字标注 (T)"></button>
+        <button data-tool="eraser" data-icon="eraser" aria-label="橡皮擦" title="橡皮擦 (E)"></button>
+        <button data-tool="pan" data-icon="hand" aria-label="平移画板" title="平移画板 (H)"></button>
+      </div>
+      <div class="pen-options" role="group" aria-label="画笔样式">
+        <button class="color-button selected" data-color="#285c4d" style="--swatch:#285c4d" aria-label="墨绿色" title="墨绿色"></button>
+        <button class="color-button" data-color="#b4762c" style="--swatch:#b4762c" aria-label="橙棕色" title="橙棕色"></button>
+        <button class="color-button" data-color="#4286a0" style="--swatch:#4286a0" aria-label="蓝色" title="蓝色"></button>
+        <button class="color-button" data-color="#af5a65" style="--swatch:#af5a65" aria-label="暗红色" title="暗红色"></button>
+        <span class="tool-divider"></span><button id="dashedButton" class="icon-button" aria-label="虚线" aria-pressed="false" title="虚线" data-icon="dashed"></button>
+        <select id="strokeWidth" aria-label="线条粗细"><option value="2.5">细</option><option value="4">中</option><option value="7">粗</option></select>
+      </div>
+      <div class="history-controls"><button id="undoButton" class="icon-button" aria-label="撤销" title="撤销 (⌘/Ctrl Z)" disabled><span data-icon="undo"></span><span>撤销</span></button><button id="redoButton" class="icon-button" aria-label="重做" title="重做 (⌘/Ctrl Shift Z)" disabled><span data-icon="redo"></span><span>重做</span></button></div>
+      <div class="zoom-controls"><button id="zoomOut" class="icon-button" aria-label="缩小画板" data-icon="minus"></button><button id="zoomReset" title="适应画面" aria-label="适应画面">100%</button><button id="zoomIn" class="icon-button" aria-label="放大画板" data-icon="plus"></button></div>
+      <button id="openHints" class="hint-launch"><span data-icon="spark"></span>给我一点提示<span data-icon="arrowRight"></span></button>
+      <span id="boardMode" class="board-mode">先画一画，慢慢想</span>
+    </div>
+  </section>
+
+  <aside id="hintPanel" class="hint-panel" aria-label="逐步提示" hidden>
+    <div class="panel-top"><span class="eyebrow">一起想一想</span><button id="closeHints" class="icon-button" aria-label="回到自主思考" title="回到自主思考" data-icon="close"></button></div>
+    <div class="hint-scroll">
+      <div class="method-row"><select id="methodSelect" aria-label="选择解题方法"></select></div>
+      <div id="knowledgeNote" class="knowledge-note"></div>
+      <div id="hintProgress" class="step-progress" aria-label="提示进度"></div>
+      <div id="stepCount" class="step-count"></div>
+      <h2 id="stepTitle"></h2>
+      <p id="stepPrompt" class="step-prompt"></p>
+      <div id="smallHint" class="small-hint" hidden></div>
+      <div id="explanation" class="explanation" hidden></div>
+      <button id="revealStep" class="outline-button full-width">再给一点提示</button>
+      <div id="hintEmpty" class="hint-empty" hidden></div>
+    </div>
+    <div class="hint-bottom"><button id="previousStep" class="icon-button" aria-label="上一步" title="上一步" data-icon="arrowLeft"></button><button id="nextStep" class="primary-button">下一步<span data-icon="arrowRight"></span></button></div>
+  </aside>
+</main>
+
+<dialog id="settingsDialog" class="modal">
+  <form id="settingsForm">
+    <div class="modal-heading"><h2>我的学习范围</h2><button type="button" data-close="settingsDialog" class="icon-button" aria-label="关闭学习设置" data-icon="close"></button></div>
+    <div class="form-row"><label>年级<select id="grade"><option value="7">七年级</option><option value="8">八年级</option><option value="9">九年级</option></select></label><label>教材版本<select id="edition"><option value="unknown">不确定 / 其他</option><option value="pep">人教版</option><option value="bnu">北师大版</option><option value="su">苏科版</option></select></label></div>
+    <label class="field-label">学到哪里了<input id="chapter" placeholder="例如：全等三角形（可留空）" maxlength="100"></label>
+    <fieldset><legend>这些知识，我学过了</legend><div id="knowledgeChoices" class="knowledge-choices"></div></fieldset>
+    <p class="form-note">解法只使用你勾选的知识。年级与教材用于记录，暂不自动推定你学过什么。</p>
+    <div class="modal-actions"><button type="submit" class="primary-button">保存学习范围</button></div>
+  </form>
+</dialog>
+
+<dialog id="questionDialog" class="modal question-modal">
+  <div class="modal-heading"><h2>换一道题</h2><button data-close="questionDialog" class="icon-button" aria-label="关闭题目输入" data-icon="close"></button></div>
+  <div class="example-picker" id="examplePicker"></div>
+  <label class="field-label">题目<textarea id="questionInput" rows="5" placeholder="输入一道几何题……" maxlength="6000"></textarea></label>
+  <p class="form-note"><span id="connectionNote">新题可以交给当前 Agent 生成题图与分步提示。</span></p>
+  <div class="modal-actions"><button id="uploadFromQuestion" class="outline-button"><span data-icon="image"></span>上传题图</button><button id="applyQuestion" class="primary-button">生成题图与提示<span data-icon="arrowRight"></span></button></div>
+</dialog>
+
+<dialog id="textDialog" class="modal small-modal"><form id="textForm"><div class="modal-heading"><h2>写一条标注</h2><button type="button" data-close="textDialog" class="icon-button" aria-label="关闭文字标注" data-icon="close"></button></div><label class="field-label">文字<input id="annotationInput" maxlength="120" autocomplete="off" required></label><div class="modal-actions"><button type="submit" class="primary-button">放到这里</button></div></form></dialog>
+
+<dialog id="photoDialog" class="modal small-modal"><div class="modal-heading"><h2>题图</h2><button data-close="photoDialog" class="icon-button" aria-label="关闭题图设置" data-icon="close"></button></div><button id="uploadPhoto" class="outline-button full-width"><span data-icon="image"></span>选择照片</button><p class="form-note">支持 PNG、JPEG、WebP。照片放在画板上；自动通道目前只读取题目文字。导出题目时会包含照片。</p><div id="photoControls" hidden><label class="field-label">图片大小<input id="photoScale" type="range" min="30" max="150" value="100"></label><div class="photo-move" role="group" aria-label="移动题图"><button data-move="left" class="icon-button" aria-label="题图向左" data-icon="arrowLeft"></button><button data-move="up" class="icon-button" aria-label="题图向上" data-icon="arrowUp"></button><button data-move="down" class="icon-button" aria-label="题图向下" data-icon="arrowDown"></button><button data-move="right" class="icon-button" aria-label="题图向右" data-icon="arrowRight"></button><button id="removePhoto" class="quiet-button">移除题图</button></div></div></dialog>
+
+<dialog id="confirmDialog" class="modal small-modal"><div class="modal-heading"><h2 id="confirmTitle">清空笔迹？</h2></div><p id="confirmMessage" class="form-note"></p><div class="modal-actions"><button data-close="confirmDialog" class="outline-button">取消</button><button id="confirmAction" class="primary-button">确定</button></div></dialog>
+
+<dialog id="aboutDialog" class="modal small-modal"><div class="modal-heading"><h2>几何自习室</h2><button data-close="aboutDialog" class="icon-button" aria-label="关闭使用说明" data-icon="close"></button></div><p class="about-text">先确认学习范围，再输入完整题目。提示默认收起，需要时逐步展开。</p><p class="form-note">通过本地服务可调用已配置的 Agent CLI。离线页面可导出题目、导入 Agent 解题。方法按已学知识约束；生成内容仍需核对。</p><p class="form-note">快捷键：P 画笔 · L 线段 · C 圆 · E 橡皮 · V 选择 · H 平移。选中笔迹后按 Delete 删除。</p></dialog>
+<input id="photoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+<input id="lessonInput" type="file" accept="application/json,.json" hidden>
+<input id="sessionInput" type="file" accept="application/json,.json" hidden>
+<div id="toast" class="toast" role="status" hidden></div>
+<!-- BOOTSTRAP -->
+<script src="lessons.js"></script><script src="lesson-renderer.js"></script><script src="drawing.js"></script><script src="app.js"></script>
+</body>
+</html>

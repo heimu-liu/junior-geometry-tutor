@@ -1,0 +1,17 @@
+{
+  "schema": "geometry-request/1",
+  "id": "fc48af72-1fe4-47c6-b1ea-01df92e8a89f",
+  "question": "△ABC是等边三角形，△DEF是等边三角形，AB=DE。求证△ABC≌△DEF。",
+  "profile": {
+    "grade": "8",
+    "edition": "pep",
+    "chapter": "等腰三角形与全等三角形",
+    "knowledge": [
+      "angle",
+      "isosceles",
+      "congruence"
+    ],
+    "confirmed": true
+  },
+  "photo": null
+}

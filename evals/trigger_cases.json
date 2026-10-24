@@ -1,0 +1,80 @@
+{
+  "should_trigger": [
+    {
+      "text": "几何小老师",
+      "family": "activation"
+    },
+    {
+      "text": "开始几何辅导",
+      "family": "activation"
+    },
+    {
+      "text": "打开几何自习室",
+      "family": "activation"
+    },
+    {
+      "text": "几何小老师，讲这道题：AB=AC，顶角80°，求底角",
+      "family": "activation"
+    },
+    {
+      "text": "辅导这道初中平面几何题，用我学过的知识一步一步提示",
+      "family": "tutoring"
+    },
+    {
+      "text": "这道等腰三角形题我不会，先帮我画图，不要直接给答案",
+      "family": "tutoring"
+    },
+    {
+      "text": "把上传的几何题照片放到画板上，按初二学习范围讲解",
+      "family": "photo"
+    },
+    {
+      "text": "用几何自习室给孩子生成平面几何学习页面",
+      "family": "page"
+    },
+    {
+      "text": "Tutor this junior-secondary plane geometry question with progressive hints",
+      "family": "english"
+    },
+    {
+      "text": "换一道平行线几何题，画图并给我分步提示",
+      "family": "new-question"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "解这个一元二次方程",
+      "family": "algebra"
+    },
+    {
+      "text": "写一个产品介绍网页",
+      "family": "other"
+    },
+    {
+      "text": "翻译这篇英语文章",
+      "family": "other"
+    },
+    {
+      "text": "创建一个通用自由绘画工具",
+      "family": "drawing"
+    }
+  ],
+  "near_neighbor": [
+    {
+      "text": "讲解高中立体几何题",
+      "family": "solid"
+    },
+    {
+      "text": "用微积分求平面区域面积",
+      "family": "advanced"
+    },
+    {
+      "text": "给奥数竞赛几何题写复数解法",
+      "family": "contest"
+    },
+    {
+      "text": "帮我修改几何画板产品的营销文案",
+      "family": "copy"
+    }
+  ]
+}

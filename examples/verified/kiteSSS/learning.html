@@ -1,0 +1,1404 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>几何自习室</title>
+  <style>
+:root{--ink:#29463c;--muted:#748174;--green:#32634f;--deep:#254d3b;--soft:#e7eddf;--line:#dce3d5;--paper:#f9fbf5;--warm:#b4762c;--panel:#f1f5ec;--radius:12px;font-family:"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--soft);font-synthesis:none}
+*{box-sizing:border-box}body{margin:0;overflow:hidden}button,input,textarea,select{font:inherit}button,a,input,textarea,select{-webkit-tap-highlight-color:transparent}button{cursor:pointer;color:inherit;border:0;background:none}button:disabled{cursor:default;opacity:.35}button:not(:disabled):hover{filter:brightness(.96)}button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #90af89;outline-offset:3px}button svg,.icon{width:19px;height:19px;display:block;flex:none}button{display:inline-flex;align-items:center;justify-content:center;gap:8px}h1,h2,p{margin:0}a{color:inherit;text-decoration:none}[hidden]{display:none!important}select{cursor:pointer}select,input,textarea{color:var(--ink)}
+.app-header{height:68px;display:flex;align-items:center;padding:0 28px;gap:18px;border-bottom:1px solid #d4ddcc;background:#e8eedf}.brand{display:flex;align-items:center;gap:11px;font-family:"Songti SC","STSong",serif;font-weight:700;font-size:23px;letter-spacing:1px}.brand-mark{font-family:Georgia,serif;position:relative;font-size:35px;line-height:1;color:var(--green);font-weight:400;transform:translateY(-2px)}.brand-mark i{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--warm);right:1px;bottom:6px}.prototype-label{font-size:11px;color:#778371;letter-spacing:.8px;border-left:1px solid #cdd7c3;padding-left:17px}.header-spacer{flex:1}.settings-button{font-size:13px;gap:10px;padding:9px 12px;border:1px solid #cdd8c6;border-radius:9px}.settings-button svg{width:14px;height:14px}.profile-dot{width:7px;height:7px;border-radius:50%;background:#789b70}.icon-button{width:34px;height:34px;border-radius:7px;flex:none;padding:7px}.icon-button:not(:disabled):hover{background:#e2e9da}
+.workspace{height:calc(100dvh - 68px);display:grid;grid-template-columns:278px minmax(0,1fr);overflow:hidden}.workspace.has-hints{grid-template-columns:278px minmax(0,1fr) 312px}.workspace.question-collapsed{grid-template-columns:minmax(0,1fr)}.workspace.question-collapsed.has-hints{grid-template-columns:minmax(0,1fr) 312px}.question-panel{background:#f1f5ec;border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}.panel-top{height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 23px;flex:none}.eyebrow{font-size:12px;color:#778570;letter-spacing:1px}.question-content{padding:12px 26px 24px;overflow:auto;flex:1}.lesson-number{font-family:Georgia,serif;font-size:54px;color:#bdcdb0;font-weight:400;margin-bottom:15px;line-height:1}.question-content h1{font-family:"Songti SC","STSong",serif;font-size:24px;line-height:1.5;font-weight:600;letter-spacing:.3px;margin-bottom:23px}.question-text{font-size:14px;line-height:1.95;color:#526151;text-wrap:pretty}.question-text p{margin-bottom:15px}.question-text strong,.question-text b{font-weight:600;color:#324b3e}.question-goal{margin-top:24px;padding:17px 0;border-top:1px solid #d7e0ce;font-size:17px;font-weight:600;line-height:1.6}.quiet-button{padding:10px 0;color:#7a8977;font-size:12px}.quiet-button svg{width:14px;height:14px}.question-bottom{padding:18px 24px 17px;border-top:1px solid var(--line)}.local-note{margin-top:13px;font-size:11px;color:#8b9784;text-align:center}.outline-button,.primary-button{min-height:41px;padding:10px 15px;font-size:13px;border-radius:8px;line-height:1.4}.outline-button{border:1px solid #ccd8c2;background:#f7f9f2}.primary-button{background:var(--green);color:white}.primary-button svg{width:16px;height:16px}.full-width{width:100%}
+.board-panel{display:flex;min-width:0;min-height:0;flex-direction:column;position:relative}.board-header{height:57px;background:#f8faf4;display:flex;align-items:center;gap:10px;padding:0 20px;border-bottom:1px solid #e3e8dc;flex:none;position:relative;z-index:4}.board-header h2{font-size:13px;font-weight:500;letter-spacing:.4px}.save-status{font-size:10px;color:#9ba793;margin-left:4px}.compact-button{font-size:12px;padding:7px 9px;gap:6px;border-radius:6px}.compact-button svg{width:15px;height:15px}.board-surface{position:relative;flex:1;min-height:0;background:var(--paper);overflow:hidden;isolation:isolate}.board-surface>svg{width:100%;height:100%;display:block;touch-action:none;user-select:none;-webkit-user-select:none}.board-surface #lessonLayer{pointer-events:none}.drawing-toolbar{position:absolute;left:17px;top:22px;display:flex;flex-direction:column;gap:3px;padding:7px;background:#fefffb;border:1px solid #dfe6d6;border-radius:12px;box-shadow:0 3px 12px #3a51240a}.drawing-toolbar button{width:35px;height:35px;border-radius:7px;color:#75816d;position:relative}.drawing-toolbar button[aria-pressed=true]{color:var(--deep);background:#e1ecd8;box-shadow:inset 0 0 0 1px #cddbc3}.drawing-toolbar button:not([aria-pressed=true]):hover{background:#f0f4e9}.tool-divider{height:1px;background:#e5eade;margin:4px 3px;display:block}.pen-options{position:absolute;top:22px;left:82px;display:flex;align-items:center;padding:7px 9px;gap:8px;background:#fefffb;border:1px solid #e0e6d8;border-radius:9px;box-shadow:0 3px 12px #3a512407}.pen-options .tool-divider{height:20px;width:1px;margin:0 2px}.color-button{width:17px;height:17px;border-radius:50%;background:var(--swatch);padding:0;border:3px solid #fff}.color-button.selected{outline:1.5px solid var(--swatch)}.pen-options .icon-button{height:25px;width:28px;padding:4px}.pen-options .icon-button[aria-pressed=true]{background:#e1ecd8}.pen-options select{appearance:none;border:0;background:transparent;width:25px;font-size:11px;text-align:center;padding:2px}.history-controls{position:absolute;bottom:20px;left:19px;display:flex;gap:2px;background:#fefffb;border:1px solid #e0e6d8;border-radius:9px;padding:3px}.history-controls .icon-button{width:30px;height:30px}.zoom-controls{position:absolute;bottom:21px;left:50%;transform:translateX(-50%);display:flex;align-items:center;border:1px solid #dfe5d7;border-radius:9px;background:#fefffb;padding:2px}.zoom-controls .icon-button{width:28px;height:28px}.zoom-controls button:nth-child(2){min-width:49px;font-size:11px;font-variant-numeric:tabular-nums}.hint-launch{position:absolute;right:23px;bottom:20px;color:#f8fbef;background:#38664e;border-radius:10px;padding:13px 17px;font-size:13px;gap:11px;box-shadow:0 4px 12px #27452a13}.hint-launch svg{width:17px;height:17px}.board-mode{position:absolute;right:25px;top:32px;font-size:11px;letter-spacing:1px;color:#9aab90;pointer-events:none}.workspace.has-hints .board-mode{display:none}.workspace.has-hints .hint-launch{display:none}.popover-menu{position:absolute;z-index:30;right:15px;top:49px;background:#fffef8;box-shadow:0 8px 28px #20331e1a;border:1px solid #d8e1cd;border-radius:9px;padding:5px;width:155px}.popover-menu button{padding:11px;font-size:12px;justify-content:flex-start;width:100%;border-radius:5px}.popover-menu button:hover{background:#eef3e6}
+.hint-panel{background:#f3f6ed;border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}.hint-panel .panel-top{border-bottom:1px solid #e2e7d9;height:57px;padding:0 20px}.hint-scroll{padding:23px 24px;overflow:auto;flex:1}.method-row select{width:100%;border:1px solid #d3ddc9;border-radius:7px;background:#fafcf6;font-size:13px;padding:10px 30px 10px 12px}.knowledge-note{font-size:10px;color:#89927e;line-height:1.7;margin:10px 0 27px}.step-progress{display:flex;gap:5px;margin-bottom:24px}.step-progress span{height:3px;flex:1;border-radius:5px;background:#dce5d2}.step-progress span.done{background:#94ae82}.step-progress span.current{background:#52784e}.step-count{font-size:11px;letter-spacing:1.2px;color:#8b9c7e;margin-bottom:12px}.hint-scroll h2{font-family:"Songti SC","STSong",serif;font-size:23px;line-height:1.5;margin-bottom:19px}.step-prompt{font-size:15px;line-height:1.9;color:#465c49;text-wrap:pretty}.small-hint{margin-top:20px;padding:14px 0 0;border-top:1px solid #dce4d2;font-size:13px;line-height:1.9;color:#788767}.explanation{margin-top:18px;font-size:13px;line-height:1.9;color:#42533d;background:#e7eedc;padding:16px;border-radius:8px}.explanation p{margin-bottom:10px}.explanation p:last-child{margin:0}.explanation strong{color:#294c33}.explanation .formula{display:block;margin:8px 0;font-family:Georgia,"Songti SC",serif;font-size:17px}.hint-scroll>#revealStep{margin-top:24px}.hint-bottom{border-top:1px solid #dce4d2;padding:17px 22px;display:flex;gap:12px}.hint-bottom>.primary-button{flex:1;justify-content:space-between}.hint-bottom .icon-button{height:41px;width:41px;border:1px solid #d1ddc5}.hint-empty{font-size:14px;line-height:1.9;margin-top:20px}.hint-empty button{margin-top:15px}.math{font-family:Georgia,"Songti SC",serif}#lessonLayer text{font-family:Georgia,"Songti SC",serif}#lessonLayer [data-aux]{animation:aux-in .38s ease-out both}@keyframes aux-in{from{opacity:0}to{opacity:1}}
+.modal{border:1px solid #cbd7bf;background:#f8faf3;color:var(--ink);width:min(520px,calc(100% - 32px));border-radius:17px;padding:28px;box-shadow:0 25px 100px #17351f30;max-height:calc(100dvh - 50px);overflow:auto}.modal::backdrop{background:#263c2c55;backdrop-filter:blur(3px)}.small-modal{width:min(420px,calc(100% - 32px))}.question-modal{width:min(580px,calc(100% - 32px))}.modal-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:23px;gap:18px}.modal-heading h2{font-family:"Songti SC","STSong",serif;font-weight:600;font-size:24px}.modal-heading .icon-button{margin-right:-7px}.form-row{display:flex;gap:15px}.form-row label{flex:1;font-size:12px}.form-row select{display:block;width:100%;margin-top:8px}.modal select,.modal input:not([type=checkbox]):not([type=range]),.modal textarea{border:1px solid #ccd8c2;border-radius:7px;background:#fefff9;padding:11px 12px;font-size:14px}.field-label{display:block;font-size:12px;margin-top:20px}.field-label input,.field-label textarea{display:block;width:100%;margin-top:8px;line-height:1.7}.modal textarea{resize:vertical;min-height:120px}.modal fieldset{padding:0;border:0;margin:22px 0 0}.modal legend{font-size:12px;margin-bottom:14px}.knowledge-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}.knowledge-choices label{font-size:13px;display:flex;align-items:center;gap:8px}.knowledge-choices input{accent-color:var(--green);width:16px;height:16px;margin:0}.form-note{font-size:12px;color:#859178;line-height:1.85;margin-top:16px}.modal-actions{margin-top:25px;display:flex;justify-content:flex-end;gap:10px}.example-picker{display:grid;grid-template-columns:1fr 1fr;gap:12px}.example-picker button{text-align:left;justify-content:flex-start;align-items:flex-start;padding:15px;border:1px solid #d5dfcb;border-radius:9px;flex-direction:column;gap:7px}.example-picker button span{font-size:10px;color:#8e9c83}.example-picker button strong{font-size:13px;font-weight:500;line-height:1.6}.example-picker button.active{border-color:#7d9b6c;background:#eaf1e0}.about-text{font-size:15px;line-height:1.9}.photo-move{display:flex;align-items:center;margin-top:15px;gap:6px}.photo-move .quiet-button{margin-left:auto}.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:90;background:#294b3d;color:#f5f9ed;box-shadow:0 5px 22px #19381d28;border-radius:9px;padding:12px 20px;max-width:90vw;font-size:13px;line-height:1.7;text-align:center;pointer-events:none}
+@media(min-width:1650px){.workspace{grid-template-columns:310px minmax(0,1fr)}.workspace.has-hints{grid-template-columns:310px minmax(0,1fr) 340px}.question-content{padding:18px 30px}.question-text{font-size:15px}.hint-scroll{padding:28px}}
+@media(max-width:1150px){.workspace{grid-template-columns:240px minmax(0,1fr)}.workspace.has-hints{grid-template-columns:210px minmax(0,1fr) 280px}.question-content{padding:10px 20px}.question-content h1{font-size:21px}.panel-top{padding:0 18px}.hint-scroll{padding:20px}.question-text{font-size:13px}.board-mode{display:none}.workspace.has-hints .pen-options{top:18px;left:74px;gap:4px;padding:6px}.workspace.has-hints .drawing-toolbar{left:12px;top:18px}.workspace.has-hints .hint-launch{right:14px}.board-header{padding:0 12px}.save-status{display:none}}
+@media(max-width:850px){.app-header{padding:0 17px;gap:12px;height:60px}.brand{font-size:20px}.prototype-label{display:none}.workspace{height:calc(100dvh - 60px);grid-template-columns:220px minmax(0,1fr)}.workspace.has-hints{grid-template-columns:minmax(0,1fr) 280px}.workspace.has-hints .question-panel{display:none}.workspace.has-hints #expandQuestion{display:inline-flex!important}.workspace.question-collapsed.has-hints{grid-template-columns:minmax(0,1fr) 280px}.pen-options{left:74px;gap:4px}.drawing-toolbar{left:12px}.hint-launch{padding:12px;gap:7px;right:14px}.zoom-controls{left:auto;right:14px;bottom:74px;transform:none}.workspace.has-hints .zoom-controls{bottom:22px}.board-header{gap:3px}.board-header .compact-button{padding:7px}.profile-dot{display:none}}
+@media(max-width:600px){body{overflow:auto}.app-header{gap:7px;padding:0 12px}.brand{font-size:18px;letter-spacing:0;gap:7px}.brand-mark{font-size:30px}.settings-button{padding:8px;font-size:11px;gap:6px}.app-header>#aboutButton{width:28px}.workspace{height:calc(100dvh - 60px);min-height:590px;display:flex;flex-direction:column;overflow:auto}.question-panel{max-height:185px;border-right:0;border-bottom:1px solid var(--line);flex:none}.question-panel .panel-top{height:36px;padding:0 16px}.question-content{padding:5px 17px 12px;display:grid;grid-template-columns:1fr auto;gap:7px}.lesson-number{display:none}.question-content h1{font-size:17px;margin:0;grid-column:1/-1}.question-text{grid-column:1/-1;font-size:12px;line-height:1.8}.question-text p{margin:0}.question-goal{font-size:13px;margin:0;padding:0;border:0}.question-content .quiet-button{padding:0}.question-bottom{display:none}.board-panel{min-height:400px;flex:1}.board-header{height:45px}.drawing-toolbar{top:64px;left:8px;padding:4px;gap:0}.drawing-toolbar button{width:29px;height:29px}.drawing-toolbar button svg{width:16px;height:16px}.drawing-toolbar .tool-divider{margin:3px}.pen-options{left:12px;top:12px}.board-mode{display:none}.hint-launch{font-size:12px;bottom:16px;right:12px}.history-controls{left:9px;bottom:16px}.zoom-controls{bottom:67px;right:12px}.workspace.has-hints .question-panel{display:none}.workspace.has-hints .board-panel{min-height:340px;flex:1}.hint-panel{max-height:44dvh;min-height:240px;border-left:0;border-top:1px solid var(--line);flex:none}.hint-panel .panel-top{height:39px}.hint-scroll{padding:12px 19px}.method-row{float:right;max-width:48%;margin-left:10px}.method-row select{padding:7px;font-size:11px}.knowledge-note{margin:0 0 12px;max-width:47%;font-size:9px}.step-progress{clear:both;margin-bottom:9px;max-width:130px}.step-count{font-size:10px;margin-bottom:6px}.hint-scroll h2{font-size:19px;margin-bottom:8px}.step-prompt{font-size:13px;line-height:1.8}.hint-bottom{padding:9px 17px;gap:10px}.hint-bottom .primary-button{min-height:35px}.hint-bottom .icon-button{height:35px}.hint-scroll>#revealStep{margin-top:12px}.explanation,.small-hint{font-size:12px;padding:12px;margin-top:12px}.modal{padding:22px}.example-picker{gap:8px}.example-picker button{padding:10px}.toast{bottom:16px}.workspace.has-hints .zoom-controls{bottom:16px}.workspace.has-hints .pen-options{top:12px;left:12px}.workspace.has-hints .drawing-toolbar{top:57px;left:8px}.workspace.question-collapsed .question-panel{display:none}}
+@media(max-width:600px){.drawing-toolbar,.workspace.has-hints .drawing-toolbar{top:12px;left:10px;right:10px;flex-direction:row;gap:1px;overflow-x:auto;padding:4px;border-radius:8px}.pen-options,.workspace.has-hints .pen-options{top:55px;left:12px}.drawing-toolbar button{flex:none;width:28px;height:28px}.drawing-toolbar .tool-divider{height:20px;width:1px;flex:none;margin:4px 3px}.board-surface>svg{min-height:295px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.generation-box{margin:16px 0;padding:12px;border:1px solid #d5dfc9;border-radius:8px;background:#eaf0e1;font-size:12px;line-height:1.8;overflow-wrap:anywhere;white-space:pre-line}.generation-box .quiet-button{padding-bottom:0}.history-controls .icon-button{width:auto;min-width:58px;padding:7px 9px;font-size:11px;gap:5px}.history-controls .icon-button svg{width:16px;height:16px}.explanation{white-space:normal}.example-picker:empty{display:none}
+@media(max-width:600px){.history-controls .icon-button{min-width:46px;padding:5px;font-size:10px}.history-controls .icon-button svg{width:13px;height:13px}.generation-box{margin:6px 0;grid-column:1/-1}.question-content>#generateCurrent{grid-column:1/-1}}
+
+.parsed-conditions{font-size:12px;line-height:1.9;margin:14px 0;grid-column:1/-1}.parsed-conditions summary{cursor:pointer;color:var(--muted)}.parsed-conditions ul{padding-left:18px}.step-reason{padding-top:10px;border-top:1px solid var(--line);font-size:.92em}
+
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <a class="brand" href="#" aria-label="几何自习室首页"><span class="brand-mark" aria-hidden="true">△<i></i></span><span>几何自习室</span></a>
+  <span class="prototype-label">Skill · Beta</span>
+  <div class="header-spacer"></div>
+  <button id="settingsButton" class="settings-button" aria-haspopup="dialog"><span class="profile-dot"></span><span id="profileSummary">设置学习范围</span><span data-icon="chevronDown"></span></button>
+  <button id="aboutButton" class="icon-button" aria-label="使用说明" title="使用说明" data-icon="info"></button>
+</header>
+
+<main id="workspace" class="workspace">
+  <aside class="question-panel" id="questionPanel" aria-label="题目">
+    <div class="panel-top"><span class="eyebrow">今天这道题</span><button id="collapseQuestion" class="icon-button" aria-label="收起题目" title="收起题目" data-icon="panelLeft"></button></div>
+    <div class="question-content">
+      <div class="lesson-number" id="lessonNumber">01</div>
+      <h1 id="questionTitle"></h1>
+      <div id="questionText" class="question-text"></div>
+      <div class="question-goal" id="questionGoal"></div>
+      <details id="parsedConditions" class="parsed-conditions" hidden><summary>核对已知条件</summary><ul id="parsedConditionList"></ul></details>
+      <div id="generationBox" class="generation-box" hidden><p id="generationStatus" role="status"></p><button id="cancelGeneration" class="quiet-button" hidden>取消生成</button></div>
+      <button id="generateCurrent" class="outline-button full-width" hidden>生成题图与提示</button>
+      <button id="editQuestion" class="quiet-button"><span data-icon="edit"></span>编辑题目</button>
+    </div>
+    <div class="question-bottom">
+      <button id="newQuestion" class="outline-button full-width"><span data-icon="plus"></span>换一道题</button>
+      <p class="local-note">草稿保存在这台设备上</p>
+    </div>
+  </aside>
+
+  <section class="board-panel" aria-label="几何画板">
+    <div class="board-header">
+      <button id="expandQuestion" class="icon-button" aria-label="展开题目" title="展开题目" data-icon="panelLeft" hidden></button>
+      <h2>我的画板</h2><span id="saveStatus" class="save-status" role="status">已保存</span>
+      <div class="header-spacer"></div>
+      <button id="photoButton" class="compact-button"><span data-icon="image"></span><span>题图</span></button>
+      <button id="exportButton" class="compact-button"><span data-icon="download"></span><span>导出</span></button>
+      <button id="moreButton" class="icon-button" aria-label="更多画板操作" title="更多画板操作" aria-expanded="false" data-icon="more"></button>
+      <div id="moreMenu" class="popover-menu" hidden>
+        <button id="saveSession">保存学习记录</button><button id="loadSession">打开学习记录</button>
+        <button id="exportRequest">交给其他 Agent</button><button id="importLesson">导入 Agent 解题</button>
+        <button id="clearDrawing">清空我的笔迹</button>
+      </div>
+    </div>
+    <div class="board-surface" id="boardSurface">
+      <svg id="drawingBoard" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" role="img" aria-label="几何题图与自由绘画区">
+        <defs><pattern id="dotGrid" width="25" height="25" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.7" fill="#c7d4c0"/></pattern></defs>
+        <rect id="boardBackground" x="-10000" y="-10000" width="20000" height="20000" fill="#f9fbf5"/>
+        <rect x="-10000" y="-10000" width="20000" height="20000" fill="url(#dotGrid)"/>
+        <g id="photoLayer"></g><g id="lessonLayer"></g><g id="userLayer"></g>
+      </svg>
+      <div class="drawing-toolbar" role="toolbar" aria-label="绘图工具">
+        <button data-tool="select" data-icon="cursor" aria-label="选择与移动" title="选择与移动 (V)"></button>
+        <button data-tool="pen" data-icon="pen" aria-label="自由书写" title="自由书写 (P)"></button>
+        <span class="tool-divider"></span>
+        <button data-tool="line" data-icon="line" aria-label="线段" title="线段 (L)"></button>
+        <button data-tool="straight" data-icon="straight" aria-label="直线" title="直线"></button>
+        <button data-tool="triangle" data-icon="triangle" aria-label="三角形" title="三角形"></button>
+        <button data-tool="rightTriangle" data-icon="rightTriangle" aria-label="直角三角形" title="直角三角形"></button>
+        <button data-tool="circle" data-icon="circle" aria-label="圆" title="圆 (C)"></button>
+        <span class="tool-divider"></span>
+        <button data-tool="text" data-icon="text" aria-label="文字标注" title="文字标注 (T)"></button>
+        <button data-tool="eraser" data-icon="eraser" aria-label="橡皮擦" title="橡皮擦 (E)"></button>
+        <button data-tool="pan" data-icon="hand" aria-label="平移画板" title="平移画板 (H)"></button>
+      </div>
+      <div class="pen-options" role="group" aria-label="画笔样式">
+        <button class="color-button selected" data-color="#285c4d" style="--swatch:#285c4d" aria-label="墨绿色" title="墨绿色"></button>
+        <button class="color-button" data-color="#b4762c" style="--swatch:#b4762c" aria-label="橙棕色" title="橙棕色"></button>
+        <button class="color-button" data-color="#4286a0" style="--swatch:#4286a0" aria-label="蓝色" title="蓝色"></button>
+        <button class="color-button" data-color="#af5a65" style="--swatch:#af5a65" aria-label="暗红色" title="暗红色"></button>
+        <span class="tool-divider"></span><button id="dashedButton" class="icon-button" aria-label="虚线" aria-pressed="false" title="虚线" data-icon="dashed"></button>
+        <select id="strokeWidth" aria-label="线条粗细"><option value="2.5">细</option><option value="4">中</option><option value="7">粗</option></select>
+      </div>
+      <div class="history-controls"><button id="undoButton" class="icon-button" aria-label="撤销" title="撤销 (⌘/Ctrl Z)" disabled><span data-icon="undo"></span><span>撤销</span></button><button id="redoButton" class="icon-button" aria-label="重做" title="重做 (⌘/Ctrl Shift Z)" disabled><span data-icon="redo"></span><span>重做</span></button></div>
+      <div class="zoom-controls"><button id="zoomOut" class="icon-button" aria-label="缩小画板" data-icon="minus"></button><button id="zoomReset" title="适应画面" aria-label="适应画面">100%</button><button id="zoomIn" class="icon-button" aria-label="放大画板" data-icon="plus"></button></div>
+      <button id="openHints" class="hint-launch"><span data-icon="spark"></span>给我一点提示<span data-icon="arrowRight"></span></button>
+      <span id="boardMode" class="board-mode">先画一画，慢慢想</span>
+    </div>
+  </section>
+
+  <aside id="hintPanel" class="hint-panel" aria-label="逐步提示" hidden>
+    <div class="panel-top"><span class="eyebrow">一起想一想</span><button id="closeHints" class="icon-button" aria-label="回到自主思考" title="回到自主思考" data-icon="close"></button></div>
+    <div class="hint-scroll">
+      <div class="method-row"><select id="methodSelect" aria-label="选择解题方法"></select></div>
+      <div id="knowledgeNote" class="knowledge-note"></div>
+      <div id="hintProgress" class="step-progress" aria-label="提示进度"></div>
+      <div id="stepCount" class="step-count"></div>
+      <h2 id="stepTitle"></h2>
+      <p id="stepPrompt" class="step-prompt"></p>
+      <div id="smallHint" class="small-hint" hidden></div>
+      <div id="explanation" class="explanation" hidden></div>
+      <button id="revealStep" class="outline-button full-width">再给一点提示</button>
+      <div id="hintEmpty" class="hint-empty" hidden></div>
+    </div>
+    <div class="hint-bottom"><button id="previousStep" class="icon-button" aria-label="上一步" title="上一步" data-icon="arrowLeft"></button><button id="nextStep" class="primary-button">下一步<span data-icon="arrowRight"></span></button></div>
+  </aside>
+</main>
+
+<dialog id="settingsDialog" class="modal">
+  <form id="settingsForm">
+    <div class="modal-heading"><h2>我的学习范围</h2><button type="button" data-close="settingsDialog" class="icon-button" aria-label="关闭学习设置" data-icon="close"></button></div>
+    <div class="form-row"><label>年级<select id="grade"><option value="7">七年级</option><option value="8">八年级</option><option value="9">九年级</option></select></label><label>教材版本<select id="edition"><option value="unknown">不确定 / 其他</option><option value="pep">人教版</option><option value="bnu">北师大版</option><option value="su">苏科版</option></select></label></div>
+    <label class="field-label">学到哪里了<input id="chapter" placeholder="例如：全等三角形（可留空）" maxlength="100"></label>
+    <fieldset><legend>这些知识，我学过了</legend><div id="knowledgeChoices" class="knowledge-choices"></div></fieldset>
+    <p class="form-note">解法只使用你勾选的知识。年级与教材用于记录，暂不自动推定你学过什么。</p>
+    <div class="modal-actions"><button type="submit" class="primary-button">保存学习范围</button></div>
+  </form>
+</dialog>
+
+<dialog id="questionDialog" class="modal question-modal">
+  <div class="modal-heading"><h2>换一道题</h2><button data-close="questionDialog" class="icon-button" aria-label="关闭题目输入" data-icon="close"></button></div>
+  <div class="example-picker" id="examplePicker"></div>
+  <label class="field-label">题目<textarea id="questionInput" rows="5" placeholder="输入一道几何题……" maxlength="6000"></textarea></label>
+  <p class="form-note"><span id="connectionNote">新题可以交给当前 Agent 生成题图与分步提示。</span></p>
+  <div class="modal-actions"><button id="uploadFromQuestion" class="outline-button"><span data-icon="image"></span>上传题图</button><button id="applyQuestion" class="primary-button">生成题图与提示<span data-icon="arrowRight"></span></button></div>
+</dialog>
+
+<dialog id="textDialog" class="modal small-modal"><form id="textForm"><div class="modal-heading"><h2>写一条标注</h2><button type="button" data-close="textDialog" class="icon-button" aria-label="关闭文字标注" data-icon="close"></button></div><label class="field-label">文字<input id="annotationInput" maxlength="120" autocomplete="off" required></label><div class="modal-actions"><button type="submit" class="primary-button">放到这里</button></div></form></dialog>
+
+<dialog id="photoDialog" class="modal small-modal"><div class="modal-heading"><h2>题图</h2><button data-close="photoDialog" class="icon-button" aria-label="关闭题图设置" data-icon="close"></button></div><button id="uploadPhoto" class="outline-button full-width"><span data-icon="image"></span>选择照片</button><p class="form-note">支持 PNG、JPEG、WebP。照片放在画板上；自动通道目前只读取题目文字。导出题目时会包含照片。</p><div id="photoControls" hidden><label class="field-label">图片大小<input id="photoScale" type="range" min="30" max="150" value="100"></label><div class="photo-move" role="group" aria-label="移动题图"><button data-move="left" class="icon-button" aria-label="题图向左" data-icon="arrowLeft"></button><button data-move="up" class="icon-button" aria-label="题图向上" data-icon="arrowUp"></button><button data-move="down" class="icon-button" aria-label="题图向下" data-icon="arrowDown"></button><button data-move="right" class="icon-button" aria-label="题图向右" data-icon="arrowRight"></button><button id="removePhoto" class="quiet-button">移除题图</button></div></div></dialog>
+
+<dialog id="confirmDialog" class="modal small-modal"><div class="modal-heading"><h2 id="confirmTitle">清空笔迹？</h2></div><p id="confirmMessage" class="form-note"></p><div class="modal-actions"><button data-close="confirmDialog" class="outline-button">取消</button><button id="confirmAction" class="primary-button">确定</button></div></dialog>
+
+<dialog id="aboutDialog" class="modal small-modal"><div class="modal-heading"><h2>几何自习室</h2><button data-close="aboutDialog" class="icon-button" aria-label="关闭使用说明" data-icon="close"></button></div><p class="about-text">先确认学习范围，再输入完整题目。提示默认收起，需要时逐步展开。</p><p class="form-note">通过本地服务可调用已配置的 Agent CLI。离线页面可导出题目、导入 Agent 解题。方法按已学知识约束；生成内容仍需核对。</p><p class="form-note">快捷键：P 画笔 · L 线段 · C 圆 · E 橡皮 · V 选择 · H 平移。选中笔迹后按 Delete 删除。</p></dialog>
+<input id="photoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+<input id="lessonInput" type="file" accept="application/json,.json" hidden>
+<input id="sessionInput" type="file" accept="application/json,.json" hidden>
+<div id="toast" class="toast" role="status" hidden></div>
+<script>window.GEOMETRY_BOOTSTRAP={"lesson": {"schema": "geometry-lesson/1", "request_id": "acaf2380-8c37-4788-9cbb-64cdbbd01208", "id": "equal_angles", "title": "利用三边全等证明角相等", "statement": "四边形ABCD中，AB=CB，AD=CD。求证∠BAD=∠BCD。", "givens": ["AB = CB", "AD = CD"], "goal": "求∠BAD=∠BCD。", "status": "ready", "message": "", "questions": [], "profile": {"grade": "8", "edition": "pep", "chapter": "等腰三角形与全等三角形", "knowledge": ["angle", "congruence"], "confirmed": true}, "scene": {"points": {"A": [553.29299069, 90.0], "B": [286.82803722, 325.0], "D": [713.17196278, 325.0], "C": [553.29299069, 560.0]}, "base": [{"id": "shape1", "kind": "point", "point": "A", "label": "A"}, {"id": "shape2", "kind": "point", "point": "B", "label": "B"}, {"id": "shape3", "kind": "point", "point": "D", "label": "D"}, {"id": "shape4", "kind": "point", "point": "C", "label": "C"}, {"id": "shape5", "kind": "line", "a": "A", "b": "B", "color": "ink", "dashed": false}, {"id": "shape6", "kind": "line", "a": "B", "b": "C", "color": "ink", "dashed": false}, {"id": "shape7", "kind": "line", "a": "C", "b": "D", "color": "ink", "dashed": false}, {"id": "shape8", "kind": "line", "a": "D", "b": "A", "color": "ink", "dashed": false}], "constraints": []}, "methods": [{"id": "m1", "title": "连接BD，利用SSS证明全等", "requires": ["congruence"], "steps": [{"title": "SSS", "prompt": "试着连接 BD。这两个三角形有哪些已经能确认的边长关系？", "hint": "按顶点顺序，逐一找齐三组相等的边。公共边也能算一组。", "explanation": "已知或前面已经得到：AB = CB；AD = CD。\n连接 BD。按顶点顺序比较 △ABD 和 △CBD：AB = CB；BD = BD（同一条公共边）；AD = CD。三组对应边都相等。因此，△ABD ≌ △CBD。", "uses": ["congruence"], "reason": "SSS：三组对应边分别相等", "observe": [{"id": "shape10", "kind": "line", "a": "A", "b": "B", "color": "amber", "width": 4}, {"id": "shape11", "kind": "line", "a": "A", "b": "D", "color": "amber", "width": 4}, {"id": "shape12", "kind": "line", "a": "B", "b": "C", "color": "amber", "width": 4}, {"id": "shape13", "kind": "line", "a": "C", "b": "D", "color": "amber", "width": 4}], "reveal": [{"id": "shape9", "kind": "line", "a": "B", "b": "D", "color": "amber", "dashed": true}, {"id": "shape14", "kind": "polygon", "points": ["A", "B", "D"], "fill": true, "opacity": 1, "color": "blue"}, {"id": "shape15", "kind": "polygon", "points": ["C", "B", "D"], "fill": true, "opacity": 1, "color": "amber"}]}, {"title": "全等三角形的对应角相等", "prompt": "要比较的两个角，在全等三角形中对应吗？", "hint": "按全等时的顶点顺序，找出要比较的两个对应角。", "explanation": "已知或前面已经得到：△ABD ≌ △CBD。\n因此，∠BAD = ∠BCD。", "uses": ["congruence"], "reason": "全等三角形的对应角相等", "observe": [{"id": "shape16", "kind": "line", "a": "B", "b": "A", "color": "blue", "width": 4}, {"id": "shape17", "kind": "line", "a": "A", "b": "D", "color": "blue", "width": 4}, {"id": "shape18", "kind": "line", "a": "B", "b": "C", "color": "amber", "width": 4}, {"id": "shape19", "kind": "line", "a": "C", "b": "D", "color": "amber", "width": 4}], "reveal": []}]}], "audit": {"summary": "本地构图与已知条件一致；每种解法的定理前提和目标已通过有限规则校验。", "checks": ["条件原文绑定", "逐步前提校验", "全部目标到达", "学习范围检查", "图形数值检查"], "uncertainties": ["请核对题面与提取的已知条件；这里只支持已收录的构造和定理。"]}}, "profile": {"grade": "8", "edition": "pep", "chapter": "等腰三角形与全等三角形", "knowledge": ["angle", "congruence"], "confirmed": true}};window.GEOMETRY_BRIDGE=null;</script>
+<script>
+(function () {
+  'use strict';
+
+  const ink = '#285c4d';
+  const amber = '#b4762c';
+  const blue = '#4286a0';
+  const escape = value => String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+  const points = list => list.map(point => point.join(',')).join(' ');
+  const line = (a, b, color = ink, extra = '') => `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${color}" ${extra.includes('stroke-width=') ? '' : 'stroke-width="2.8"'} stroke-linecap="round" ${extra}/>`;
+  const label = (x, y, text, color = ink, extra = '') => `<text x="${x}" y="${y}" fill="${color}" ${extra.includes('font-size=') ? '' : 'font-size="20"'} font-family="system-ui, sans-serif" ${extra}>${escape(text)}</text>`;
+  const point = (p, name, dx = 10, dy = -12, color = ink) => `<circle cx="${p[0]}" cy="${p[1]}" r="3.5" fill="${color}"/>${label(p[0] + dx, p[1] + dy, name, color)}`;
+  const fill = (list, color) => `<polygon points="${points(list)}" fill="${color}" fill-opacity="0.12" stroke="none"/>`;
+  const aux = (name, markup) => `<g data-aux="${name}">${markup}</g>`;
+  const dash = 'stroke-dasharray="8 7"';
+  const right = (vertex, first, second, color = ink, size = 13) => {
+    const unit = target => {
+      const dx = target[0] - vertex[0], dy = target[1] - vertex[1];
+      const length = Math.hypot(dx, dy);
+      return [dx / length * size, dy / length * size];
+    };
+    const a = unit(first), b = unit(second);
+    return `<polyline points="${points([[vertex[0] + a[0], vertex[1] + a[1]], [vertex[0] + a[0] + b[0], vertex[1] + a[1] + b[1]], [vertex[0] + b[0], vertex[1] + b[1]]])}" fill="none" stroke="${color}" stroke-width="1.8"/>`;
+  };
+  const tick = (a, b, count = 1, color = ink) => {
+    const dx = b[0] - a[0], dy = b[1] - a[1], length = Math.hypot(dx, dy);
+    const u = [dx / length, dy / length], normal = [-u[1], u[0]];
+    let markup = '';
+    for (let index = 0; index < count; index++) {
+      const offset = (index - (count - 1) / 2) * 7;
+      const middle = [(a[0] + b[0]) / 2 + u[0] * offset, (a[1] + b[1]) / 2 + u[1] * offset];
+      markup += line([middle[0] - normal[0] * 6, middle[1] - normal[1] * 6], [middle[0] + normal[0] * 6, middle[1] + normal[1] * 6], color);
+    }
+    return markup;
+  };
+
+  // Exact Euclidean coordinates, transformed only by a uniform scale and translation.
+  // Diagram coordinates are presentation data, never evidence for a proof.
+  const geometry = {
+    C: [260, 400], A: [428, 400], B: [260, 232], M: [512, 400],
+    P: [680, 148], N: [260, 568], Q: [708, 120], E: [512, 316], D: [680, 400]
+  };
+
+  function baseAreaDiagram() {
+    const { A, B, C, M, P, N, Q } = geometry;
+    return [
+      line(C, M), line(B, N), line(A, B), line(B, M), line(M, P), line(N, Q),
+      right(C, A, B), right(A, B, P), right(M, B, P),
+      point(A, 'A', -12, 28), point(B, 'B', -26, -12), point(C, 'C', -28, 5),
+      point(M, 'M', -6, 28), point(P, 'P', 12, 2), point(N, 'N', -8, 30), point(Q, 'Q', 10, -8),
+      label(335, 426, '6'), label(230, 323, '6')
+    ].join('');
+  }
+
+  function renderArea(methodId, stepIndex, revealed) {
+    const { A, B, C, M, P, N, E, D } = geometry;
+    const done = index => stepIndex > index || (stepIndex === index && revealed === true);
+    let behind = '', above = '';
+    if (stepIndex >= 0) {
+      if (stepIndex === 0) behind += fill([A, C, N], blue);
+      if (done(0)) above += aux('cn-length', line(C, N, blue) + label(158, 495, 'CN = 6', blue));
+    }
+    if (methodId === 'pythagoras') {
+      if (stepIndex === 1) behind += fill([A, M, P], amber) + fill([A, M, N], blue);
+      if (done(1)) {
+        above += aux('PD', line(M, D, amber, dash) + line(P, D, blue, dash) + right(D, A, P, blue) + point(D, 'D', 10, 28, blue));
+        above += aux('height-values', label(702, 278, 'PD = 9', blue) + label(542, 454, 'AD = 9', amber));
+      }
+      if (stepIndex === 2) behind += fill([B, C, M], amber) + (done(1) ? fill([P, D, M], blue) : '');
+      if (done(2)) above += aux('unknown-length', label(460, 374, 'x', amber) + label(320, 454, 'CM = x + 6', amber));
+      if (stepIndex === 3) behind += fill([A, B, P], blue);
+      if (done(3)) above += aux('BP', line(B, P, blue, dash));
+      if (stepIndex === 4) behind += fill([B, M, P], amber);
+      if (stepIndex === 5) behind += fill([A, M, P], amber) + fill([A, M, N], blue);
+      if (done(5)) above += '<g data-answer="CM">' + label(370, 630, 'CM = 9', ink, 'font-size="26" font-weight="700"') + '</g>';
+    } else {
+      if (stepIndex === 1) above += line(A, M, amber) + line(A, P, amber);
+      if (done(1)) {
+        above += aux('ME', line(M, E, amber, dash) + right(M, A, E, amber) + point(E, 'E', -27, -10, amber));
+        above += aux('equal-AM-ME', tick(A, M, 1, amber) + tick(M, E, 1, amber));
+      }
+      if (stepIndex === 2 || stepIndex === 3) behind += fill([A, M, B], blue) + fill([E, M, P], amber);
+      if (done(2)) above += aux('equal-135', label(385, 365, '135°', blue) + label(533, 338, '135°', amber));
+      if (stepIndex === 4) behind += fill([A, M, B], blue) + fill([A, M, N], amber);
+      if (stepIndex === 5) behind += fill([A, M, E], blue) + fill([E, M, P], amber);
+      if (stepIndex === 6) behind += fill([A, M, E], amber) + fill([A, M, N], blue);
+      if (done(5)) above += aux('area-relation', label(310, 630, 'S△AME = ½ S△AMN', blue));
+      if (done(6)) {
+        above += aux('ME-value', label(534, 374, 'ME = 3', amber));
+        above += '<g data-answer="CM">' + label(390, 674, 'CM = 9', ink, 'font-size="26" font-weight="700"') + '</g>';
+      }
+    }
+    return `<g>${behind}${baseAreaDiagram()}${above}</g>`;
+  }
+
+  const areaLesson = {
+    id: 'area-ratio',
+    title: '等腰直角三角形中的面积比',
+    shortTitle: '面积比与辅助线',
+    statementHTML: '<p>在△ABC中，∠ACB = 90°，AC = BC = 6。M在线段CA的延长线上（C、A、M依次排列）。过A作AQ ⟂ AB，过M作BM的垂线，与AQ交于P。PA的延长线与BC的延长线交于N。</p><p>已知 S<sub>△AMP</sub> = 3/2 S<sub>△AMN</sub>。</p>',
+    givens: ['∠ACB = 90°，AC = BC = 6', 'C、A、M依次共线', 'AQ ⟂ AB，P在AQ上，MP ⟂ BM', 'P、A、N共线；B、C、N共线', 'S△AMP = 3/2 S△AMN'],
+    goalHTML: '求 <strong>CM</strong> 的长。',
+    methods: [
+      {
+        id: 'congruence-area',
+        title: '全等与面积：补一条短线',
+        requires: ['angle', 'area', 'isosceles', 'congruence'],
+        steps: [
+          {
+            title: '先找到一个能确定的长度',
+            prompt: '看△ACN：你能先找到它的两个锐角吗？',
+            hint: '先用△ABC的等腰直角条件，再看AB与AN互相垂直。',
+            explanation: '<p>△ABC是等腰直角三角形，所以∠CAB = 45°。又因为AN ⟂ AB，∠CAN = 90° − 45° = 45°。</p><p>∠ACN = 90°，所以∠ANC也等于45°。于是△ACN也是等腰直角三角形，<strong>CN = AC = 6</strong>。</p>'
+          },
+          {
+            title: '补一条短线，让小三角形出现',
+            prompt: '从M向上作AM的垂线，碰到AP时，会得到什么三角形？',
+            hint: '把交点叫E；△AME有一个直角，也有一个45°角。',
+            explanation: '<p>过M作 <strong>ME ⟂ AM</strong>，交AP于E。∠MAE = 45°，∠AME = 90°，所以△AME是等腰直角三角形。</p><p>因此 <strong>AM = ME</strong>。先记住这对相等的边，不急着求数值。</p>'
+          },
+          {
+            title: '找两块可以比较的三角形',
+            prompt: '比较蓝色△AMB和棕色△EMP：A处、E处的角分别是多少？',
+            hint: 'A处的角与45°角组成平角；E处也有同样的关系。',
+            explanation: '<p>C、A、M在一条直线上，所以∠MAB = 180° − 45° = 135°。</p><p>A、E、P在一条直线上，且∠AEM = 45°，所以∠MEP = 135°。</p><p>两块三角形已有 <strong>∠MAB = ∠MEP</strong>，以及上一小步找到的 <strong>AM = ME</strong>。</p>'
+          },
+          {
+            title: '再找到一对相等的角',
+            prompt: 'M处的两个小角∠AMB、∠EMP，能用同一个角来表示吗？',
+            hint: '它们都与∠BME凑成90°：一个来自AM ⟂ ME，一个来自BM ⟂ MP。',
+            explanation: '<p>∠AMB + ∠BME = 90°，∠BME + ∠EMP = 90°。减去同一个角，得到 <strong>∠AMB = ∠EMP</strong>。</p><p>两角和它们夹着的边分别相等，由ASA得到 <strong>△AMB ≌ △EMP</strong>。因此它们的面积也相等。</p>'
+          },
+          {
+            title: '把面积换成同一块来比较',
+            prompt: '△AMB与△AMN都以AM为底，它们的高有什么关系？',
+            hint: '顶点B、N到直线AM的距离，分别就是BC、CN。',
+            explanation: '<p>它们的底都是AM，高分别是BC和CN，而 <strong>BC = CN = 6</strong>，所以 S<sub>△AMB</sub> = S<sub>△AMN</sub>。</p><p>结合刚才的全等结论，得到 <strong>S<sub>△EMP</sub> = S<sub>△AMN</sub></strong>。</p>'
+          },
+          {
+            title: '从大三角形里减去一块',
+            prompt: '△AMP被ME分成哪两块？减去△EMP后，还剩多少面积？',
+            hint: '整块是△AMN面积的3/2；减掉的那块恰好是△AMN面积的1倍。',
+            explanation: '<p>△AMP由△AME与△EMP拼成。已知整块的面积是3/2份，△EMP占1份。</p><p>所以剩下 <strong>S<sub>△AME</sub> = (3/2 − 1)S<sub>△AMN</sub> = 1/2 S<sub>△AMN</sub></strong>。</p>'
+          },
+          {
+            title: '用面积比找到长度',
+            prompt: '△AME与△AMN有同一条底AM。面积只剩一半，对应的高呢？',
+            hint: '两个高是ME与CN。再想想AM与ME是什么关系，以及题目最终求哪一段。',
+            explanation: '<p>同底三角形的面积比等于高之比。因此 ME = CN ÷ 2 = 6 ÷ 2 = <strong>3</strong>。</p><p>又因为AM = ME，所以AM = 3。题目求的是CM：</p><p><strong>CM = CA + AM = 6 + 3 = 9。</strong></p>'
+          }
+        ]
+      },
+      {
+        id: 'pythagoras',
+        title: '勾股定理：列式求未知长度',
+        requires: ['angle', 'area', 'isosceles', 'pythagoras', 'factorization'],
+        steps: [
+          {
+            title: '先确定共底三角形的一条高',
+            prompt: '△ACN为什么也是等腰直角三角形？',
+            hint: '先找45°，再用三角形内角和。',
+            explanation: '<p>由△ABC等腰且∠ACB = 90°，得到∠CAB = 45°。AN ⟂ AB，所以∠CAN = 45°。</p><p>∠ACN = 90°，于是∠ANC = 45°，得到 <strong>CN = AC = 6</strong>。</p>'
+          },
+          {
+            title: '把面积比变成高的比',
+            prompt: '从P向直线AM作垂线PD。PD与CN的比，应该是多少？',
+            hint: '△AMP、△AMN共底AM；面积比就是两条高的比。',
+            explanation: '<p>作 <strong>PD ⟂ 直线AM</strong>，垂足为D。由共同的底AM，PD / CN = 3/2，所以 <strong>PD = 9</strong>。</p><p>∠PAD = 45°，∠ADP = 90°，故△APD是等腰直角三角形，<strong>AD = PD = 9</strong>。</p>'
+          },
+          {
+            title: '给未知长度起个名字',
+            prompt: '设AM = x。用勾股定理，BM²和MP²可以怎样表示？',
+            hint: '分别看直角三角形BCM与PDM。CM = x + 6；MD² = (9 − x)²。',
+            explanation: '<p>设 <strong>AM = x，且x &gt; 0</strong>。则CM = x + 6。M、D都在A的同侧，所以MD的长度是9与x的差的绝对值，MD² = (9 − x)²。</p><p>由勾股定理：<br><strong>BM² = (x + 6)² + 6²</strong>；<br><strong>MP² = (9 − x)² + 9²</strong>。</p>'
+          },
+          {
+            title: '再算出BP的平方',
+            prompt: '连结BP。在直角三角形BAP中，能求出BP²吗？',
+            hint: '先在△ABC、△APD里求AB²、AP²，无需求出根号形式的边长。',
+            explanation: '<p>连结BP。AB² = 6² + 6² = 72，AP² = 9² + 9² = 162。</p><p>由于AB ⟂ AP，在△BAP中，<strong>BP² = AB² + AP² = 234</strong>。</p>'
+          },
+          {
+            title: '用M处的直角列出等式',
+            prompt: 'BM ⟂ MP。在△BMP中，把刚才三个平方放进哪个等式？',
+            hint: 'BM² + MP² = BP²；展开后可以提出公因式。',
+            explanation: '<p>由勾股定理：<br>(x + 6)² + 36 + (9 − x)² + 81 = 234。</p><p>整理得 <strong>2x² − 6x = 0</strong>，即 <strong>2x(x − 3) = 0</strong>。</p><p>x = 0或x = 3。因为M在CA的延长线上且不同于A，AM = x &gt; 0，故 <strong>x = 3</strong>。</p>'
+          },
+          {
+            title: '回到题目要找的那一段',
+            prompt: '刚才求到的是AM，题目要找的是CM。还需要怎样做？',
+            hint: '沿着C—A—M，写出线段相加的关系。',
+            explanation: '<p>AM = 3，CA = 6，所以 <strong>CM = CA + AM = 9</strong>。</p><p>这条方法使用勾股定理和因式分解；如果这些知识还没学过，就选另一条全等与面积的方法。</p>'
+          }
+        ]
+      }
+    ],
+    render: renderArea
+  };
+
+  const median = { A: [500, 150], B: [300, 500], C: [700, 500], D: [500, 500] };
+  function renderMedian(methodId, stepIndex, revealed) {
+    const { A, B, C, D } = median;
+    const done = index => stepIndex > index || (stepIndex === index && revealed === true);
+    let behind = '', above = '';
+    if (stepIndex >= 0) behind += fill([A, B, D], blue) + fill([A, C, D], amber);
+    if (stepIndex === 0) above += line(A, B, blue) + line(A, C, amber) + line(B, D, blue) + line(D, C, amber);
+    if (stepIndex === 1) above += line(A, D, blue, 'stroke-width="4"');
+    if (done(2)) above += aux('equal-base-angles', label(412, 470, '∠1', blue) + label(538, 470, '∠2', amber));
+    if (done(3)) above += '<g data-answer="perpendicular">' + right(D, A, C, blue, 18) + label(420, 596, 'AD ⟂ BC', ink, 'font-size="26" font-weight="700"') + '</g>';
+    return `<g>${behind}${line(A, B)}${line(A, C)}${line(B, C)}${line(A, D)}${tick(A, B)}${tick(A, C)}${tick(B, D, 2)}${tick(D, C, 2)}${point(A, 'A', -8, -20)}${point(B, 'B', -27, 20)}${point(C, 'C', 12, 20)}${point(D, 'D', -7, 30)}${above}</g>`;
+  }
+
+  const medianLesson = {
+    id: 'isosceles-median',
+    title: '等腰三角形的中线为什么垂直于底边',
+    shortTitle: '等腰三角形的中线',
+    statementHTML: '<p>在△ABC中，AB = AC，D是BC的中点，连结AD。</p>',
+    givens: ['AB = AC', 'D是BC的中点，即B、D、C共线且BD = DC'],
+    goalHTML: '证明 <strong>AD ⟂ BC</strong>。',
+    methods: [
+      {
+        id: 'sss',
+        title: '三边全等，再看平角',
+        requires: ['angle', 'congruence'],
+        steps: [
+          {
+            title: '先把题目给的相等关系找齐',
+            prompt: '比较△ABD与△ACD，题目已经告诉了你哪两对边相等？',
+            hint: '一对来自等腰条件，一对来自“中点”。',
+            explanation: '<p>题目直接给出 <strong>AB = AC</strong>。</p><p>D是BC的中点，所以 <strong>BD = DC</strong>。比较的是△ABD与△ACD，它们已经有两对对应边相等。</p>'
+          },
+          {
+            title: '还有一条共同的边',
+            prompt: '这两个三角形都用到了哪条边？它能成为第三对相等的边吗？',
+            hint: '一条线段和它自己当然相等。',
+            explanation: '<p><strong>AD = AD</strong>，因为AD是两个三角形的公共边。</p><p>加上AB = AC、BD = DC，三对对应边都相等，由SSS得到 <strong>△ABD ≌ △ACD</strong>。</p>'
+          },
+          {
+            title: '全等带来了哪一对角相等',
+            prompt: '全等三角形中，D处的两个角是什么关系？',
+            hint: '注意对应顶点：A对应A，B对应C，D对应D。',
+            explanation: '<p>全等三角形的对应角相等，所以 <strong>∠ADB = ∠ADC</strong>。</p><p>图中的∠1、∠2就是这一对角。现在只知道它们相等，还需要说明为什么它们是直角。</p>'
+          },
+          {
+            title: '把一整个平角分成相等两份',
+            prompt: 'B、D、C在同一直线上。相等的两个角合起来是180°，每个角是多少？',
+            hint: '180°分成相等的两份。',
+            explanation: '<p>B、D、C共线，所以∠ADB + ∠ADC = 180°。两角相等，故每个都是 <strong>90°</strong>。</p><p>因此 <strong>AD ⟂ BC</strong>。这份证明只有一条经过展开的解法，不把同一条证明换个说法充当第二种。</p>'
+          }
+        ]
+      }
+    ],
+    render: renderMedian
+  };
+
+  window.GeometryLessons = [areaLesson, medianLesson];
+})();
+
+</script><script>
+/* Declarative lessons only. Offline imports enforce the same numerical contract. */
+(function () {
+  'use strict';
+  const colors={ink:'#294f43',amber:'#b4762c',blue:'#4286a0',red:'#af5a65'};
+  const known=['angle','area','isosceles','congruence','pythagoras','factorization','parallel','similarity','circle','quadrilateral','coordinate'];
+  const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const tolerance=1e-3, zeroTolerance=1e-9;
+  const markup=/<!--|<!DOCTYPE\b|<\?|<\/?[A-Za-z][A-Za-z0-9:_-]*(?:\s[^<>]*|\/?)>/i;
+  const script=/\b(?:javascript|vbscript)\s*:|\b(?:eval|Function)\s*\(|\b(?:document|window|globalThis)\s*[.\[]|=>/i;
+  const fail=(path='$',why='格式错误')=>{throw Error(`题目文件未通过校验（${path}：${why}），请让 Agent 重新校验。`);};
+  function object(x,required,optional=[],path='$'){
+    if(!x||typeof x!=='object'||Array.isArray(x))fail(path,'需要对象');
+    const allowed=new Set([...required,...optional]);
+    if(required.some(k=>!Object.hasOwn(x,k))||Object.keys(x).some(k=>!allowed.has(k)))fail(path,'缺少必需字段或含协议外字段');
+    return x;
+  }
+  function text(x,max=6000,nonempty=false,path='$'){
+    if(typeof x!=='string'||[...x].length>max||(nonempty&&!x.trim()))fail(path,'纯文本为空或过长');
+    if(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(x)||markup.test(x)||script.test(x))fail(path,'不允许HTML、脚本表达式或脚本URL');
+    return x;
+  }
+  function num(x,min=-Infinity,max=Infinity,path='$'){
+    if(typeof x!=='number'||!Number.isFinite(x)||x<min||x>max)fail(path,'需要范围内的有限数值');
+    return x;
+  }
+  function array(x,max,min=0,path='$'){
+    if(!Array.isArray(x)||x.length>max||x.length<min)fail(path,`数组数量须为${min}–${max}`);
+    return x;
+  }
+  function id(x,path='$'){
+    if(typeof x!=='string'||!/^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$/.test(x))fail(path,'标识符格式错误');
+    return x;
+  }
+  function texts(x,path,min=0){array(x,32,min,path).forEach((v,i)=>text(v,6000,true,`${path}[${i}]`));}
+  function keys(x,path,min=0){
+    array(x,known.length,min,path);
+    if(x.some(k=>typeof k!=='string'||!known.includes(k))||new Set(x).size!==x.length)fail(path,'知识键未知或重复');
+    return x;
+  }
+  function profile(p,path='$.profile'){
+    object(p,['grade','edition','chapter','knowledge','confirmed'],[],path);
+    if(!['7','8','9'].includes(p.grade)||p.confirmed!==true)fail(path,'须确认初中学习范围');
+    text(p.edition,80,false,path+'.edition');text(p.chapter,150,false,path+'.chapter');keys(p.knowledge,path+'.knowledge');return p;
+  }
+  function sameProfile(a,b){return !!a&&!!b&&a.grade===b.grade&&a.edition===b.edition&&a.chapter===b.chapter&&a.confirmed===b.confirmed&&JSON.stringify(a.knowledge)===JSON.stringify(b.knowledge);}
+  function coordinate(p,path){array(p,2,2,path);num(p[0],0,1000,path+'[0]');num(p[1],0,700,path+'[1]');}
+  function depth(raw){
+    const pending=[[raw,0]];
+    while(pending.length){const [x,n]=pending.pop();if(n>48)fail('$','嵌套超过48层');if(x&&typeof x==='object')Object.values(x).forEach(v=>pending.push([v,n+1]));}
+  }
+  const primitiveFields={line:[['a','b'],[]],polygon:[['points'],[]],circle:[['center','radius'],[]],point:[['point'],['label','dx','dy']],label:[['at','text'],[]],rightAngle:[['vertex','a','b'],['size']]};
+  function check(raw,expected){
+    depth(raw);
+    object(raw,['schema','request_id','id','title','statement','givens','goal','status','message','questions','profile','scene','methods','audit']);
+    if(raw.schema!=='geometry-lesson/1')fail('$.schema','不支持的协议版本');
+    id(raw.id,'$.id');id(raw.request_id,'$.request_id');profile(raw.profile);
+    if(expected){profile(expected.profile,'$.expected.profile');id(expected.id,'$.expected.id');if(expected.id!==raw.request_id||!sameProfile(raw.profile,expected.profile))throw Error('结果与当前题目或学习范围不一致，请重新生成。');}
+    text(raw.title,160,true,'$.title');text(raw.statement,6000,true,'$.statement');text(raw.goal,6000,false,'$.goal');texts(raw.givens,'$.givens');
+    if(!['ready','needs_clarification','out_of_scope'].includes(raw.status))fail('$.status','未知状态');
+    const ready=raw.status==='ready';
+    text(raw.message,2000,!ready,'$.message');texts(raw.questions,'$.questions',raw.status==='needs_clarification'?1:0);
+    object(raw.scene,['points','base','constraints'],[],'$.scene');
+    if(!raw.scene.points||typeof raw.scene.points!=='object'||Array.isArray(raw.scene.points))fail('$.scene.points','需要点坐标对象');
+    const pts=raw.scene.points,names=Object.keys(pts);if(names.length>300)fail('$.scene.points','点数量超过300');
+    names.forEach(k=>{if(!/^[A-Za-z][A-Za-z0-9_]{0,31}$/.test(k))fail('$.scene.points','点键格式错误');coordinate(pts[k],'$.scene.points.'+k);});
+    const ids=new Set();
+    const point=(name,path)=>{if(typeof name!=='string'||!Object.hasOwn(pts,name))fail(path,'点引用不存在');return name;};
+    const vector=(a,b,path)=>{const v=[pts[b][0]-pts[a][0],pts[b][1]-pts[a][1]];if(Math.hypot(...v)<=zeroTolerance)fail(path,'不允许零长线段');return v;};
+    const perpendicular=(a,b)=>Math.abs(a[0]*b[0]+a[1]*b[1])<=tolerance*Math.hypot(...a)*Math.hypot(...b);
+    const parallel=(a,b)=>Math.abs(a[0]*b[1]-a[1]*b[0])<=tolerance*Math.hypot(...a)*Math.hypot(...b);
+    const close=(a,b)=>Math.abs(a-b)<=tolerance*Math.max(Math.abs(a),Math.abs(b));
+    function primitive(p,path){
+      if(!p||typeof p!=='object'||typeof p.kind!=='string'||!Object.hasOwn(primitiveFields,p.kind))fail(path+'.kind','未知图元');
+      const [required,optional]=primitiveFields[p.kind];
+      object(p,['id','kind',...required],['color','width','dashed','fill','opacity',...optional],path);
+      id(p.id,path+'.id');if(ids.has(p.id))fail(path+'.id','图元id须在全课程内唯一');ids.add(p.id);
+      if(Object.hasOwn(p,'color')&&!Object.hasOwn(colors,p.color))fail(path+'.color','未知颜色');
+      if(Object.hasOwn(p,'width'))num(p.width,1,8,path+'.width');if(Object.hasOwn(p,'opacity'))num(p.opacity,.03,1,path+'.opacity');
+      ['fill','dashed'].forEach(k=>{if(Object.hasOwn(p,k)&&typeof p[k]!=='boolean')fail(path+'.'+k,'需要布尔值');});
+      let references=[];
+      switch(p.kind){
+        case 'line':references=[point(p.a,path+'.a'),point(p.b,path+'.b')];vector(p.a,p.b,path);break;
+        case 'polygon':{
+          array(p.points,300,3,path+'.points');references=p.points.map((name,i)=>point(name,`${path}.points[${i}]`));
+          if(new Set(references).size!==references.length)fail(path+'.points','多边形顶点不能重复');
+          let twiceArea=0,maxEdgeSquared=0;
+          references.forEach((name,i)=>{const next=references[(i+1)%references.length],v=vector(name,next,path),a=pts[name],b=pts[next];maxEdgeSquared=Math.max(maxEdgeSquared,v[0]**2+v[1]**2);twiceArea+=a[0]*b[1]-b[0]*a[1];});
+          if(Math.abs(twiceArea)<=zeroTolerance*maxEdgeSquared)fail(path,'不允许退化多边形');break;
+        }
+        case 'circle':references=[point(p.center,path+'.center')];num(p.radius,0,1000,path+'.radius');if(p.radius<=0)fail(path+'.radius','半径须大于0');break;
+        case 'point':references=[point(p.point,path+'.point')];if(Object.hasOwn(p,'label'))text(p.label,160,false,path+'.label');if(Object.hasOwn(p,'dx'))num(p.dx,-1000,1000,path+'.dx');if(Object.hasOwn(p,'dy'))num(p.dy,-700,700,path+'.dy');break;
+        case 'label':coordinate(p.at,path+'.at');text(p.text,160,true,path+'.text');break;
+        case 'rightAngle':{
+          references=[point(p.vertex,path+'.vertex'),point(p.a,path+'.a'),point(p.b,path+'.b')];
+          if(!perpendicular(vector(p.vertex,p.a,path),vector(p.vertex,p.b,path)))fail(path,'直角标记与真实几何不符');
+          if(Object.hasOwn(p,'size'))num(p.size,4,80,path+'.size');break;
+        }
+      }
+      return references;
+    }
+    function shape(p){
+      if(p.kind==='line')return JSON.stringify([p.kind,...[p.a,p.b].sort()]);
+      if(p.kind==='circle')return JSON.stringify([p.kind,p.center,p.radius]);
+      if(p.kind==='rightAngle')return JSON.stringify([p.kind,p.vertex,...[p.a,p.b].sort()]);
+      return null;
+    }
+    function stage(items,path,visible,drawn,observe=false,maximum=100){
+      array(items,maximum,0,path);const available=new Set(visible),newShapes=new Set(drawn);
+      if(!observe)items.forEach((p,i)=>{if(p?.kind==='point'){const name=point(p.point,`${path}[${i}].point`);if(available.has(name))fail(`${path}[${i}].point`,'辅助点已可见，不能重复声明');available.add(name);}});
+      items.forEach((p,i)=>{
+        const itemPath=`${path}[${i}]`,references=primitive(p,itemPath);
+        if(observe&&['point','label'].includes(p.kind))fail(itemPath+'.kind','observe不允许新点或标签');
+        if(references.some(name=>!available.has(name)))fail(itemPath,'引用了尚未显示的点');
+        const signature=shape(p);
+        if(observe&&signature&&!drawn.has(signature))fail(itemPath,'observe只能高亮此前已经画出的线、圆或直角');
+        if(signature)newShapes.add(signature);
+      });
+      return {visible:available,drawn:newShapes};
+    }
+    const base=stage(raw.scene.base,'$.scene.base',new Set(),new Set(),false,500);
+    array(raw.scene.constraints,200,0,'$.scene.constraints').forEach((constraint,index)=>{
+      const path=`$.scene.constraints[${index}]`;object(constraint,['kind','points'],['value'],path);
+      const kind=constraint.kind;if(!['perpendicular','parallel','equal_length','collinear','midpoint','ratio'].includes(kind))fail(path+'.kind','未知约束');
+      const count=['collinear','midpoint'].includes(kind)?3:4;
+      const names=array(constraint.points,count,count,path+'.points');names.forEach((name,i)=>point(name,`${path}.points[${i}]`));
+      if(kind!=='ratio'&&Object.hasOwn(constraint,'value'))fail(path+'.value','仅ratio可以指定value');
+      let valid=false;
+      if(kind==='collinear'){
+        const first=vector(names[0],names[1],path),second=vector(names[0],names[2],path);vector(names[1],names[2],path);valid=parallel(first,second);
+      }else if(kind==='midpoint'){
+        const [a,m,b]=names.map(name=>pts[name]),v=vector(names[0],names[2],path);vector(names[0],names[1],path);vector(names[1],names[2],path);
+        valid=Math.hypot(m[0]-(a[0]+b[0])/2,m[1]-(a[1]+b[1])/2)<=tolerance*Math.hypot(...v);
+      }else{
+        const first=vector(names[0],names[1],path),second=vector(names[2],names[3],path);
+        if(kind==='perpendicular')valid=perpendicular(first,second);
+        else if(kind==='parallel')valid=parallel(first,second);
+        else if(kind==='equal_length')valid=close(Math.hypot(...first),Math.hypot(...second));
+        else{num(constraint.value,0,Infinity,path+'.value');if(constraint.value<=0)fail(path+'.value','长度比须大于0');valid=close(Math.hypot(...first)/Math.hypot(...second),constraint.value);}
+      }
+      if(!valid)fail(path,'声明的几何约束不成立');
+    });
+    const methodIds=new Set();
+    array(raw.methods,ready?4:0,ready?1:0,'$.methods').forEach((method,methodIndex)=>{
+      const path=`$.methods[${methodIndex}]`;object(method,['id','title','requires','steps'],[],path);
+      id(method.id,path+'.id');if(methodIds.has(method.id))fail(path+'.id','解法id不能重复');methodIds.add(method.id);
+      text(method.title,160,true,path+'.title');keys(method.requires,path+'.requires',1);
+      if(method.requires.some(k=>!raw.profile.knowledge.includes(k)))fail(path+'.requires','解法超出确认知识范围');
+      let visible=new Set(base.visible),drawn=new Set(base.drawn);
+      array(method.steps,12,2,path+'.steps').forEach((step,stepIndex)=>{
+        const stepPath=`${path}.steps[${stepIndex}]`;object(step,['title','prompt','hint','explanation','uses','reason','observe','reveal'],[],stepPath);
+        text(step.title,160,true,stepPath+'.title');['prompt','hint','explanation','reason'].forEach(k=>text(step[k],6000,true,stepPath+'.'+k));
+        keys(step.uses,stepPath+'.uses',1);if(step.uses.some(k=>!method.requires.includes(k)))fail(stepPath+'.uses','步骤知识不属于本解法requires');
+        stage(step.observe,stepPath+'.observe',visible,drawn,true);
+        const revealed=stage(step.reveal,stepPath+'.reveal',visible,drawn);visible=revealed.visible;drawn=revealed.drawn;
+      });
+    });
+    object(raw.audit,['summary','checks','uncertainties'],[],'$.audit');text(raw.audit.summary,6000,true,'$.audit.summary');texts(raw.audit.checks,'$.audit.checks');texts(raw.audit.uncertainties,'$.audit.uncertainties');
+    return JSON.parse(JSON.stringify(raw));
+  }
+  function draw(raw,p,observe=false){
+    const pts=raw.scene.points,color=colors[p.color||'ink'],width=p.width||2.5;
+    const attrs=`data-primitive="${esc(p.id)}" stroke="${color}" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round"${p.dashed?' stroke-dasharray="9 7"':''} opacity="${p.opacity??1}"`;
+    const xy=(n,axis)=>pts[n][axis];let mark='';
+    switch(p.kind){
+      case 'line':mark=`<line ${attrs} x1="${xy(p.a,0)}" y1="${xy(p.a,1)}" x2="${xy(p.b,0)}" y2="${xy(p.b,1)}"/>`;break;
+      case 'polygon':mark=`<polygon ${attrs} points="${p.points.map(n=>pts[n].join(',')).join(' ')}" fill="${observe||p.fill?color:'none'}" ${observe?'style="stroke:none;fill-opacity:.12"':p.fill?'fill-opacity=".12"':''}/>`;break;
+      case 'circle':mark=`<circle ${attrs} cx="${xy(p.center,0)}" cy="${xy(p.center,1)}" r="${p.radius}" fill="${p.fill?color:'none'}" ${p.fill?'fill-opacity=".12"':''}/>`;break;
+      case 'point':mark=`<circle ${attrs} cx="${xy(p.point,0)}" cy="${xy(p.point,1)}" r="3" fill="${color}"/><text x="${xy(p.point,0)+(p.dx??10)}" y="${xy(p.point,1)+(p.dy??-12)}" font-size="23" fill="${color}">${esc(p.label??p.point)}</text>`;break;
+      case 'label':mark=`<text data-primitive="${esc(p.id)}" x="${p.at[0]}" y="${p.at[1]}" font-size="21" fill="${color}" opacity="${p.opacity??1}">${esc(p.text)}</text>`;break;
+      case 'rightAngle':{const v=pts[p.vertex],a=pts[p.a],b=pts[p.b],size=p.size||17;const al=Math.hypot(a[0]-v[0],a[1]-v[1]),bl=Math.hypot(b[0]-v[0],b[1]-v[1]);if(!al||!bl)return '';const u=[(a[0]-v[0])*size/al,(a[1]-v[1])*size/al],w=[(b[0]-v[0])*size/bl,(b[1]-v[1])*size/bl];mark=`<path ${attrs} fill="none" d="M${v[0]+u[0]} ${v[1]+u[1]} L${v[0]+u[0]+w[0]} ${v[1]+u[1]+w[1]} L${v[0]+w[0]} ${v[1]+w[1]}"/>`;break;}
+    }
+    return mark;
+  }
+  function adapt(raw,expected){
+    raw=check(raw,expected);
+    return {id:'generated-'+raw.id, title:raw.title,shortTitle:raw.title,statementHTML:esc(raw.statement).replace(/\n/g,'<br>'),goalHTML:esc(raw.goal),generated:true,raw,
+      methods:raw.methods.map(m=>({...m,steps:m.steps.map(s=>({...s,explanation:esc(s.explanation).replace(/\n/g,'<br>')}))})),
+      render(methodId,step,explained){let svg=raw.scene.base.map(p=>draw(raw,p)).join('');const m=raw.methods.find(x=>x.id===methodId);if(!m||!Number.isInteger(step)||step<0||step>=m.steps.length)return svg;for(let i=0;i<step;i++)svg+=m.steps[i].reveal.map(p=>draw(raw,p)).join('');const s=m.steps[step];svg+='<g data-observation>'+s.observe.map(p=>draw(raw,p,true)).join('')+'</g>';if(explained===true)svg+='<g data-aux>'+s.reveal.map(p=>draw(raw,p)).join('')+'</g>';return svg;}
+    };
+  }
+  window.GeometryLessonCodec={check,adapt,sameProfile,profile};
+})();
+
+</script><script>
+/* GeometryDrawing: dependency-free, SVG user drawing layer.
+ * Saved items are plain JSON: { id, type, style, points? / cx,cy,r? / x,y,text,fontSize? }.
+ * Only the supplied userGroup is rendered or cleared; the problem diagram is untouched.
+ */
+(function (global) {
+  'use strict';
+
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  const TOOLS = new Set(['pen', 'line', 'straight', 'triangle', 'rightTriangle', 'circle', 'eraser', 'select', 'text', 'pan']);
+  const DRAWABLE = new Set(['pen', 'line', 'straight', 'triangle', 'rightTriangle', 'circle', 'text']);
+  const DEFAULT_STYLE = { color: '#285749', width: 3, dashed: false };
+  const clone = value => JSON.parse(JSON.stringify(value));
+  const finite = value => typeof value === 'number' && Number.isFinite(value);
+  const bounded = value => finite(value) && Math.abs(value) <= 1e7;
+  const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+  let idCounter = 0;
+
+  function uid() {
+    return global.crypto && typeof global.crypto.randomUUID === 'function'
+      ? global.crypto.randomUUID()
+      : 'drawing-' + Date.now().toString(36) + '-' + (++idCounter).toString(36);
+  }
+
+  function element(name, attrs) {
+    const node = document.createElementNS(SVG_NS, name);
+    Object.entries(attrs || {}).forEach(([key, value]) => node.setAttribute(key, String(value)));
+    return node;
+  }
+
+  function safeStyle(style, fallback) {
+    const input = style || {};
+    const base = fallback || DEFAULT_STYLE;
+    const color = typeof input.color === 'string' && /^(#[\da-f]{3,8}|[a-z]{1,30}|(?:rgb|hsl)a?\([\d\s.,%+\-/]+\))$/i.test(input.color)
+      ? input.color : base.color;
+    return {
+      color,
+      width: finite(input.width) ? Math.min(40, Math.max(0.5, input.width)) : base.width,
+      dashed: typeof input.dashed === 'boolean' ? input.dashed : base.dashed
+    };
+  }
+
+  function segmentDistance(p, a, b) {
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const lengthSquared = dx * dx + dy * dy;
+    if (!lengthSquared) return distance(p, a);
+    const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / lengthSquared));
+    return distance(p, { x: a.x + t * dx, y: a.y + t * dy });
+  }
+
+  function inPolygon(p, points) {
+    let inside = false;
+    for (let i = 0, j = points.length - 1; i < points.length; j = i++) {
+      const a = points[i], b = points[j];
+      if ((a.y > p.y) !== (b.y > p.y) && p.x < (b.x - a.x) * (p.y - a.y) / (b.y - a.y) + a.x) inside = !inside;
+    }
+    return inside;
+  }
+
+  class GeometryDrawing {
+    constructor(svgElement, userGroupElement, options) {
+      if (!svgElement || svgElement.namespaceURI !== SVG_NS || !userGroupElement || !svgElement.contains(userGroupElement)) {
+        throw new TypeError('GeometryDrawing requires an SVG and its dedicated user drawing group.');
+      }
+      this.svg = svgElement;
+      this.group = userGroupElement;
+      this.options = options || {};
+      this.items = [];
+      this.tool = 'pen';
+      this.style = { ...DEFAULT_STYLE };
+      this.selectedId = null;
+      this.undoStack = [];
+      this.redoStack = [];
+      this.gesture = null;
+      this.draft = null;
+      this.destroyed = false;
+      this.nodes = new Map();
+      const initial = this.svg.viewBox && this.svg.viewBox.baseVal;
+      this.initialView = initial && initial.width > 0 && initial.height > 0
+        ? { x: initial.x, y: initial.y, width: initial.width, height: initial.height }
+        : { x: 0, y: 0, width: 1000, height: 700 };
+      this.world = { ...this.initialView };
+      this.previousTouchAction = this.svg.style.touchAction;
+      this.previousUserSelect = this.svg.style.userSelect;
+      this.previousCursor = this.svg.style.cursor;
+      this.svg.style.touchAction = 'none';
+      this.svg.style.userSelect = 'none';
+      this.setView(this.initialView);
+      this.handlers = {
+        down: event => this._down(event),
+        move: event => this._move(event),
+        up: event => this._up(event),
+        cancel: event => this._cancel(event),
+        lost: event => this._cancel(event)
+      };
+      this.svg.addEventListener('pointerdown', this.handlers.down);
+      global.addEventListener('pointermove', this.handlers.move, { passive: false });
+      global.addEventListener('pointerup', this.handlers.up);
+      global.addEventListener('pointercancel', this.handlers.cancel);
+      this.svg.addEventListener('lostpointercapture', this.handlers.lost);
+      this._cursor();
+      this._render();
+    }
+
+    setTool(name) {
+      if (!TOOLS.has(name)) return false;
+      this._cancel();
+      this.tool = name;
+      if (name !== 'select') this.selectedId = null;
+      this._cursor();
+      this._render();
+      if (typeof this.options.onToolChange === 'function') this.options.onToolChange(name);
+      return true;
+    }
+
+    setStyle(style) {
+      this.style = safeStyle(style, this.style);
+    }
+
+    getState() {
+      return { canUndo: this.undoStack.length > 0, canRedo: this.redoStack.length > 0, count: this.items.length, tool: this.tool };
+    }
+
+    getItems() {
+      return clone(this.items);
+    }
+
+    setItems(items) {
+      this._cancel();
+      const ids = new Set();
+      this.items = (Array.isArray(items) ? items : []).slice(0, 10000).map(item => {
+        const clean = this._cleanItem(item);
+        if (!clean) return null;
+        if (ids.has(clean.id)) clean.id = uid();
+        ids.add(clean.id);
+        return clean;
+      }).filter(Boolean);
+      this.undoStack = [];
+      this.redoStack = [];
+      this.selectedId = null;
+      this._render();
+      this._emit();
+    }
+
+    undo() {
+      this._cancel();
+      if (!this.undoStack.length) return false;
+      this.redoStack.push(clone(this.items));
+      this.items = this.undoStack.pop();
+      this.selectedId = null;
+      this._render();
+      this._emit();
+      return true;
+    }
+
+    redo() {
+      this._cancel();
+      if (!this.redoStack.length) return false;
+      this.undoStack.push(clone(this.items));
+      this.items = this.redoStack.pop();
+      this.selectedId = null;
+      this._render();
+      this._emit();
+      return true;
+    }
+
+    clear() {
+      this._cancel();
+      if (!this.items.length) return false;
+      const before = clone(this.items);
+      this.items = [];
+      this.selectedId = null;
+      this._commit(before);
+      return true;
+    }
+
+    deleteSelected() {
+      this._cancel();
+      if (!this.selectedId || !this.items.some(item => item.id === this.selectedId)) return false;
+      const before = clone(this.items);
+      this.items = this.items.filter(item => item.id !== this.selectedId);
+      this.selectedId = null;
+      this._commit(before);
+      return true;
+    }
+
+    setView(view) {
+      if (!view || !bounded(view.x) || !bounded(view.y) || !finite(view.width) || !finite(view.height) || view.width <= 0 || view.height <= 0) return false;
+      this.svg.setAttribute('viewBox', [view.x, view.y, view.width, view.height].join(' '));
+      return true;
+    }
+
+    resetView() {
+      this._cancel();
+      this.setView(this.initialView);
+      this._emit();
+    }
+
+    destroy() {
+      this._cancel();
+      this.destroyed = true;
+      this.svg.removeEventListener('pointerdown', this.handlers.down);
+      global.removeEventListener('pointermove', this.handlers.move);
+      global.removeEventListener('pointerup', this.handlers.up);
+      global.removeEventListener('pointercancel', this.handlers.cancel);
+      this.svg.removeEventListener('lostpointercapture', this.handlers.lost);
+      this.svg.style.touchAction = this.previousTouchAction;
+      this.svg.style.userSelect = this.previousUserSelect;
+      this.svg.style.cursor = this.previousCursor;
+    }
+
+    _cleanItem(input) {
+      if (!input || !DRAWABLE.has(input.type)) return null;
+      const item = {
+        id: typeof input.id === 'string' && input.id.length > 0 && input.id.length <= 150 ? input.id : uid(),
+        type: input.type,
+        style: safeStyle(input.style)
+      };
+      if (item.type === 'circle') {
+        if (![input.cx, input.cy, input.r].every(bounded) || input.r <= 0) return null;
+        Object.assign(item, { cx: input.cx, cy: input.cy, r: input.r });
+      } else if (item.type === 'text') {
+        if (!bounded(input.x) || !bounded(input.y) || typeof input.text !== 'string' || !input.text.trim()) return null;
+        Object.assign(item, {
+          x: input.x, y: input.y, text: input.text.slice(0, 2000),
+          fontSize: finite(input.fontSize) ? Math.min(200, Math.max(10, input.fontSize)) : 24
+        });
+      } else {
+        if (!Array.isArray(input.points)) return null;
+        const points = input.points.slice(0, 20000);
+        if (!points.every(p => p && bounded(p.x) && bounded(p.y))) return null;
+        const min = item.type === 'pen' ? 1 : item.type === 'triangle' || item.type === 'rightTriangle' ? 3 : 2;
+        if (points.length < min) return null;
+        item.points = points.slice(0, item.type === 'pen' ? points.length : min).map(p => ({ x: p.x, y: p.y }));
+      }
+      return item;
+    }
+
+    _matrix() {
+      try {
+        const matrix = this.svg.getScreenCTM();
+        return matrix ? matrix.inverse() : null;
+      } catch (_) { return null; }
+    }
+
+    _point(event, inverse) {
+      const matrix = inverse || this._matrix();
+      if (!matrix) return null;
+      const point = this.svg.createSVGPoint();
+      point.x = event.clientX;
+      point.y = event.clientY;
+      const result = point.matrixTransform(matrix);
+      return bounded(result.x) && bounded(result.y) ? { x: result.x, y: result.y } : null;
+    }
+
+    _tolerance(pixels) {
+      const matrix = this._matrix();
+      return matrix ? pixels * Math.max(Math.hypot(matrix.a, matrix.b), Math.hypot(matrix.c, matrix.d)) : pixels;
+    }
+
+    _view() {
+      const v = this.svg.viewBox.baseVal;
+      return { x: v.x, y: v.y, width: v.width, height: v.height };
+    }
+
+    _down(event) {
+      if (this.destroyed || this.gesture || (event.button !== 0 && event.button !== 1)) return;
+      if (event.isPrimary === false) return;
+      const point = this._point(event);
+      if (!point) return;
+      if (event.cancelable) event.preventDefault();
+      const mode = event.button === 1 ? 'pan' : this.tool;
+      this.gesture = {
+        pointerId: event.pointerId, mode, start: point, last: point,
+        before: clone(this.items), inverse: this._matrix(), view: this._view(), changed: false
+      };
+      try { this.svg.setPointerCapture(event.pointerId); } catch (_) { /* Window listeners also finish outside drags. */ }
+      if (mode === 'pan') {
+        this.svg.style.cursor = 'grabbing';
+      } else if (mode === 'select') {
+        const hit = this._hit(point, true);
+        this.selectedId = hit ? hit.id : null;
+        this.gesture.itemId = this.selectedId;
+        this.gesture.original = hit ? clone(hit) : null;
+        this._render();
+      } else if (mode === 'eraser') {
+        this.selectedId = null;
+        this._eraseAt(point);
+      } else if (mode !== 'text') {
+        this.selectedId = null;
+        this.draft = { id: uid(), type: mode, style: { ...this.style } };
+        this._updateDraft(point);
+        this._render();
+      }
+    }
+
+    _move(event) {
+      const gesture = this.gesture;
+      if (!gesture || gesture.pointerId !== event.pointerId) return;
+      if (event.cancelable) event.preventDefault();
+      const point = this._point(event, gesture.mode === 'pan' ? gesture.inverse : null);
+      if (!point) return;
+      if (gesture.mode === 'pan') {
+        const dx = point.x - gesture.start.x, dy = point.y - gesture.start.y;
+        this.setView({ ...gesture.view, x: gesture.view.x - dx, y: gesture.view.y - dy });
+        gesture.changed = Math.abs(dx) + Math.abs(dy) > 0;
+      } else if (gesture.mode === 'select' && gesture.original) {
+        const dx = point.x - gesture.start.x, dy = point.y - gesture.start.y;
+        const moved = clone(gesture.original);
+        if (moved.points) moved.points = moved.points.map(p => ({ x: p.x + dx, y: p.y + dy }));
+        else if (moved.type === 'circle') { moved.cx += dx; moved.cy += dy; }
+        else { moved.x += dx; moved.y += dy; }
+        this.items = this.items.map(item => item.id === moved.id ? moved : item);
+        gesture.changed = Math.abs(dx) + Math.abs(dy) > this._tolerance(0.5);
+        this._render();
+      } else if (gesture.mode === 'eraser') {
+        const length = distance(gesture.last, point);
+        if (length === 0) return;
+        const steps = Math.min(300, Math.max(1, Math.ceil(length / Math.max(0.1, this._tolerance(4)))));
+        for (let i = 1; i <= steps; i++) this._eraseAt({
+          x: gesture.last.x + (point.x - gesture.last.x) * i / steps,
+          y: gesture.last.y + (point.y - gesture.last.y) * i / steps
+        }, false);
+        this._render();
+      } else if (this.draft) {
+        if (gesture.mode === 'pen' && typeof event.getCoalescedEvents === 'function') {
+          event.getCoalescedEvents().forEach(sample => {
+            const position = this._point(sample);
+            if (position) this._updateDraft(position);
+          });
+        }
+        this._updateDraft(point);
+        this._render();
+      }
+      gesture.last = point;
+    }
+
+    _up(event) {
+      const gesture = this.gesture;
+      if (!gesture || gesture.pointerId !== event.pointerId) return;
+      this._move(event);
+      this.gesture = null;
+      try { if (this.svg.hasPointerCapture(event.pointerId)) this.svg.releasePointerCapture(event.pointerId); } catch (_) { /* Already released by the browser. */ }
+      this._cursor();
+      if (gesture.mode === 'text') {
+        const position = { ...gesture.start };
+        const style = { ...this.style };
+        let answered = false;
+        if (typeof this.options.onRequestText === 'function') this.options.onRequestText(position, value => {
+          if (answered || this.destroyed) return;
+          answered = true;
+          if (typeof value !== 'string' || !value.trim()) return;
+          const before = clone(this.items);
+          this.items.push({ id: uid(), type: 'text', style, ...position, text: value.trim().slice(0, 2000), fontSize: Math.min(200, Math.max(22, style.width * 6)) });
+          this._commit(before);
+        });
+      } else if (this.draft) {
+        const item = this.draft;
+        this.draft = null;
+        if (this._drawable(item)) {
+          this.items.push(item);
+          this._commit(gesture.before);
+        } else this._render();
+      } else if ((gesture.mode === 'select' || gesture.mode === 'eraser') && gesture.changed) {
+        this._commit(gesture.before);
+      } else if (gesture.mode === 'pan' && gesture.changed) {
+        this._emit();
+      } else {
+        if (gesture.mode === 'select') this.items = gesture.before;
+        this._render();
+      }
+    }
+
+    _cancel(event) {
+      const gesture = this.gesture;
+      if (!gesture || (event && gesture.pointerId !== event.pointerId)) return;
+      this.gesture = null;
+      this.draft = null;
+      this.items = gesture.before;
+      if (gesture.mode === 'pan') this.setView(gesture.view);
+      try { if (this.svg.hasPointerCapture(gesture.pointerId)) this.svg.releasePointerCapture(gesture.pointerId); } catch (_) { /* A canceled pointer may already be released. */ }
+      this._cursor();
+      this._render();
+    }
+
+    _updateDraft(point) {
+      const item = this.draft;
+      const start = this.gesture.start;
+      if (item.type === 'pen') {
+        if (!item.points) item.points = [{ ...start }];
+        if (item.points.length < 20000 && distance(item.points[item.points.length - 1], point) >= this._tolerance(0.7)) item.points.push({ ...point });
+      } else if (item.type === 'line' || item.type === 'straight') {
+        item.points = [{ ...start }, { ...point }];
+      } else if (item.type === 'circle') {
+        Object.assign(item, { cx: start.x, cy: start.y, r: distance(start, point) });
+      } else {
+        const x = Math.min(start.x, point.x), y = Math.min(start.y, point.y);
+        const width = Math.abs(point.x - start.x), height = Math.abs(point.y - start.y);
+        item.points = item.type === 'triangle'
+          ? [{ x: x + width / 2, y }, { x: x + width, y: y + height }, { x, y: y + height }]
+          : [{ x, y }, { x, y: y + height }, { x: x + width, y: y + height }];
+      }
+    }
+
+    _drawable(item) {
+      const minimum = this._tolerance(2);
+      if (item.type === 'pen') return item.points.length > 0;
+      if (item.type === 'circle') return item.r >= minimum;
+      if (item.type === 'line' || item.type === 'straight') return distance(item.points[0], item.points[1]) >= minimum;
+      const xs = item.points.map(p => p.x), ys = item.points.map(p => p.y);
+      return Math.max(...xs) - Math.min(...xs) >= minimum && Math.max(...ys) - Math.min(...ys) >= minimum;
+    }
+
+    _lineEnds(item) {
+      if (item.type !== 'straight') return item.points;
+      const [a, b] = item.points;
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const { x, y, width, height } = this.world;
+      const candidates = [];
+      const add = t => {
+        const p = { x: a.x + t * dx, y: a.y + t * dy };
+        if (p.x >= x - 0.001 && p.x <= x + width + 0.001 && p.y >= y - 0.001 && p.y <= y + height + 0.001) candidates.push({ ...p, t });
+      };
+      if (Math.abs(dx) > 1e-8) { add((x - a.x) / dx); add((x + width - a.x) / dx); }
+      if (Math.abs(dy) > 1e-8) { add((y - a.y) / dy); add((y + height - a.y) / dy); }
+      candidates.sort((p, q) => p.t - q.t);
+      return candidates.length > 1 ? [candidates[0], candidates[candidates.length - 1]] : item.points;
+    }
+
+    _shape(item) {
+      const style = item.style;
+      const attrs = { fill: 'none', stroke: style.color, 'stroke-width': style.width, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'pointer-events': 'none' };
+      if (style.dashed) attrs['stroke-dasharray'] = Math.max(6, style.width * 3) + ' ' + Math.max(4, style.width * 2);
+      if (item.type === 'circle') return element('circle', { ...attrs, cx: item.cx, cy: item.cy, r: item.r });
+      if (item.type === 'text') {
+        const text = element('text', { x: item.x, y: item.y, fill: style.color, 'font-size': item.fontSize, 'font-family': 'system-ui, sans-serif', 'pointer-events': 'none' });
+        item.text.split(/\r?\n/).slice(0, 50).forEach((line, index) => {
+          const span = element('tspan', { x: item.x, dy: index ? item.fontSize * 1.3 : 0 });
+          span.textContent = line || ' ';
+          text.appendChild(span);
+        });
+        return text;
+      }
+      const points = this._lineEnds(item);
+      if (item.type === 'triangle' || item.type === 'rightTriangle') {
+        return element('polygon', { ...attrs, points: points.map(p => p.x + ',' + p.y).join(' ') });
+      }
+      const path = points.map((p, i) => (i ? 'L' : 'M') + p.x + ' ' + p.y).join(' ');
+      return element('path', { ...attrs, d: points.length === 1 ? path + ' l0.01 0' : path });
+    }
+
+    _render() {
+      const fragment = document.createDocumentFragment();
+      this.nodes = new Map();
+      this.items.forEach(item => {
+        const node = element('g', { 'data-geometry-user-id': item.id });
+        node.appendChild(this._shape(item));
+        this.nodes.set(item.id, node);
+        fragment.appendChild(node);
+      });
+      if (this.draft) {
+        const preview = element('g', { 'data-geometry-ui': 'preview', opacity: 0.78 });
+        preview.appendChild(this._shape(this.draft));
+        fragment.appendChild(preview);
+      }
+      this.group.replaceChildren(fragment);
+      const selected = this.nodes.get(this.selectedId);
+      if (selected) {
+        const bbox = this._bounds(this.items.find(item => item.id === this.selectedId));
+        const padding = this._tolerance(6);
+        this.group.appendChild(element('rect', {
+          'data-geometry-ui': 'selection', x: bbox.x - padding, y: bbox.y - padding,
+          width: bbox.width + padding * 2, height: bbox.height + padding * 2,
+          fill: 'none', stroke: '#16785c', 'stroke-width': 1.5,
+          'stroke-dasharray': '5 4', 'vector-effect': 'non-scaling-stroke', 'pointer-events': 'none'
+        }));
+      }
+    }
+
+    _bounds(item) {
+      const node = this.nodes.get(item.id);
+      if (node) {
+        try {
+          const box = node.getBBox();
+          if (box.width > 0 || box.height > 0) return box;
+        } catch (_) { /* Detached or hidden SVG: use geometry below. */ }
+      }
+      if (item.type === 'circle') return { x: item.cx - item.r, y: item.cy - item.r, width: item.r * 2, height: item.r * 2 };
+      if (item.type === 'text') {
+        const lines = item.text.split(/\r?\n/);
+        return { x: item.x, y: item.y - item.fontSize, width: Math.max(...lines.map(line => line.length)) * item.fontSize, height: lines.length * item.fontSize * 1.3 };
+      }
+      const points = this._lineEnds(item), xs = points.map(p => p.x), ys = points.map(p => p.y);
+      const minX = Math.min(...xs), minY = Math.min(...ys);
+      return { x: minX, y: minY, width: Math.max(...xs) - minX, height: Math.max(...ys) - minY };
+    }
+
+    _hit(point, selectInterior) {
+      for (let i = this.items.length - 1; i >= 0; i--) {
+        const item = this.items[i];
+        const tolerance = this._tolerance(8) + item.style.width / 2;
+        if (item.type === 'text') {
+          const box = this._bounds(item);
+          if (point.x >= box.x - tolerance && point.x <= box.x + box.width + tolerance && point.y >= box.y - tolerance && point.y <= box.y + box.height + tolerance) return item;
+        } else if (item.type === 'circle') {
+          const d = distance(point, { x: item.cx, y: item.cy });
+          if (Math.abs(d - item.r) <= tolerance || (selectInterior && d <= item.r)) return item;
+        } else {
+          const points = this._lineEnds(item);
+          const closed = item.type === 'triangle' || item.type === 'rightTriangle';
+          if (selectInterior && closed && inPolygon(point, points)) return item;
+          if (points.length === 1 && distance(point, points[0]) <= tolerance) return item;
+          for (let j = 1; j < points.length; j++) if (segmentDistance(point, points[j - 1], points[j]) <= tolerance) return item;
+          if (closed && segmentDistance(point, points[points.length - 1], points[0]) <= tolerance) return item;
+        }
+      }
+      return null;
+    }
+
+    _eraseAt(point, render) {
+      const hit = this._hit(point, false);
+      if (!hit) return;
+      this.items = this.items.filter(item => item.id !== hit.id);
+      this.gesture.changed = true;
+      if (render !== false) this._render();
+    }
+
+    _commit(before) {
+      this.undoStack.push(before);
+      if (this.undoStack.length > 100) this.undoStack.shift();
+      this.redoStack = [];
+      this._render();
+      this._emit();
+    }
+
+    _emit() {
+      if (typeof this.options.onChange === 'function') this.options.onChange(this.getState());
+    }
+
+    _cursor() {
+      this.svg.style.cursor = this.tool === 'pan' ? 'grab' : this.tool === 'select' ? 'default' : this.tool === 'text' ? 'text' : 'crosshair';
+    }
+  }
+
+  global.GeometryDrawing = GeometryDrawing;
+})(window);
+
+</script><script>
+(function () {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const NS = 'http://www.w3.org/2000/svg';
+  const boot=window.GEOMETRY_BOOTSTRAP||{}, bridge=window.GEOMETRY_BRIDGE||null, codec=window.GeometryLessonCodec;
+  const KEY = 'geometry-study-room.v2.'+(boot.lesson?.request_id||'workspace');
+  const builtins = window.GeometryLessons, lessons=[...builtins];
+  const knowledgeNames = { angle:'角与三角形内角和', area:'三角形面积', isosceles:'等腰三角形', congruence:'全等三角形', pythagoras:'勾股定理', factorization:'因式分解', parallel:'平行线', similarity:'相似三角形', circle:'圆的性质', quadrilateral:'四边形', coordinate:'平面直角坐标系' };
+  const icons = {
+    cursor:'M5 3l13 9-6 1-3 6-4-16z', pen:'M4 16l-1 5 5-1L20 8l-4-4L4 16zM14 6l4 4', line:'M5 18L19 6M4 17h2v2H4zM18 5h2v2h-2z', straight:'M3 21L21 3M3 16v5h5M16 3h5v5', triangle:'M12 4L3 20h18L12 4z', rightTriangle:'M4 4v16h16L4 4zM4 16h4v4', circle:'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z', text:'M4 5h16M12 5v15M8 20h8', eraser:'M3 15l10-11 8 7-9 10H9l-6-6zM7 11l8 7M12 21h9', hand:'M8 11V5a2 2 0 0 1 4 0v6-8a2 2 0 0 1 4 0v8-5a2 2 0 0 1 4 0v8c0 5-3 7-7 7-3 0-4-2-6-4l-3-4a2 2 0 0 1 3-2l1 1', dashed:'M2 12h4M10 12h4M18 12h4', undo:'M8 5L3 10l5 5M3 10h10a7 7 0 0 1 7 7', redo:'M16 5l5 5-5 5M21 10H11a7 7 0 0 0-7 7', image:'M3 4h18v16H3zM3 16l5-5 4 4 3-3 6 6M16 8h.01', download:'M12 3v12M7 10l5 5 5-5M4 16v5h16v-5', more:'M5 12h.01M12 12h.01M19 12h.01', plus:'M12 5v14M5 12h14', minus:'M5 12h14', arrowRight:'M4 12h15M13 6l6 6-6 6', arrowLeft:'M20 12H5M11 6l-6 6 6 6', arrowUp:'M12 20V5M6 11l6-6 6 6', arrowDown:'M12 4v15M6 13l6 6 6-6', close:'M6 6l12 12M6 18L18 6', panelLeft:'M3 4h18v16H3zM9 4v16M15 9l-3 3 3 3', chevronDown:'M6 9l6 6 6-6', info:'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM12 11v6M12 7h.01', edit:'M14 5l5 5M4 20l5-1L21 7l-4-4L5 15l-1 5z', spark:'M12 3l2.6 6.4L21 12l-6.4 2.6L12 21l-2.6-6.4L3 12l6.4-2.6L12 3z' };
+  function iconMarkup(name) { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${icons[name] || icons.plus}"/></svg>`; }
+  document.querySelectorAll('[data-icon]').forEach(el => el.innerHTML = iconMarkup(el.dataset.icon));
+  const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const clone = x => JSON.parse(JSON.stringify(x));
+  const initialProfile = { grade:'8', edition:'unknown', chapter:'', knowledge:['angle','area','isosceles','congruence'], confirmed:false };
+  let state = { schema:'geometry-study-room/1', lessonId:lessons[0].id, profile:clone(initialProfile), records:{}, customText:'', collapsed:false, generatedLessons:[], pendingRequest:null };
+  let current = { items:[], methodId:lessons[0].methods[0].id, step:0, level:0, hintsOpen:false, photo:null, view:{x:0,y:0,width:1000,height:700} };
+  let activeJob=null, generationEpoch=0, generateAfterSettings=false;
+  let drawing, saveTimer, toastTimer, textCallback, confirmation, selectedExample=null, importing=false, pendingPhoto=null;
+
+  function lesson() { return lessons.find(l => l.id === state.lessonId) || null; }
+  function permittedMethods() { return (lesson()?.methods || []).filter(m => m.requires.every(k => state.profile.knowledge.includes(k))); }
+  function method() { return permittedMethods().find(m => m.id === current.methodId) || permittedMethods()[0] || null; }
+  function toast(message) { $('toast').textContent = message; $('toast').hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(()=>$('toast').hidden=true,3300); }
+  function showDialog(id) { if (!$(id).open) $(id).showModal(); }
+  function view() { const v=$('drawingBoard').viewBox.baseVal; return {x:v.x,y:v.y,width:v.width,height:v.height}; }
+  function stash() { if (!drawing) return; current.items=drawing.getItems(); current.view=view(); state.records[state.lessonId]=clone(current); }
+  function persist() { if(importing) return; clearTimeout(saveTimer); stash(); try {localStorage.setItem(KEY,JSON.stringify(state));$('saveStatus').textContent='已保存';} catch { $('saveStatus').textContent='未保存，请导出记录'; } }
+  function scheduleSave() { if(importing)return; $('saveStatus').textContent='保存中'; clearTimeout(saveTimer);saveTimer=setTimeout(persist,250); }
+  function validateSession(raw) {
+    if(!Array.isArray(raw?.generatedLessons||[])||(raw?.generatedLessons||[]).length>30)throw Error('学习记录中的题目过多。');
+    const generated=(raw?.generatedLessons||[]).map(x=>codec.check(x));
+    const ids=['custom',...builtins.map(l=>l.id),...generated.map(l=>'generated-'+l.id)];
+    if (!raw || raw.schema!=='geometry-study-room/1' || !raw.profile || !raw.records || !ids.includes(raw.lessonId)) throw Error('文件不是有效的几何学习记录。');
+    if(!Array.isArray(raw.profile.knowledge) || typeof raw.records!=='object' || Array.isArray(raw.records)) throw Error('学习记录结构不完整。');
+    const profile={grade:['7','8','9'].includes(raw.profile.grade)?raw.profile.grade:'8',edition:String(raw.profile.edition||'unknown').slice(0,80),chapter:String(raw.profile.chapter||'').slice(0,100),knowledge:raw.profile.knowledge.filter(k=>knowledgeNames[k]),confirmed:!!raw.profile.confirmed};
+    const records={};
+    for(const [id,r] of Object.entries(raw.records)) {
+      if(!ids.includes(id)||!r||!Array.isArray(r.items)) throw Error('学习记录中的画板数据不完整。');
+      const v=r.view||{}; const validView=['x','y','width','height'].every(k=>typeof v[k]==='number'&&Number.isFinite(v[k]))&&v.width>=100&&v.width<=6000&&v.height>=70&&v.height<=4200&&Math.abs(v.x)<10000&&Math.abs(v.y)<10000;
+      let photo=null;
+      if(r.photo) { const p=r.photo;if(typeof p.src!=='string'||!/^data:image\/(png|jpeg|webp);base64,[a-zA-Z0-9+/=]+$/.test(p.src)||p.src.length>8000000||!['x','y','width','height','scale'].every(k=>typeof p[k]==='number'&&Number.isFinite(p[k]))||p.width<1||p.height<1||p.width>2000||p.height>2000||p.scale<.3||p.scale>1.5||Math.abs(p.x)>10000||Math.abs(p.y)>10000)throw Error('学习记录中的图片无效。');photo={src:p.src,x:p.x,y:p.y,width:p.width,height:p.height,scale:p.scale}; }
+      records[id]={items:r.items.slice(0,10000),methodId:typeof r.methodId==='string'?r.methodId:'',step:Number.isInteger(r.step)?Math.max(0,Math.min(20,r.step)):0,level:[0,1,2].includes(r.level)?r.level:0,hintsOpen:!!r.hintsOpen,photo,view:validView?v:{x:0,y:0,width:1000,height:700}};
+    }
+    let pendingRequest=null;if(raw.pendingRequest){const r=raw.pendingRequest;codec.profile(r.profile);if(r.schema!=='geometry-request/1'||typeof r.id!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,79}$/.test(r.id)||typeof r.question!=='string'||r.question.length>6000)throw Error('题目交接记录无效。');if(codec.sameProfile(r.profile,profile))pendingRequest=clone(r);}
+    return {schema:raw.schema,profile,records,lessonId:raw.lessonId,customText:String(raw.customText||'').slice(0,6000),collapsed:!!raw.collapsed,generatedLessons:generated,pendingRequest};
+  }
+  try {const raw=localStorage.getItem(KEY);if(raw)state=validateSession(JSON.parse(raw));}catch{/* A damaged local record never prevents opening the board. */}
+
+  function registerGenerated(){lessons.splice(0,lessons.length,...builtins,...state.generatedLessons.map(x=>codec.adapt(x)));}
+  registerGenerated();
+  if(boot.lesson&&!lessons.some(l=>l.raw?.request_id===boot.lesson.request_id)){const l=codec.adapt(boot.lesson);state.generatedLessons.push(l.raw);registerGenerated();state.lessonId=l.id;state.profile=clone(boot.profile);}
+
+  function updateDrawingControls(s) {
+    $('undoButton').disabled=!s.canUndo;$('redoButton').disabled=!s.canRedo;
+    document.querySelectorAll('[data-tool]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tool===s.tool)));
+    $('zoomReset').textContent=Math.round(100000/view().width)+'%';
+  }
+  drawing=new window.GeometryDrawing($('drawingBoard'),$('userLayer'),{
+    onChange(s){updateDrawingControls(s);scheduleSave();},
+    onToolChange(){if(drawing)updateDrawingControls(drawing.getState());},
+    onRequestText(point,callback){textCallback=callback;$('annotationInput').value='';showDialog('textDialog');$('annotationInput').focus();}
+  });
+  drawing.setStyle({color:'#285c4d',width:2.5,dashed:false});
+
+  function loadCurrent() {
+    importing=true;
+    current=clone(state.records[state.lessonId]||{items:[],methodId:lesson()?.methods[0]?.id||'',step:0,level:0,hintsOpen:false,photo:null,view:{x:0,y:0,width:1000,height:700}});
+    drawing.setItems(current.items);drawing.setView(current.view);drawing.setTool('pen');importing=false;
+    render();updateDrawingControls(drawing.getState());
+  }
+  function renderPhoto(){ $('photoLayer').replaceChildren();if(!current.photo)return;const p=current.photo;const image=document.createElementNS(NS,'image');image.setAttribute('href',p.src);image.setAttribute('x',p.x);image.setAttribute('y',p.y);image.setAttribute('width',p.width*p.scale);image.setAttribute('height',p.height*p.scale);image.setAttribute('preserveAspectRatio','xMidYMid meet');image.setAttribute('pointer-events','none');$('photoLayer').append(image); }
+  function render() {
+    const l=lesson(),m=method();
+    if(m) {current.methodId=m.id;current.step=Math.min(current.step,m.steps.length-1);}
+    $('workspace').classList.toggle('question-collapsed',state.collapsed);
+    $('questionPanel').hidden=state.collapsed;$('expandQuestion').hidden=!state.collapsed;
+    $('workspace').classList.toggle('has-hints',current.hintsOpen);$('hintPanel').hidden=!current.hintsOpen;
+    $('lessonNumber').textContent=l?.generated?'✦':l?String(lessons.indexOf(l)+1).padStart(2,'0'):'✎';
+    $('questionTitle').textContent=l?l.title:'我的几何题';
+    $('questionText').innerHTML=l?l.statementHTML:escape(state.customText||'上传题图，或写下你想研究的题目。').replace(/\n/g,'<br>');
+    $('questionGoal').innerHTML=l?l.goalHTML:'先在画板上画一画';
+    $('parsedConditions').hidden=!l?.generated; $('parsedConditionList').innerHTML=l?.generated?l.raw.givens.map(x=>'<li>'+escape(x)+'</li>').join(''):'';
+    $('profileSummary').textContent=state.profile.confirmed?({7:'七',8:'八',9:'九'}[state.profile.grade]+'年级 · 学习范围'):'示例学习范围';
+    $('boardMode').textContent=l?'先画一画，慢慢想':'我的思考空间';
+    $('generateCurrent').hidden=!!activeJob||(!l&&!state.customText)||(!!l&&!l.generated)||(!!l?.generated&&codec.sameProfile(l.raw.profile,state.profile));
+    $('lessonLayer').innerHTML=l?l.render(m?.id||l.methods[0]?.id||'',current.hintsOpen&&m?current.step:-1,current.level===2):'';
+    renderPhoto();renderHints();
+  }
+  function renderHints() {
+    const l=lesson(),m=method(),available=permittedMethods();
+    const empty=!m;
+    ['methodSelect','knowledgeNote','hintProgress','stepCount','stepTitle','stepPrompt','revealStep'].forEach(id=>$(id).hidden=empty||!current.hintsOpen);
+    $('smallHint').hidden=true;$('smallHint').textContent='';$('explanation').hidden=true;$('explanation').innerHTML='';
+    $('hintEmpty').hidden=!empty;$('nextStep').disabled=empty;$('previousStep').disabled=empty;
+    if(!current.hintsOpen){$('stepPrompt').textContent='';$('stepTitle').textContent='';$('hintEmpty').innerHTML='';return;}
+    if(empty){$('hintEmpty').innerHTML=l?'这道题的现有解法需要一些尚未勾选的知识。可以核对学习范围，或先自己画一画。<button class="outline-button" id="adjustKnowledge">核对学习范围</button>':'这道题还没有可用提示。先生成题图与提示，或把题目交给当前 Agent。';$('adjustKnowledge')?.addEventListener('click',openSettings);$('tryExample')?.addEventListener('click',openQuestion);return;}
+    $('methodSelect').innerHTML=available.map(x=>`<option value="${x.id}">${escape(x.title)}</option>`).join('');$('methodSelect').value=m.id;
+    $('knowledgeNote').textContent=(available.length===1?'当前范围可用 1 种方法 · ':'')+m.requires.map(k=>knowledgeNames[k]).join('、');
+    $('hintProgress').innerHTML=m.steps.map((_,i)=>`<span class="${i<current.step?'done':i===current.step?'current':''}"></span>`).join('');
+    $('stepCount').textContent=`第 ${current.step+1} 步 / 共 ${m.steps.length} 步`;
+    const s=m.steps[current.step];$('stepTitle').textContent=s.title;$('stepPrompt').textContent=s.prompt;
+    if(current.level>=1){$('smallHint').textContent=s.hint;$('smallHint').hidden=false;}
+    if(current.level===2){$('explanation').innerHTML=s.explanation+(s.reason?'<p class="step-reason"><strong>本步依据：</strong>'+escape(s.reason)+'</p>':'');$('explanation').hidden=false;}
+    $('revealStep').hidden=current.level===2;$('revealStep').textContent=current.level===0?'再给一点提示':'看看这一步的解释';
+    $('nextStep').disabled=current.level<2;$('nextStep').innerHTML=(current.step===m.steps.length-1?'回到自主思考':'下一步')+iconMarkup('arrowRight');
+    $('previousStep').disabled=current.step===0;
+  }
+  function closeHints(){current.hintsOpen=false;render();scheduleSave();}
+  $('openHints').onclick=()=>{current.hintsOpen=true;current.step=0;current.level=0;render();scheduleSave();};
+  $('closeHints').onclick=closeHints;
+  $('revealStep').onclick=()=>{current.level=Math.min(2,current.level+1);render();scheduleSave();};
+  $('nextStep').onclick=()=>{const m=method();if(!m||current.level<2)return;if(current.step===m.steps.length-1){closeHints();toast('把刚才的思路，试着自己走一遍。');return;}current.step++;current.level=0;render();$('hintPanel').querySelector('.hint-scroll').scrollTop=0;scheduleSave();};
+  $('previousStep').onclick=()=>{if(current.step>0){current.step--;current.level=2;render();scheduleSave();}};
+  $('methodSelect').onchange=e=>{current.methodId=e.target.value;current.step=0;current.level=0;render();scheduleSave();};
+  $('collapseQuestion').onclick=()=>{state.collapsed=true;render();scheduleSave();};
+  $('expandQuestion').onclick=()=>{state.collapsed=false;if(innerWidth<=850&&current.hintsOpen)current.hintsOpen=false;render();scheduleSave();};
+
+  function openSettings(){ $('grade').value=state.profile.grade;if(![...$('edition').options].some(o=>o.value===state.profile.edition)){const o=new Option(state.profile.edition,state.profile.edition);$('edition').add(o);}$('edition').value=state.profile.edition;$('chapter').value=state.profile.chapter;$('knowledgeChoices').innerHTML=Object.entries(knowledgeNames).map(([key,label])=>`<label><input type="checkbox" name="knowledge" value="${key}" ${state.profile.knowledge.includes(key)?'checked':''}>${label}</label>`).join('');showDialog('settingsDialog'); }
+  $('settingsButton').onclick=openSettings;
+  $('settingsForm').onsubmit=e=>{e.preventDefault();if(!document.querySelector('input[name=knowledge]:checked')){toast('请至少勾选一项确实学过的知识。');return;}cancelGeneration(false);state.pendingRequest=null;state.profile={grade:$('grade').value,edition:$('edition').value,chapter:$('chapter').value,knowledge:[...document.querySelectorAll('input[name=knowledge]:checked')].map(c=>c.value),confirmed:true};current.step=0;current.level=0;current.methodId=permittedMethods()[0]?.id||'';$('settingsDialog').close();render();persist();toast('已按学过的知识重新筛选方法。');if(generateAfterSettings){generateAfterSettings=false;startGeneration();}};
+
+  function plainStatement(l){const div=document.createElement('div');div.innerHTML=l.statementHTML+' '+l.goalHTML;return div.textContent.trim();}
+  function openQuestion(){selectedExample=lesson()?.generated?null:lesson()?.id||null;$('questionInput').value=lesson()?plainStatement(lesson()):state.customText;renderExamplePicker();showDialog('questionDialog');}
+  function renderExamplePicker(){ $('examplePicker').innerHTML=builtins.map((l,i)=>`<button class="${selectedExample===l.id?'active':''}" data-lesson="${l.id}"><span>例题 ${String(i+1).padStart(2,'0')}</span><strong>${escape(l.shortTitle||l.title)}</strong></button>`).join('');$('examplePicker').querySelectorAll('button').forEach(b=>b.onclick=()=>{selectedExample=b.dataset.lesson;$('questionInput').value=plainStatement(lessons.find(l=>l.id===selectedExample));renderExamplePicker();}); }
+  $('questionInput').oninput=()=>{selectedExample=null;renderExamplePicker();};
+  $('newQuestion').onclick=openQuestion;$('editQuestion').onclick=openQuestion;
+  function switchLesson(id,text){cancelGeneration(false);state.pendingRequest=null;$('generationBox').hidden=true;stash();state.lessonId=id;if(id==='custom'){state.customText=text||'';state.records.custom={items:[],methodId:'',step:0,level:0,hintsOpen:false,photo:null,view:{x:0,y:0,width:1000,height:700}};}loadCurrent();current.hintsOpen=false;render();persist();}
+  $('applyQuestion').onclick=()=>{const input=$('questionInput').value.trim();if(!input){toast('先输入题目，或选择一道例题。');return;}if(selectedExample){switchLesson(selectedExample);$('questionDialog').close();}else{switchLesson('custom',input);$('questionDialog').close();startGeneration();}};
+  $('uploadFromQuestion').onclick=()=>{pendingPhoto={text:selectedExample?'':$('questionInput').value.trim()};$('photoInput').click();};
+
+  function generationMessage(message,canCancel=false){$('generationBox').hidden=false;$('generationStatus').textContent=message;$('cancelGeneration').hidden=!canCancel;$('generateCurrent').hidden=!!activeJob;}
+  async function api(path,options={}){
+    const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),15000);
+    try{const response=await fetch((bridge.baseUrl||'')+path,{...options,signal:controller.signal,headers:{'Content-Type':'application/json','X-Geometry-Token':bridge.token,...(options.headers||{})}});const data=await response.json();if(!response.ok)throw Error(data.message||data.error||'服务未能处理请求，请重试。');return data;}finally{clearTimeout(timeout);}
+  }
+  async function updateConnection(){
+    if(!bridge){$('connectionNote').textContent='离线模式：先放入题目，再从“更多”导出给当前 Agent，生成后导入结果。';$('applyQuestion').textContent='放入题目';return;}
+    try{const health=await api('/api/health');$('connectionNote').textContent=health.mode==='automatic'?`将通过 ${health.provider} 生成题图与分步提示，题目文字会发送给该服务。`:'Agent 文件交接模式：提交后，请让当前 Agent 读取任务并完成解题。';}catch{$('connectionNote').textContent='本地服务未连接。可以保留题目，稍后重试或导出给 Agent。';}
+  }
+  function requestData(){
+    return {schema:'geometry-request/1',id:globalThis.crypto?.randomUUID?.()||('request-'+Date.now()+'-'+Math.random().toString(36).slice(2)),question:lesson()?plainStatement(lesson()):state.customText,profile:clone(state.profile),photo:current.photo?.src||null};
+  }
+  function cancelGeneration(show=true){
+    generationEpoch++;const old=activeJob;activeJob=null;
+    if(old&&bridge)api('/api/jobs/'+encodeURIComponent(old)+'/cancel',{method:'POST',body:'{}'}).catch(()=>{});
+    if(show){state.pendingRequest=null;generationMessage('已取消生成。题目和笔迹仍保留。');render();persist();}
+  }
+  $('cancelGeneration').onclick=()=>cancelGeneration();
+  $('generateCurrent').onclick=()=>startGeneration();
+  async function startGeneration(){
+    if(!state.profile.confirmed){generateAfterSettings=true;openSettings();return;}
+    if(!state.profile.knowledge.length){toast('先确认已经学过的知识。');openSettings();return;}
+    cancelGeneration(false);
+    const request=requestData();if(!request.question.trim()){toast('请先写下题目。');return;}
+    const epoch=generationEpoch;state.pendingRequest=request;persist();
+    if(!bridge){generationMessage('题目已准备好。从画板“更多”中选择“交给其他 Agent”，解题后导入结果。');render();return;}
+    // A sentinel also blocks repeat clicks while POST is in flight.
+    activeJob='submitting';generationMessage('正在提交题目…',true);render();
+    try{
+      const result=await api('/api/jobs',{method:'POST',headers:{'Idempotency-Key':request.id},body:JSON.stringify({question:request.question,profile:request.profile,photo:request.photo})});
+      if(epoch!==generationEpoch){api('/api/jobs/'+encodeURIComponent(result.id)+'/cancel',{method:'POST',body:'{}'}).catch(()=>{});return;}
+      activeJob=result.id;request.id=result.id;state.pendingRequest=request;persist();await handleJob(result,request,epoch);
+    }catch(error){if(epoch!==generationEpoch)return;activeJob=null;generationMessage('生成未完成：'+error.message+' 题目已保留，可重试或导出给 Agent。');render();}
+  }
+  async function handleJob(result,request,epoch){
+    if(epoch!==generationEpoch||!codec.sameProfile(request.profile,state.profile))return;
+    if(['ready','needs_clarification','out_of_scope'].includes(result.status)){
+      activeJob=null;try{acceptLesson(result.lesson,request);}catch(error){generationMessage(error.message);render();}return;
+    }
+    if(['failed','canceled'].includes(result.status)){activeJob=null;generationMessage(result.message||'生成未完成，请重试。');render();return;}
+    const waiting=result.status==='waiting_agent';
+    generationMessage(waiting?`等待当前 Agent 完成任务 ${result.id}。可告诉它：“处理队列里的新几何题”。`:(result.message||'正在生成题图与提示…'),true);
+    setTimeout(async()=>{if(epoch!==generationEpoch)return;try{const next=await api('/api/jobs/'+encodeURIComponent(result.id));await handleJob(next,request,epoch);}catch(error){if(epoch!==generationEpoch)return;activeJob=null;generationMessage('连接中断，题目已保留。请重试或导出给 Agent。');render();}},1200);
+  }
+  function acceptLesson(raw,request){
+    const adapted=codec.adapt(raw,request);
+    if(!codec.sameProfile(raw.profile,state.profile))throw Error('学习范围已经改变，请按当前范围重新生成。');
+    if(raw.status!=='ready'){
+      generationMessage([raw.message,...raw.questions].filter(Boolean).join('\n'));
+      render();persist();return;
+    }
+    stash();const previous=clone(current);
+    state.generatedLessons=state.generatedLessons.filter(l=>l.id!==raw.id);state.generatedLessons.push(adapted.raw);
+    // Keep complete editable sessions bounded; older drawings remain in exported records.
+    if(state.generatedLessons.length>30){const removed=state.generatedLessons.shift();delete state.records['generated-'+removed.id];}
+    registerGenerated();state.lessonId=adapted.id;state.pendingRequest=null;
+    state.records[adapted.id]={...previous,methodId:adapted.methods[0].id,step:0,level:0,hintsOpen:false};
+    current=clone(state.records[adapted.id]);render();updateDrawingControls(drawing.getState());$('generationBox').hidden=true;persist();toast('题图已画好。需要时，再打开一点提示。');
+  }
+  $('exportRequest').onclick=()=>{
+    if(!state.profile.confirmed){toast('请先确认学习范围，再导出题目。');openSettings();return;}
+    const request=state.pendingRequest||requestData();state.pendingRequest=request;persist();
+    download(new Blob([JSON.stringify(request,null,2)],{type:'application/json'}),'geometry-request-'+request.id+'.json');
+    generationMessage('已导出题目。请交给装有此 Skill 的 Agent，生成并校验 lesson.json 后，用“导入 Agent 解题”打开。');
+  };
+  $('importLesson').onclick=()=>$('lessonInput').click();
+  $('lessonInput').onchange=async e=>{const file=e.target.files[0];e.target.value='';if(!file)return;try{if(file.size>12000000)throw Error('解题文件过大。');const raw=JSON.parse(await file.text());if(!state.pendingRequest)throw Error('请先导出当前题目，再导入对应的 Agent 解题文件。');const expected=clone(state.pendingRequest);codec.check(raw,expected);cancelGeneration(false);acceptLesson(raw,expected);}catch(error){toast(error instanceof SyntaxError?'请选择有效的 lesson.json 文件。':error.message);}};
+
+  document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>drawing.setTool(b.dataset.tool));
+  document.querySelectorAll('[data-color]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-color]').forEach(x=>x.classList.toggle('selected',x===b));drawing.setStyle({color:b.dataset.color});});
+  $('dashedButton').onclick=()=>{const pressed=$('dashedButton').getAttribute('aria-pressed')!=='true';$('dashedButton').setAttribute('aria-pressed',pressed);drawing.setStyle({dashed:pressed});};
+  $('strokeWidth').onchange=()=>drawing.setStyle({width:Number($('strokeWidth').value)});
+  $('undoButton').onclick=()=>drawing.undo();$('redoButton').onclick=()=>drawing.redo();
+  function zoom(factor){const v=view();const width=Math.min(3000,Math.max(250,v.width*factor));const height=width*.7;drawing.setView({x:v.x+(v.width-width)/2,y:v.y+(v.height-height)/2,width,height});updateDrawingControls(drawing.getState());scheduleSave();}
+  $('zoomIn').onclick=()=>zoom(.8);$('zoomOut').onclick=()=>zoom(1.25);$('zoomReset').onclick=()=>{drawing.resetView();updateDrawingControls(drawing.getState());scheduleSave();};
+  $('textForm').onsubmit=e=>{e.preventDefault();const value=$('annotationInput').value.trim();if(value){textCallback?.(value);textCallback=null;$('textDialog').close();}};
+  $('textDialog').addEventListener('close',()=>{if(textCallback){textCallback('');textCallback=null;}});
+  $('moreButton').onclick=()=>{$('moreMenu').hidden=!$('moreMenu').hidden;$('moreButton').setAttribute('aria-expanded',String(!$('moreMenu').hidden));};
+  document.addEventListener('click',e=>{if(!e.target.closest('#moreMenu,#moreButton')){$('moreMenu').hidden=true;$('moreButton').setAttribute('aria-expanded','false');}});
+  function confirmAction(title,message,callback){$('confirmTitle').textContent=title;$('confirmMessage').textContent=message;confirmation=callback;showDialog('confirmDialog');}
+  $('confirmAction').onclick=()=>{$('confirmDialog').close();confirmation?.();confirmation=null;};
+  $('clearDrawing').onclick=()=>confirmAction('清空我的笔迹？','题目和辅助线会保留；清空后也可以撤销。',()=>drawing.clear());
+
+  function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+  $('saveSession').onclick=()=>{stash();download(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),'几何学习记录.json');toast('已导出可继续编辑的学习记录。');};
+  $('loadSession').onclick=()=>$('sessionInput').click();
+  $('sessionInput').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{if(f.size>12000000)throw Error('学习记录文件过大。');const imported=validateSession(JSON.parse(await f.text()));confirmAction('打开这份学习记录？','当前草稿将被替换。需要保留时，请先取消并保存当前记录。',()=>{cancelGeneration(false);state=imported;registerGenerated();loadCurrent();persist();toast('学习记录已恢复。');});}catch(error){toast(error instanceof SyntaxError?'文件无法读取，请选择有效的学习记录 JSON。':error.message);}};
+  $('exportButton').onclick=async()=>{
+    try{const source=$('drawingBoard').cloneNode(true);source.querySelectorAll('[data-geometry-ui]').forEach(n=>n.remove());source.setAttribute('xmlns',NS);source.setAttribute('width','2000');source.setAttribute('height','1400');source.removeAttribute('style');
+      const data=new XMLSerializer().serializeToString(source);const url=URL.createObjectURL(new Blob([data],{type:'image/svg+xml;charset=utf-8'}));const image=new Image();
+      image.onload=()=>{const canvas=document.createElement('canvas');canvas.width=2000;canvas.height=1400;const ctx=canvas.getContext('2d');ctx.fillStyle='#f9fbf5';ctx.fillRect(0,0,2000,1400);ctx.drawImage(image,0,0);URL.revokeObjectURL(url);canvas.toBlob(blob=>{if(blob){download(blob,'几何画板.png');toast('已导出当前画面。');}else toast('图片导出失败，请重试。');},'image/png');};image.onerror=()=>{URL.revokeObjectURL(url);toast('图片导出失败，请重试。');};image.src=url;
+    }catch{toast('图片导出失败，请先保存学习记录。');}
+  };
+
+  function openPhoto(){ $('photoControls').hidden=!current.photo;$('photoScale').value=current.photo?current.photo.scale*100:100;showDialog('photoDialog'); }
+  $('photoButton').onclick=openPhoto;$('uploadPhoto').onclick=()=>{pendingPhoto=null;$('photoInput').click();};
+  $('photoInput').onchange=async e=>{const file=e.target.files[0];e.target.value='';if(!file)return;if(!['image/png','image/jpeg','image/webp'].includes(file.type)){toast('请选择 PNG、JPEG 或 WebP 图片。');return;}if(file.size>15000000){toast('图片较大，请选择 15 MB 以内的题图。');return;}
+    try{const data=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);});const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=data;});
+      const ratio=Math.min(1,1400/Math.max(img.width,img.height));const canvas=document.createElement('canvas');canvas.width=Math.round(img.width*ratio);canvas.height=Math.round(img.height*ratio);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);const fit=Math.min(680/img.width,450/img.height);
+      if(pendingPhoto){switchLesson('custom',pendingPhoto.text||'请根据上传的题图进行思考和演算。');pendingPhoto=null;if($('questionDialog').open)$('questionDialog').close();}else if(lesson())switchLesson('custom','请根据上传的题图进行思考和演算。');
+      current.photo={src:canvas.toDataURL('image/png'),x:500-img.width*fit/2,y:350-img.height*fit/2,width:img.width*fit,height:img.height*fit,scale:1};render();persist();if($('photoDialog').open){$('photoControls').hidden=false;$('photoScale').value=100;}toast('题图已放入画板，可以在上面写画。');
+    }catch{toast('图片无法读取，请换一张试试。');}
+  };
+  $('photoScale').oninput=()=>{if(current.photo){const p=current.photo,next=Number($('photoScale').value)/100;p.x+=(p.width*p.scale-p.width*next)/2;p.y+=(p.height*p.scale-p.height*next)/2;p.scale=next;renderPhoto();scheduleSave();}};
+  document.querySelectorAll('[data-move]').forEach(b=>b.onclick=()=>{if(!current.photo)return;const p=current.photo;({left:()=>p.x-=20,right:()=>p.x+=20,up:()=>p.y-=20,down:()=>p.y+=20}[b.dataset.move])();renderPhoto();scheduleSave();});
+  $('removePhoto').onclick=()=>{current.photo=null;renderPhoto();$('photoControls').hidden=true;persist();};
+  $('aboutButton').onclick=()=>showDialog('aboutDialog');
+  document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
+  document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
+  document.addEventListener('keydown',e=>{if(e.target.closest('input,textarea,select')||document.querySelector('dialog[open]'))return;
+    if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?drawing.redo():drawing.undo();return;}
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    const tool={p:'pen',l:'line',c:'circle',e:'eraser',v:'select',h:'pan',t:'text'}[e.key.toLowerCase()];if(tool){e.preventDefault();drawing.setTool(tool);}if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();drawing.deleteSelected();}if(e.key==='Escape')drawing.setTool('select');
+  });
+  window.addEventListener('beforeunload',persist);
+  loadCurrent();
+  updateConnection();
+  if(bridge&&state.pendingRequest&&state.lessonId==='custom'){
+    const saved=clone(state.pendingRequest),epoch=generationEpoch;activeJob=saved.id;
+    generationMessage('正在恢复这道题的生成状态…',true);render();
+    api('/api/jobs/'+encodeURIComponent(saved.id)).then(r=>handleJob(r,saved,epoch)).catch(()=>{if(epoch!==generationEpoch)return;activeJob=null;generationMessage('上次的服务已结束。题目已保留，可以重新生成或交给 Agent。');render();});
+  }
+})();
+
+</script>
+</body>
+</html>

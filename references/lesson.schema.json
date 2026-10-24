@@ -1,0 +1,977 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/junior-geometry-tutor/geometry-lesson-1.schema.json",
+  "title": "Declarative geometry lesson v1",
+  "description": "Standard JSON Schema, not an OpenAI strict-output schema. Runtime additionally checks temporal visibility, references, finite numbers, markup, exact request/profile binding and mathematical constraints. A schema pass is not a proof of the explanation.",
+  "$ref": "#/$defs/lesson",
+  "$defs": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$",
+      "maxLength": 80
+    },
+    "pointKey": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_]{0,31}$",
+      "maxLength": 32
+    },
+    "coordinate": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 700
+        }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "profile": {
+      "type": "object",
+      "properties": {
+        "grade": {
+          "enum": [
+            "7",
+            "8",
+            "9"
+          ]
+        },
+        "edition": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes."
+        },
+        "chapter": {
+          "type": "string",
+          "maxLength": 150,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes."
+        },
+        "knowledge": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "angle",
+              "area",
+              "isosceles",
+              "congruence",
+              "pythagoras",
+              "factorization",
+              "parallel",
+              "similarity",
+              "circle",
+              "quadrilateral",
+              "coordinate"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 11,
+          "uniqueItems": true
+        },
+        "confirmed": {
+          "const": true
+        }
+      },
+      "required": [
+        "grade",
+        "edition",
+        "chapter",
+        "knowledge",
+        "confirmed"
+      ],
+      "additionalProperties": false
+    },
+    "line": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/slug"
+        },
+        "color": {
+          "enum": [
+            "ink",
+            "amber",
+            "blue",
+            "red"
+          ]
+        },
+        "width": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "dashed": {
+          "type": "boolean"
+        },
+        "fill": {
+          "type": "boolean"
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0.03,
+          "maximum": 1
+        },
+        "kind": {
+          "const": "line"
+        },
+        "a": {
+          "$ref": "#/$defs/pointKey"
+        },
+        "b": {
+          "$ref": "#/$defs/pointKey"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "a",
+        "b"
+      ],
+      "additionalProperties": false
+    },
+    "polygon": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/slug"
+        },
+        "color": {
+          "enum": [
+            "ink",
+            "amber",
+            "blue",
+            "red"
+          ]
+        },
+        "width": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "dashed": {
+          "type": "boolean"
+        },
+        "fill": {
+          "type": "boolean"
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0.03,
+          "maximum": 1
+        },
+        "kind": {
+          "const": "polygon"
+        },
+        "points": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pointKey"
+          },
+          "minItems": 3,
+          "maxItems": 300,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "points"
+      ],
+      "additionalProperties": false
+    },
+    "circle": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/slug"
+        },
+        "color": {
+          "enum": [
+            "ink",
+            "amber",
+            "blue",
+            "red"
+          ]
+        },
+        "width": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "dashed": {
+          "type": "boolean"
+        },
+        "fill": {
+          "type": "boolean"
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0.03,
+          "maximum": 1
+        },
+        "kind": {
+          "const": "circle"
+        },
+        "center": {
+          "$ref": "#/$defs/pointKey"
+        },
+        "radius": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1000
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "center",
+        "radius"
+      ],
+      "additionalProperties": false
+    },
+    "point": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/slug"
+        },
+        "color": {
+          "enum": [
+            "ink",
+            "amber",
+            "blue",
+            "red"
+          ]
+        },
+        "width": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "dashed": {
+          "type": "boolean"
+        },
+        "fill": {
+          "type": "boolean"
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0.03,
+          "maximum": 1
+        },
+        "kind": {
+          "const": "point"
+        },
+        "point": {
+          "$ref": "#/$defs/pointKey"
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 160,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes."
+        },
+        "dx": {
+          "type": "number",
+          "minimum": -1000,
+          "maximum": 1000
+        },
+        "dy": {
+          "type": "number",
+          "minimum": -700,
+          "maximum": 700
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "point"
+      ],
+      "additionalProperties": false
+    },
+    "label": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/slug"
+        },
+        "color": {
+          "enum": [
+            "ink",
+            "amber",
+            "blue",
+            "red"
+          ]
+        },
+        "width": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "dashed": {
+          "type": "boolean"
+        },
+        "fill": {
+          "type": "boolean"
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0.03,
+          "maximum": 1
+        },
+        "kind": {
+          "const": "label"
+        },
+        "at": {
+          "$ref": "#/$defs/coordinate"
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 160,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes.",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "at",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "rightAngle": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/slug"
+        },
+        "color": {
+          "enum": [
+            "ink",
+            "amber",
+            "blue",
+            "red"
+          ]
+        },
+        "width": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "dashed": {
+          "type": "boolean"
+        },
+        "fill": {
+          "type": "boolean"
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0.03,
+          "maximum": 1
+        },
+        "kind": {
+          "const": "rightAngle"
+        },
+        "vertex": {
+          "$ref": "#/$defs/pointKey"
+        },
+        "a": {
+          "$ref": "#/$defs/pointKey"
+        },
+        "b": {
+          "$ref": "#/$defs/pointKey"
+        },
+        "size": {
+          "type": "number",
+          "minimum": 4,
+          "maximum": 80
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "vertex",
+        "a",
+        "b"
+      ],
+      "additionalProperties": false
+    },
+    "primitive": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/line"
+        },
+        {
+          "$ref": "#/$defs/polygon"
+        },
+        {
+          "$ref": "#/$defs/circle"
+        },
+        {
+          "$ref": "#/$defs/point"
+        },
+        {
+          "$ref": "#/$defs/label"
+        },
+        {
+          "$ref": "#/$defs/rightAngle"
+        }
+      ]
+    },
+    "observePrimitive": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/line"
+        },
+        {
+          "$ref": "#/$defs/polygon"
+        },
+        {
+          "$ref": "#/$defs/circle"
+        },
+        {
+          "$ref": "#/$defs/rightAngle"
+        }
+      ],
+      "description": "Only prior visible points. Line/circle/rightAngle must match geometry already drawn in base or earlier reveals. Polygon is transparent fill only; no outline. Runtime validates temporal references."
+    },
+    "constraint": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "perpendicular"
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/pointKey"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            }
+          },
+          "required": [
+            "kind",
+            "points"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "parallel"
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/pointKey"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            }
+          },
+          "required": [
+            "kind",
+            "points"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "equal_length"
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/pointKey"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            }
+          },
+          "required": [
+            "kind",
+            "points"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "collinear"
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/pointKey"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            }
+          },
+          "required": [
+            "kind",
+            "points"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "midpoint"
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/pointKey"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            }
+          },
+          "required": [
+            "kind",
+            "points"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "ratio"
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/pointKey"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          },
+          "required": [
+            "kind",
+            "points",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "description": "Runtime checks numerical geometry at relative tolerance 1e-3. Perpendicular/parallel/equal_length/ratio compare AB and CD; ratio=|AB|/|CD|. Collinear uses A,B,C; midpoint uses A,M,B."
+    },
+    "scene": {
+      "type": "object",
+      "properties": {
+        "points": {
+          "type": "object",
+          "patternProperties": {
+            "^[A-Za-z][A-Za-z0-9_]{0,31}$": {
+              "$ref": "#/$defs/coordinate"
+            }
+          },
+          "maxProperties": 300,
+          "additionalProperties": false
+        },
+        "base": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/primitive"
+          },
+          "minItems": 0,
+          "maxItems": 500
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/constraint"
+          },
+          "minItems": 0,
+          "maxItems": 200
+        }
+      },
+      "required": [
+        "points",
+        "base",
+        "constraints"
+      ],
+      "additionalProperties": false
+    },
+    "step": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 160,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes.",
+          "minLength": 1
+        },
+        "prompt": {
+          "type": "string",
+          "maxLength": 6000,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes.",
+          "minLength": 1
+        },
+        "hint": {
+          "type": "string",
+          "maxLength": 6000,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes.",
+          "minLength": 1
+        },
+        "explanation": {
+          "type": "string",
+          "maxLength": 6000,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes.",
+          "minLength": 1
+        },
+        "uses": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "angle",
+              "area",
+              "isosceles",
+              "congruence",
+              "pythagoras",
+              "factorization",
+              "parallel",
+              "similarity",
+              "circle",
+              "quadrilateral",
+              "coordinate"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 11,
+          "uniqueItems": true
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 6000,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes.",
+          "minLength": 1
+        },
+        "observe": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/observePrimitive"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "reveal": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/primitive"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "title",
+        "prompt",
+        "hint",
+        "explanation",
+        "uses",
+        "reason",
+        "observe",
+        "reveal"
+      ],
+      "additionalProperties": false
+    },
+    "method": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/slug"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 160,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes.",
+          "minLength": 1
+        },
+        "requires": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "angle",
+              "area",
+              "isosceles",
+              "congruence",
+              "pythagoras",
+              "factorization",
+              "parallel",
+              "similarity",
+              "circle",
+              "quadrilateral",
+              "coordinate"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 11,
+          "uniqueItems": true
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/step"
+          },
+          "minItems": 2,
+          "maxItems": 12
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "requires",
+        "steps"
+      ],
+      "additionalProperties": false
+    },
+    "audit": {
+      "type": "object",
+      "properties": {
+        "summary": {
+          "type": "string",
+          "maxLength": 6000,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes.",
+          "minLength": 1
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 6000,
+            "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes.",
+            "minLength": 1
+          },
+          "minItems": 0,
+          "maxItems": 32
+        },
+        "uncertainties": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 6000,
+            "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes.",
+            "minLength": 1
+          },
+          "minItems": 0,
+          "maxItems": 32
+        }
+      },
+      "required": [
+        "summary",
+        "checks",
+        "uncertainties"
+      ],
+      "additionalProperties": false
+    },
+    "request": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "geometry-request/1"
+        },
+        "id": {
+          "$ref": "#/$defs/slug"
+        },
+        "question": {
+          "type": "string",
+          "maxLength": 6000,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes.",
+          "minLength": 1
+        },
+        "profile": {
+          "$ref": "#/$defs/profile"
+        },
+        "photo": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^data:image/(png|jpeg|webp);base64,[A-Za-z0-9+/]*={0,2}$",
+              "maxLength": 11184848
+            }
+          ],
+          "description": "Decoded limit 8 MiB. Runtime verifies base64 and image magic bytes; SVG and remote URLs are rejected."
+        }
+      },
+      "required": [
+        "schema",
+        "id",
+        "question",
+        "profile",
+        "photo"
+      ],
+      "additionalProperties": false
+    },
+    "lesson": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "geometry-lesson/1"
+        },
+        "request_id": {
+          "$ref": "#/$defs/slug"
+        },
+        "id": {
+          "$ref": "#/$defs/slug"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 160,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes.",
+          "minLength": 1
+        },
+        "statement": {
+          "type": "string",
+          "maxLength": 6000,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes.",
+          "minLength": 1
+        },
+        "givens": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 6000,
+            "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes.",
+            "minLength": 1
+          },
+          "minItems": 0,
+          "maxItems": 32
+        },
+        "goal": {
+          "type": "string",
+          "maxLength": 6000,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes."
+        },
+        "status": {
+          "enum": [
+            "ready",
+            "needs_clarification",
+            "out_of_scope"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 2000,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes."
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 6000,
+            "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes.",
+            "minLength": 1
+          },
+          "minItems": 0,
+          "maxItems": 32
+        },
+        "profile": {
+          "$ref": "#/$defs/profile"
+        },
+        "scene": {
+          "$ref": "#/$defs/scene"
+        },
+        "methods": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/method"
+          },
+          "minItems": 0,
+          "maxItems": 4
+        },
+        "audit": {
+          "$ref": "#/$defs/audit"
+        }
+      },
+      "required": [
+        "schema",
+        "request_id",
+        "id",
+        "title",
+        "statement",
+        "givens",
+        "goal",
+        "status",
+        "message",
+        "questions",
+        "profile",
+        "scene",
+        "methods",
+        "audit"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "ready"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "methods": {
+                "minItems": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "methods": {
+                "maxItems": 0
+              },
+              "message": {
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "needs_clarification"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "questions": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

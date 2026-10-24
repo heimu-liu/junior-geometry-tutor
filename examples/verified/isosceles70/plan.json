@@ -1,0 +1,136 @@
+{
+  "schema": "geometry-plan/1",
+  "request_id": "811639c8-b824-46da-b383-364a77de0256",
+  "id": "base_angles",
+  "title": "求等腰三角形的两个底角",
+  "status": "ready",
+  "message": "",
+  "questions": [],
+  "profile": {
+    "grade": "8",
+    "edition": "pep",
+    "chapter": "等腰三角形与全等三角形",
+    "knowledge": [
+      "angle",
+      "isosceles"
+    ],
+    "confirmed": true
+  },
+  "construction": [
+    {
+      "id": "c1",
+      "op": "isosceles_angle",
+      "points": [
+        "A",
+        "B",
+        "C"
+      ],
+      "values": [
+        "6",
+        "70"
+      ],
+      "stage": "base"
+    }
+  ],
+  "segments": [
+    {
+      "points": [
+        "A",
+        "B"
+      ],
+      "stage": "base"
+    },
+    {
+      "points": [
+        "B",
+        "C"
+      ],
+      "stage": "base"
+    },
+    {
+      "points": [
+        "A",
+        "C"
+      ],
+      "stage": "base"
+    }
+  ],
+  "givens": [
+    {
+      "kind": "length_eq",
+      "points": [
+        "A",
+        "B",
+        "A",
+        "C"
+      ],
+      "value": "",
+      "id": "g1",
+      "source": "AB=AC"
+    },
+    {
+      "kind": "angle_value",
+      "points": [
+        "B",
+        "A",
+        "C"
+      ],
+      "value": "70",
+      "id": "g2",
+      "source": "∠BAC=70°"
+    }
+  ],
+  "goals": [
+    {
+      "kind": "angle_value",
+      "points": [
+        "A",
+        "B",
+        "C"
+      ],
+      "value": "55"
+    },
+    {
+      "kind": "angle_value",
+      "points": [
+        "A",
+        "C",
+        "B"
+      ],
+      "value": "55"
+    }
+  ],
+  "methods": [
+    {
+      "id": "m1",
+      "title": "等腰三角形底角相等",
+      "steps": [
+        {
+          "id": "s1",
+          "rule": "isosceles_base_angles",
+          "points": [
+            "A",
+            "B",
+            "C"
+          ],
+          "premises": [
+            "g1"
+          ]
+        },
+        {
+          "id": "s2",
+          "rule": "equal_base_angle_values",
+          "points": [
+            "A",
+            "B",
+            "C"
+          ],
+          "premises": [
+            "s1",
+            "g2"
+          ]
+        }
+      ]
+    }
+  ]
+}

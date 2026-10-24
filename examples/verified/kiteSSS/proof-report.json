@@ -1,0 +1,140 @@
+{
+  "engine": "local-geometry-proof/1",
+  "goal_reached": true,
+  "rules": [
+    "SSS",
+    "corresponding_angle"
+  ],
+  "methods": [
+    {
+      "id": "m1",
+      "steps": [
+        {
+          "id": "s1",
+          "rule": "SSS",
+          "premises": [
+            "g1",
+            "g2"
+          ],
+          "derived": [
+            {
+              "kind": "congruent",
+              "points": [
+                "A",
+                "B",
+                "D",
+                "C",
+                "B",
+                "D"
+              ],
+              "value": ""
+            }
+          ]
+        },
+        {
+          "id": "s2",
+          "rule": "corresponding_angle",
+          "premises": [
+            "s1"
+          ],
+          "derived": [
+            {
+              "kind": "angle_eq",
+              "points": [
+                "B",
+                "A",
+                "D",
+                "B",
+                "C",
+                "D"
+              ],
+              "value": ""
+            }
+          ]
+        }
+      ],
+      "goal_reached": true
+    }
+  ],
+  "boundary": "只校验支持的构造与定理；题意抽取仍需核对，不是通用自然语言证明器。",
+  "construction": [
+    {
+      "id": "c1",
+      "op": "triangle",
+      "points": [
+        "A",
+        "B",
+        "D"
+      ],
+      "arithmetic": "floating"
+    },
+    {
+      "id": "c2",
+      "op": "reflection",
+      "points": [
+        "C"
+      ],
+      "arithmetic": "floating"
+    }
+  ],
+  "exact_coordinates": {
+    "A": [
+      "15/4",
+      "~3.30718913883074"
+    ],
+    "B": [
+      "0",
+      "0"
+    ],
+    "D": [
+      "6",
+      "0"
+    ],
+    "C": [
+      "~3.75",
+      "~-3.30718913883074"
+    ]
+  },
+  "givens": [
+    {
+      "kind": "length_eq",
+      "points": [
+        "A",
+        "B",
+        "C",
+        "B"
+      ],
+      "value": "",
+      "id": "g1",
+      "source": "AB=CB"
+    },
+    {
+      "kind": "length_eq",
+      "points": [
+        "A",
+        "D",
+        "C",
+        "D"
+      ],
+      "value": "",
+      "id": "g2",
+      "source": "AD=CD"
+    }
+  ],
+  "goals": [
+    {
+      "kind": "angle_eq",
+      "points": [
+        "B",
+        "A",
+        "D",
+        "B",
+        "C",
+        "D"
+      ],
+      "value": ""
+    }
+  ],
+  "plan_sha256": "c788fbcfccabee99740404e9e75a70d1c2c19d9fc3e7dfbb160f377e5d17b9e3",
+  "lesson_sha256": "551200da74dd5c1aab15583fa7c54cc880dc17d27bff7e2d3d61f9a614b8fd9d"
+}

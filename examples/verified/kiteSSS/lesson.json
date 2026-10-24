@@ -1,0 +1,251 @@
+{
+  "schema": "geometry-lesson/1",
+  "request_id": "acaf2380-8c37-4788-9cbb-64cdbbd01208",
+  "id": "equal_angles",
+  "title": "利用三边全等证明角相等",
+  "statement": "四边形ABCD中，AB=CB，AD=CD。求证∠BAD=∠BCD。",
+  "givens": [
+    "AB = CB",
+    "AD = CD"
+  ],
+  "goal": "求∠BAD=∠BCD。",
+  "status": "ready",
+  "message": "",
+  "questions": [],
+  "profile": {
+    "grade": "8",
+    "edition": "pep",
+    "chapter": "等腰三角形与全等三角形",
+    "knowledge": [
+      "angle",
+      "congruence"
+    ],
+    "confirmed": true
+  },
+  "scene": {
+    "points": {
+      "A": [
+        553.29299069,
+        90.0
+      ],
+      "B": [
+        286.82803722,
+        325.0
+      ],
+      "D": [
+        713.17196278,
+        325.0
+      ],
+      "C": [
+        553.29299069,
+        560.0
+      ]
+    },
+    "base": [
+      {
+        "id": "shape1",
+        "kind": "point",
+        "point": "A",
+        "label": "A"
+      },
+      {
+        "id": "shape2",
+        "kind": "point",
+        "point": "B",
+        "label": "B"
+      },
+      {
+        "id": "shape3",
+        "kind": "point",
+        "point": "D",
+        "label": "D"
+      },
+      {
+        "id": "shape4",
+        "kind": "point",
+        "point": "C",
+        "label": "C"
+      },
+      {
+        "id": "shape5",
+        "kind": "line",
+        "a": "A",
+        "b": "B",
+        "color": "ink",
+        "dashed": false
+      },
+      {
+        "id": "shape6",
+        "kind": "line",
+        "a": "B",
+        "b": "C",
+        "color": "ink",
+        "dashed": false
+      },
+      {
+        "id": "shape7",
+        "kind": "line",
+        "a": "C",
+        "b": "D",
+        "color": "ink",
+        "dashed": false
+      },
+      {
+        "id": "shape8",
+        "kind": "line",
+        "a": "D",
+        "b": "A",
+        "color": "ink",
+        "dashed": false
+      }
+    ],
+    "constraints": []
+  },
+  "methods": [
+    {
+      "id": "m1",
+      "title": "连接BD，利用SSS证明全等",
+      "requires": [
+        "congruence"
+      ],
+      "steps": [
+        {
+          "title": "SSS",
+          "prompt": "试着连接 BD。这两个三角形有哪些已经能确认的边长关系？",
+          "hint": "按顶点顺序，逐一找齐三组相等的边。公共边也能算一组。",
+          "explanation": "已知或前面已经得到：AB = CB；AD = CD。\n连接 BD。按顶点顺序比较 △ABD 和 △CBD：AB = CB；BD = BD（同一条公共边）；AD = CD。三组对应边都相等。因此，△ABD ≌ △CBD。",
+          "uses": [
+            "congruence"
+          ],
+          "reason": "SSS：三组对应边分别相等",
+          "observe": [
+            {
+              "id": "shape10",
+              "kind": "line",
+              "a": "A",
+              "b": "B",
+              "color": "amber",
+              "width": 4
+            },
+            {
+              "id": "shape11",
+              "kind": "line",
+              "a": "A",
+              "b": "D",
+              "color": "amber",
+              "width": 4
+            },
+            {
+              "id": "shape12",
+              "kind": "line",
+              "a": "B",
+              "b": "C",
+              "color": "amber",
+              "width": 4
+            },
+            {
+              "id": "shape13",
+              "kind": "line",
+              "a": "C",
+              "b": "D",
+              "color": "amber",
+              "width": 4
+            }
+          ],
+          "reveal": [
+            {
+              "id": "shape9",
+              "kind": "line",
+              "a": "B",
+              "b": "D",
+              "color": "amber",
+              "dashed": true
+            },
+            {
+              "id": "shape14",
+              "kind": "polygon",
+              "points": [
+                "A",
+                "B",
+                "D"
+              ],
+              "fill": true,
+              "opacity": 1,
+              "color": "blue"
+            },
+            {
+              "id": "shape15",
+              "kind": "polygon",
+              "points": [
+                "C",
+                "B",
+                "D"
+              ],
+              "fill": true,
+              "opacity": 1,
+              "color": "amber"
+            }
+          ]
+        },
+        {
+          "title": "全等三角形的对应角相等",
+          "prompt": "要比较的两个角，在全等三角形中对应吗？",
+          "hint": "按全等时的顶点顺序，找出要比较的两个对应角。",
+          "explanation": "已知或前面已经得到：△ABD ≌ △CBD。\n因此，∠BAD = ∠BCD。",
+          "uses": [
+            "congruence"
+          ],
+          "reason": "全等三角形的对应角相等",
+          "observe": [
+            {
+              "id": "shape16",
+              "kind": "line",
+              "a": "B",
+              "b": "A",
+              "color": "blue",
+              "width": 4
+            },
+            {
+              "id": "shape17",
+              "kind": "line",
+              "a": "A",
+              "b": "D",
+              "color": "blue",
+              "width": 4
+            },
+            {
+              "id": "shape18",
+              "kind": "line",
+              "a": "B",
+              "b": "C",
+              "color": "amber",
+              "width": 4
+            },
+            {
+              "id": "shape19",
+              "kind": "line",
+              "a": "C",
+              "b": "D",
+              "color": "amber",
+              "width": 4
+            }
+          ],
+          "reveal": []
+        }
+      ]
+    }
+  ],
+  "audit": {
+    "summary": "本地构图与已知条件一致；每种解法的定理前提和目标已通过有限规则校验。",
+    "checks": [
+      "条件原文绑定",
+      "逐步前提校验",
+      "全部目标到达",
+      "学习范围检查",
+      "图形数值检查"
+    ],
+    "uncertainties": [
+      "请核对题面与提取的已知条件；这里只支持已收录的构造和定理。"
+    ]
+  }
+}

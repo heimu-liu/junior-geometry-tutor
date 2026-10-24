@@ -1,0 +1,164 @@
+{
+  "schema": "geometry-plan/1",
+  "request_id": "acaf2380-8c37-4788-9cbb-64cdbbd01208",
+  "id": "equal_angles",
+  "title": "利用三边全等证明角相等",
+  "status": "ready",
+  "message": "",
+  "questions": [],
+  "profile": {
+    "grade": "8",
+    "edition": "pep",
+    "chapter": "等腰三角形与全等三角形",
+    "knowledge": [
+      "angle",
+      "congruence"
+    ],
+    "confirmed": true
+  },
+  "construction": [
+    {
+      "id": "c1",
+      "op": "triangle",
+      "points": [
+        "A",
+        "B",
+        "D"
+      ],
+      "values": [
+        "5",
+        "6",
+        "4"
+      ],
+      "stage": "base"
+    },
+    {
+      "id": "c2",
+      "op": "reflection",
+      "points": [
+        "C",
+        "A",
+        "B",
+        "D"
+      ],
+      "values": [],
+      "stage": "base"
+    }
+  ],
+  "segments": [
+    {
+      "points": [
+        "A",
+        "B"
+      ],
+      "stage": "base"
+    },
+    {
+      "points": [
+        "B",
+        "C"
+      ],
+      "stage": "base"
+    },
+    {
+      "points": [
+        "C",
+        "D"
+      ],
+      "stage": "base"
+    },
+    {
+      "points": [
+        "D",
+        "A"
+      ],
+      "stage": "base"
+    },
+    {
+      "points": [
+        "B",
+        "D"
+      ],
+      "stage": "s1"
+    }
+  ],
+  "givens": [
+    {
+      "kind": "length_eq",
+      "points": [
+        "A",
+        "B",
+        "C",
+        "B"
+      ],
+      "value": "",
+      "id": "g1",
+      "source": "AB=CB"
+    },
+    {
+      "kind": "length_eq",
+      "points": [
+        "A",
+        "D",
+        "C",
+        "D"
+      ],
+      "value": "",
+      "id": "g2",
+      "source": "AD=CD"
+    }
+  ],
+  "goals": [
+    {
+      "kind": "angle_eq",
+      "points": [
+        "B",
+        "A",
+        "D",
+        "B",
+        "C",
+        "D"
+      ],
+      "value": ""
+    }
+  ],
+  "methods": [
+    {
+      "id": "m1",
+      "title": "连接BD，利用SSS证明全等",
+      "steps": [
+        {
+          "id": "s1",
+          "rule": "SSS",
+          "points": [
+            "A",
+            "B",
+            "D",
+            "C",
+            "B",
+            "D"
+          ],
+          "premises": [
+            "g1",
+            "g2"
+          ]
+        },
+        {
+          "id": "s2",
+          "rule": "corresponding_angle",
+          "points": [
+            "B",
+            "A",
+            "D",
+            "B",
+            "C",
+            "D"
+          ],
+          "premises": [
+            "s1"
+          ]
+        }
+      ]
+    }
+  ]
+}

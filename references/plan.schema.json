@@ -1,0 +1,352 @@
+{
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "geometry-plan/1"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "ready",
+        "needs_clarification",
+        "out_of_scope"
+      ]
+    },
+    "message": {
+      "type": "string"
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0,
+      "maxItems": 20
+    },
+    "profile": {
+      "type": "object",
+      "properties": {
+        "grade": {
+          "enum": [
+            "7",
+            "8",
+            "9"
+          ]
+        },
+        "edition": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes."
+        },
+        "chapter": {
+          "type": "string",
+          "maxLength": 150,
+          "description": "Plain text only. Runtime rejects markup and script syntax; consumers must render text nodes."
+        },
+        "knowledge": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "angle",
+              "area",
+              "isosceles",
+              "congruence",
+              "pythagoras",
+              "factorization",
+              "parallel",
+              "similarity",
+              "circle",
+              "quadrilateral",
+              "coordinate"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 11,
+          "uniqueItems": true
+        },
+        "confirmed": {
+          "const": true
+        }
+      },
+      "required": [
+        "grade",
+        "edition",
+        "chapter",
+        "knowledge",
+        "confirmed"
+      ],
+      "additionalProperties": false
+    },
+    "construction": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "op": {
+            "enum": [
+              "isosceles",
+              "isosceles_angle",
+              "triangle",
+              "midpoint",
+              "foot",
+              "on_segment",
+              "reflection",
+              "intersection"
+            ]
+          },
+          "points": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 5
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 0,
+            "maxItems": 3
+          },
+          "stage": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "op",
+          "points",
+          "values",
+          "stage"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 40
+    },
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "points": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "stage": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "points",
+          "stage"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 60
+    },
+    "givens": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "enum": [
+              "length_eq",
+              "angle_eq",
+              "angle_value",
+              "midpoint",
+              "between",
+              "perpendicular",
+              "bisector",
+              "equilateral",
+              "congruent"
+            ]
+          },
+          "points": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 2,
+            "maxItems": 6
+          },
+          "value": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "points",
+          "value",
+          "id",
+          "source"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 30
+    },
+    "goals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "enum": [
+              "length_eq",
+              "angle_eq",
+              "angle_value",
+              "midpoint",
+              "between",
+              "perpendicular",
+              "bisector",
+              "equilateral",
+              "congruent"
+            ]
+          },
+          "points": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 2,
+            "maxItems": 6
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "points",
+          "value"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 8
+    },
+    "methods": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "rule": {
+                  "enum": [
+                    "midpoint_definition",
+                    "bisector_definition",
+                    "equilateral_sides",
+                    "isosceles_base_angles",
+                    "isosceles_converse",
+                    "equal_base_angle_values",
+                    "triangle_angle_sum",
+                    "SSS",
+                    "SAS",
+                    "ASA",
+                    "AAS",
+                    "HL",
+                    "corresponding_side",
+                    "corresponding_angle",
+                    "equal_linear_pair",
+                    "right_angles_equal",
+                    "construct_midpoint",
+                    "construct_foot"
+                  ]
+                },
+                "points": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 3,
+                  "maxItems": 6
+                },
+                "premises": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 0,
+                  "maxItems": 40
+                }
+              },
+              "required": [
+                "id",
+                "rule",
+                "points",
+                "premises"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 2,
+            "maxItems": 12
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "steps"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 3
+    }
+  },
+  "required": [
+    "schema",
+    "request_id",
+    "id",
+    "title",
+    "status",
+    "message",
+    "questions",
+    "profile",
+    "construction",
+    "segments",
+    "givens",
+    "goals",
+    "methods"
+  ],
+  "additionalProperties": false
+}

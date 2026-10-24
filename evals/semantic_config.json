@@ -1,0 +1,51 @@
+{
+  "threshold": 0.45,
+  "positive_concepts": {
+    "geometry": {
+      "weight": 1,
+      "phrases": [
+        "平面几何",
+        "初中几何",
+        "几何题",
+        "几何自习室",
+        "等腰三角形题",
+        "plane geometry",
+        "几何小老师",
+        "开始几何辅导"
+      ]
+    }
+  },
+  "negative_concepts": {
+    "algebra": {
+      "weight": 1,
+      "exclusive": true,
+      "phrases": [
+        "一元二次方程"
+      ]
+    },
+    "advanced": {
+      "weight": 1,
+      "exclusive": true,
+      "phrases": [
+        "高中",
+        "立体几何",
+        "微积分",
+        "奥数竞赛",
+        "复数解法"
+      ]
+    },
+    "unrelated": {
+      "weight": 1,
+      "exclusive": true,
+      "phrases": [
+        "营销文案",
+        "产品介绍网页",
+        "翻译",
+        "通用自由绘画工具"
+      ]
+    }
+  },
+  "fallback_positive_concepts": [
+    "geometry"
+  ]
+}
