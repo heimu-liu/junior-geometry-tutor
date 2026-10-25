@@ -215,6 +215,9 @@ def compile_plan(plan,request):
                     for tri,color in ((f['points'][:3],'blue'),(f['points'][3:],'amber')):
                         reveal.append(primitive('polygon',points=tri,fill=True,opacity=1,color=color))
                 elif f['kind']=='angle_value':reveal.append(primitive('label',at=angle_label(f),text=f['value']+'°',color='amber'))
+                elif f['kind']=='angle_eq':
+                    for trio,color in ((f['points'][:3],'blue'),(f['points'][3:],'amber')):
+                        reveal.append(primitive('angleArc',a=trio[0],vertex=trio[1],b=trio[2],color=color,size=30))
                 elif f['kind']=='perpendicular':
                     # Show a right-angle mark only at a named common intersection.
                     a,b,c,d=f['points'];vertex=next((n for n in (a,b) if n in (c,d)),None)
@@ -229,7 +232,8 @@ def compile_plan(plan,request):
                 result['prompt']='试着连接 '+ '、'.join(''.join(x) for x in new_lines)+'。'+result['prompt']
                 result['explanation']='连接 '+ '、'.join(''.join(x) for x in new_lines)+'。'+result['explanation']
             explanation=('已知或前面已经得到：'+premise_text+'。\n' if premise_text else '')+result['explanation']
-            steps.append({'title':('作辅助图形' if rule.startswith('construct_') else RULES[rule][1].split('：')[0]),'prompt':result['prompt'],'hint':result['hint'],'explanation':explanation,'uses':result['uses'],'reason':result['reason'],'observe':observe,'reveal':reveal})
+            title='作辅助图形' if rule.startswith('construct_') else '看一看这两个相邻的角' if rule=='equal_linear_pair' else RULES[rule][1].split('：')[0]
+            steps.append({'title':title,'prompt':result['prompt'],'hint':result['hint'],'explanation':explanation,'uses':result['uses'],'reason':result['reason'],'observe':observe,'reveal':reveal})
             details.append({'id':sid,'rule':rule,'premises':step['premises'],'derived':result['facts']})
         end=Known([f for fs in local.values() for f in fs])
         if not all(end.has(g) for g in plan['goals']):raise ValueError('本解法尚未证明题目的全部目标')

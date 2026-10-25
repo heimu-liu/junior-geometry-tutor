@@ -422,6 +422,9 @@
         },
         {
           "$ref": "#/$defs/rightAngle"
+        },
+        {
+          "$ref": "#/$defs/angleArc"
         }
       ]
     },
@@ -438,6 +441,9 @@
         },
         {
           "$ref": "#/$defs/rightAngle"
+        },
+        {
+          "$ref": "#/$defs/angleArc"
         }
       ],
       "description": "Only prior visible points. Line/circle/rightAngle must match geometry already drawn in base or earlier reveals. Polygon is transparent fill only; no outline. Runtime validates temporal references."
@@ -972,6 +978,63 @@
           }
         }
       ]
+    },
+    "angleArc": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/slug"
+        },
+        "color": {
+          "enum": [
+            "ink",
+            "amber",
+            "blue",
+            "red"
+          ]
+        },
+        "width": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "dashed": {
+          "type": "boolean"
+        },
+        "fill": {
+          "type": "boolean"
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0.03,
+          "maximum": 1
+        },
+        "kind": {
+          "const": "angleArc"
+        },
+        "vertex": {
+          "$ref": "#/$defs/pointKey"
+        },
+        "a": {
+          "$ref": "#/$defs/pointKey"
+        },
+        "b": {
+          "$ref": "#/$defs/pointKey"
+        },
+        "size": {
+          "type": "number",
+          "minimum": 4,
+          "maximum": 80
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "vertex",
+        "a",
+        "b"
+      ],
+      "additionalProperties": false
     }
   }
 }

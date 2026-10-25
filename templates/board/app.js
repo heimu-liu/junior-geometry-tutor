@@ -12,8 +12,15 @@
   document.querySelectorAll('[data-icon]').forEach(el => el.innerHTML = iconMarkup(el.dataset.icon));
   const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const clone = x => JSON.parse(JSON.stringify(x));
-  const initialProfile = { grade:'8', edition:'unknown', chapter:'', knowledge:['angle','area','isosceles','congruence'], confirmed:false };
-  let state = { schema:'geometry-study-room/1', lessonId:lessons[0].id, profile:clone(initialProfile), records:{}, customText:'', collapsed:false, generatedLessons:[], pendingRequest:null };
+  const gradeDefaults=boot.gradeDefaults;
+  if(!gradeDefaults?.grades||!gradeDefaults.grades[gradeDefaults.default_grade])throw Error('缺少年级默认知识表，请重新生成画板。');
+  function withGradeDefaults(profile){
+    const keys=gradeDefaults.grades[profile.grade];
+    if(!Array.isArray(keys)||!keys.length||keys.some(k=>!knowledgeNames[k]))throw Error('该年级的默认知识范围不可用。');
+    return {...profile,chapter:'',knowledge:[...keys]};
+  }
+  const initialProfile = withGradeDefaults({ grade:gradeDefaults.default_grade, edition:'unknown', chapter:'', knowledge:[], confirmed:false });
+  let state = { schema:'geometry-study-room/1', lessonId:lessons[0].id, profile:clone(initialProfile), records:{}, customText:'', collapsed:false, generatedLessons:[], presentations:{}, pendingRequest:null };
   let current = { items:[], methodId:lessons[0].methods[0].id, step:0, level:0, hintsOpen:false, photo:null, view:{x:0,y:0,width:1000,height:700} };
   let activeJob=null, generationEpoch=0, generateAfterSettings=false;
   let drawing, saveTimer, toastTimer, textCallback, confirmation, selectedExample=null, importing=false, pendingPhoto=null;
@@ -33,23 +40,30 @@
     const ids=['custom',...builtins.map(l=>l.id),...generated.map(l=>'generated-'+l.id)];
     if (!raw || raw.schema!=='geometry-study-room/1' || !raw.profile || !raw.records || !ids.includes(raw.lessonId)) throw Error('文件不是有效的几何学习记录。');
     if(!Array.isArray(raw.profile.knowledge) || typeof raw.records!=='object' || Array.isArray(raw.records)) throw Error('学习记录结构不完整。');
-    const profile={grade:['7','8','9'].includes(raw.profile.grade)?raw.profile.grade:'8',edition:String(raw.profile.edition||'unknown').slice(0,80),chapter:String(raw.profile.chapter||'').slice(0,100),knowledge:raw.profile.knowledge.filter(k=>knowledgeNames[k]),confirmed:!!raw.profile.confirmed};
+    const profile=withGradeDefaults({grade:raw.profile.grade,edition:String(raw.profile.edition||'unknown').slice(0,80),chapter:'',knowledge:[],confirmed:!!raw.profile.confirmed});
     const records={};
     for(const [id,r] of Object.entries(raw.records)) {
       if(!ids.includes(id)||!r||!Array.isArray(r.items)) throw Error('学习记录中的画板数据不完整。');
       const v=r.view||{}; const validView=['x','y','width','height'].every(k=>typeof v[k]==='number'&&Number.isFinite(v[k]))&&v.width>=100&&v.width<=6000&&v.height>=70&&v.height<=4200&&Math.abs(v.x)<10000&&Math.abs(v.y)<10000;
       let photo=null;
       if(r.photo) { const p=r.photo;if(typeof p.src!=='string'||!/^data:image\/(png|jpeg|webp);base64,[a-zA-Z0-9+/=]+$/.test(p.src)||p.src.length>8000000||!['x','y','width','height','scale'].every(k=>typeof p[k]==='number'&&Number.isFinite(p[k]))||p.width<1||p.height<1||p.width>2000||p.height>2000||p.scale<.3||p.scale>1.5||Math.abs(p.x)>10000||Math.abs(p.y)>10000)throw Error('学习记录中的图片无效。');photo={src:p.src,x:p.x,y:p.y,width:p.width,height:p.height,scale:p.scale}; }
-      records[id]={items:r.items.slice(0,10000),methodId:typeof r.methodId==='string'?r.methodId:'',step:Number.isInteger(r.step)?Math.max(0,Math.min(20,r.step)):0,level:[0,1,2].includes(r.level)?r.level:0,hintsOpen:!!r.hintsOpen,photo,view:validView?v:{x:0,y:0,width:1000,height:700}};
+      records[id]={items:r.items.slice(0,10000),methodId:typeof r.methodId==='string'?r.methodId:'',step:Number.isInteger(r.step)?Math.max(0,Math.min(20,r.step)):0,level:[0,1,2].includes(r.level)?r.level:0,hintsOpen:!!r.hintsOpen,photo,sourceInitialized:!!r.sourceInitialized,photoView:['photo','compare','redraw'].includes(r.photoView)?r.photoView:'compare',view:validView?v:{x:0,y:0,width:1000,height:700}};
     }
     let pendingRequest=null;if(raw.pendingRequest){const r=raw.pendingRequest;codec.profile(r.profile);if(r.schema!=='geometry-request/1'||typeof r.id!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,79}$/.test(r.id)||typeof r.question!=='string'||r.question.length>6000)throw Error('题目交接记录无效。');if(codec.sameProfile(r.profile,profile))pendingRequest=clone(r);}
-    return {schema:raw.schema,profile,records,lessonId:raw.lessonId,customText:String(raw.customText||'').slice(0,6000),collapsed:!!raw.collapsed,generatedLessons:generated,pendingRequest};
+    const presentations={};if(raw.presentations){if(typeof raw.presentations!=='object'||Array.isArray(raw.presentations)||Object.keys(raw.presentations).length>30)throw Error('场景记录无效。');for(const [id,c] of Object.entries(raw.presentations)){const l=generated.find(l=>l.request_id===id);presentations[id]=window.GeometryPresentation.check(c,l);}}
+    return {schema:raw.schema,profile,records,presentations,lessonId:raw.lessonId,customText:String(raw.customText||'').slice(0,6000),collapsed:!!raw.collapsed,generatedLessons:generated,pendingRequest};
   }
   try {const raw=localStorage.getItem(KEY);if(raw)state=validateSession(JSON.parse(raw));}catch{/* A damaged local record never prevents opening the board. */}
 
   function registerGenerated(){lessons.splice(0,lessons.length,...builtins,...state.generatedLessons.map(x=>codec.adapt(x)));}
   registerGenerated();
-  if(boot.lesson&&!lessons.some(l=>l.raw?.request_id===boot.lesson.request_id)){const l=codec.adapt(boot.lesson);state.generatedLessons.push(l.raw);registerGenerated();state.lessonId=l.id;state.profile=clone(boot.profile);}
+  if(boot.lesson){const l=codec.adapt(boot.lesson),existed=state.generatedLessons.some(x=>x.request_id===boot.lesson.request_id);state.generatedLessons=state.generatedLessons.filter(x=>x.id!==l.raw.id);state.generatedLessons.push(l.raw);registerGenerated();state.lessonId=l.id;if(!existed)state.profile=clone(boot.profile);}
+  state.presentations=Object.fromEntries(Object.entries(state.presentations||{}).filter(([id])=>state.generatedLessons.some(l=>l.request_id===id)));
+  if(boot.presentation)state.presentations[boot.lesson.request_id]=window.GeometryPresentation.check(boot.presentation,boot.lesson);
+  function presentation(){return state.presentations[lesson()?.raw?.request_id]||null;}
+  const normalizedProfile=withGradeDefaults(state.profile);
+  if(!codec.sameProfile(normalizedProfile,state.profile))state.pendingRequest=null;
+  state.profile=normalizedProfile;
 
   function updateDrawingControls(s) {
     $('undoButton').disabled=!s.canUndo;$('redoButton').disabled=!s.canRedo;
@@ -69,7 +83,27 @@
     drawing.setItems(current.items);drawing.setView(current.view);drawing.setTool('pen');importing=false;
     render();updateDrawingControls(drawing.getState());
   }
-  function renderPhoto(){ $('photoLayer').replaceChildren();if(!current.photo)return;const p=current.photo;const image=document.createElementNS(NS,'image');image.setAttribute('href',p.src);image.setAttribute('x',p.x);image.setAttribute('y',p.y);image.setAttribute('width',p.width*p.scale);image.setAttribute('height',p.height*p.scale);image.setAttribute('preserveAspectRatio','xMidYMid meet');image.setAttribute('pointer-events','none');$('photoLayer').append(image); }
+  function sourceControls(){
+    $('sourceViews').hidden=!current.photo;
+    document.querySelectorAll('[data-board-view]').forEach(b=>{b.hidden=b.dataset.boardView!=='photo'&&!lesson();b.setAttribute('aria-pressed',String((current.photoView||'compare')===b.dataset.boardView));});
+  }
+  function fitBoard(mode='compare'){
+    let target=presentation()?{x:180,y:20,width:660,height:670}:{x:0,y:0,width:1000,height:700};
+    if(current.photo&&mode!=='redraw'){
+      const p=current.photo,photo={x:p.x-25,y:p.y-45,width:p.width*p.scale+50,height:p.height*p.scale+70};
+      if(mode==='photo'||!lesson())target=photo;else{const x=Math.min(target.x,photo.x),y=Math.min(target.y,photo.y);target={x,y,width:Math.max(target.x+target.width,photo.x+photo.width)-x,height:Math.max(target.y+target.height,photo.y+photo.height)-y};}
+    }
+    current.photoView=mode;drawing.setView(target);updateDrawingControls(drawing.getState());sourceControls();scheduleSave();
+  }
+  function photoPlacement(src,width,height){const ratio=Math.min(620/width,550/height);return {src,x:-610,y:85,width:width*ratio,height:height*ratio,scale:1};}
+  function renderPhoto(){
+    $('photoLayer').replaceChildren();sourceControls();if(!current.photo)return;
+    const p=current.photo,image=document.createElementNS(NS,'image');
+    image.setAttribute('href',p.src);image.setAttribute('x',p.x);image.setAttribute('y',p.y);image.setAttribute('width',p.width*p.scale);image.setAttribute('height',p.height*p.scale);image.setAttribute('preserveAspectRatio','xMidYMid meet');image.setAttribute('pointer-events','none');image.setAttribute('aria-label','原题照片');image.setAttribute('role','img');$('photoLayer').append(image);
+    const label=document.createElementNS(NS,'text');label.setAttribute('x',p.x);label.setAttribute('y',p.y-20);label.setAttribute('font-size','20');label.setAttribute('fill','#607658');label.textContent='原题照片';$('photoLayer').append(label);
+  }
+  document.querySelectorAll('[data-board-view]').forEach(b=>b.onclick=()=>fitBoard(b.dataset.boardView));
+
   function render() {
     const l=lesson(),m=method();
     if(m) {current.methodId=m.id;current.step=Math.min(current.step,m.steps.length-1);}
@@ -81,10 +115,12 @@
     $('questionText').innerHTML=l?l.statementHTML:escape(state.customText||'上传题图，或写下你想研究的题目。').replace(/\n/g,'<br>');
     $('questionGoal').innerHTML=l?l.goalHTML:'先在画板上画一画';
     $('parsedConditions').hidden=!l?.generated; $('parsedConditionList').innerHTML=l?.generated?l.raw.givens.map(x=>'<li>'+escape(x)+'</li>').join(''):'';
-    $('profileSummary').textContent=state.profile.confirmed?({7:'七',8:'八',9:'九'}[state.profile.grade]+'年级 · 学习范围'):'示例学习范围';
+    $('profileSummary').textContent={7:'七',8:'八',9:'九'}[state.profile.grade]+'年级 · 默认范围';
     $('boardMode').textContent=l?'先画一画，慢慢想':'我的思考空间';
     $('generateCurrent').hidden=!!activeJob||(!l&&!state.customText)||(!!l&&!l.generated)||(!!l?.generated&&codec.sameProfile(l.raw.profile,state.profile));
     $('lessonLayer').innerHTML=l?l.render(m?.id||l.methods[0]?.id||'',current.hintsOpen&&m?current.step:-1,current.level===2):'';
+    window.GeometryPresentation.draw($('contextLayer'),presentation(),l?.raw,!!(m&&current.hintsOpen&&current.level===2&&current.step===m.steps.length-1));
+    if(presentation())$('questionGoal').textContent='判断门框是否水平，并说明理由。';
     renderPhoto();renderHints();
   }
   function renderHints() {
@@ -94,20 +130,20 @@
     $('smallHint').hidden=true;$('smallHint').textContent='';$('explanation').hidden=true;$('explanation').innerHTML='';
     $('hintEmpty').hidden=!empty;$('nextStep').disabled=empty;$('previousStep').disabled=empty;
     if(!current.hintsOpen){$('stepPrompt').textContent='';$('stepTitle').textContent='';$('hintEmpty').innerHTML='';return;}
-    if(empty){$('hintEmpty').innerHTML=l?'这道题的现有解法需要一些尚未勾选的知识。可以核对学习范围，或先自己画一画。<button class="outline-button" id="adjustKnowledge">核对学习范围</button>':'这道题还没有可用提示。先生成题图与提示，或把题目交给当前 Agent。';$('adjustKnowledge')?.addEventListener('click',openSettings);$('tryExample')?.addEventListener('click',openQuestion);return;}
+    if(empty){$('hintEmpty').innerHTML=l?'这道题的现有解法超出当前年级默认范围。可以核对年级，或先自己画一画。<button class="outline-button" id="adjustKnowledge">核对年级</button>':'这道题还没有可用提示。先生成题图与提示，或把题目交给当前 Agent。';$('adjustKnowledge')?.addEventListener('click',openSettings);$('tryExample')?.addEventListener('click',openQuestion);return;}
     $('methodSelect').innerHTML=available.map(x=>`<option value="${x.id}">${escape(x.title)}</option>`).join('');$('methodSelect').value=m.id;
     $('knowledgeNote').textContent=(available.length===1?'当前范围可用 1 种方法 · ':'')+m.requires.map(k=>knowledgeNames[k]).join('、');
     $('hintProgress').innerHTML=m.steps.map((_,i)=>`<span class="${i<current.step?'done':i===current.step?'current':''}"></span>`).join('');
     $('stepCount').textContent=`第 ${current.step+1} 步 / 共 ${m.steps.length} 步`;
     const s=m.steps[current.step];$('stepTitle').textContent=s.title;$('stepPrompt').textContent=s.prompt;
     if(current.level>=1){$('smallHint').textContent=s.hint;$('smallHint').hidden=false;}
-    if(current.level===2){$('explanation').innerHTML=s.explanation+(s.reason?'<p class="step-reason"><strong>本步依据：</strong>'+escape(s.reason)+'</p>':'');$('explanation').hidden=false;}
+    if(current.level===2){$('explanation').innerHTML=s.explanation+(s.reason?'<p class="step-reason"><strong>本步依据：</strong>'+escape(s.reason)+'</p>':'');$('explanation').hidden=false;if(presentation()&&current.step===m.steps.length-1){const p=document.createElement('p');p.className='context-explanation';p.textContent=window.GeometryPresentation.conclusion(presentation());$('explanation').append(p);}}
     $('revealStep').hidden=current.level===2;$('revealStep').textContent=current.level===0?'再给一点提示':'看看这一步的解释';
     $('nextStep').disabled=current.level<2;$('nextStep').innerHTML=(current.step===m.steps.length-1?'回到自主思考':'下一步')+iconMarkup('arrowRight');
     $('previousStep').disabled=current.step===0;
   }
   function closeHints(){current.hintsOpen=false;render();scheduleSave();}
-  $('openHints').onclick=()=>{current.hintsOpen=true;current.step=0;current.level=0;render();scheduleSave();};
+  $('openHints').onclick=()=>{current.hintsOpen=true;current.step=0;current.level=0;if(current.photo&&lesson())fitBoard('redraw');render();scheduleSave();};
   $('closeHints').onclick=closeHints;
   $('revealStep').onclick=()=>{current.level=Math.min(2,current.level+1);render();scheduleSave();};
   $('nextStep').onclick=()=>{const m=method();if(!m||current.level<2)return;if(current.step===m.steps.length-1){closeHints();toast('把刚才的思路，试着自己走一遍。');return;}current.step++;current.level=0;render();$('hintPanel').querySelector('.hint-scroll').scrollTop=0;scheduleSave();};
@@ -116,11 +152,13 @@
   $('collapseQuestion').onclick=()=>{state.collapsed=true;render();scheduleSave();};
   $('expandQuestion').onclick=()=>{state.collapsed=false;if(innerWidth<=850&&current.hintsOpen)current.hintsOpen=false;render();scheduleSave();};
 
-  function openSettings(){ $('grade').value=state.profile.grade;if(![...$('edition').options].some(o=>o.value===state.profile.edition)){const o=new Option(state.profile.edition,state.profile.edition);$('edition').add(o);}$('edition').value=state.profile.edition;$('chapter').value=state.profile.chapter;$('knowledgeChoices').innerHTML=Object.entries(knowledgeNames).map(([key,label])=>`<label><input type="checkbox" name="knowledge" value="${key}" ${state.profile.knowledge.includes(key)?'checked':''}>${label}</label>`).join('');showDialog('settingsDialog'); }
+  function showGradeScope(){ $('gradeScopeSummary').textContent=gradeDefaults.grades[$('grade').value].map(k=>knowledgeNames[k]).join('、'); }
+  function openSettings(){ $('grade').value=state.profile.grade;if(![...$('edition').options].some(o=>o.value===state.profile.edition)){const o=new Option(state.profile.edition,state.profile.edition);$('edition').add(o);}$('edition').value=state.profile.edition;showGradeScope();showDialog('settingsDialog'); }
+  $('grade').onchange=showGradeScope;
   $('settingsButton').onclick=openSettings;
-  $('settingsForm').onsubmit=e=>{e.preventDefault();if(!document.querySelector('input[name=knowledge]:checked')){toast('请至少勾选一项确实学过的知识。');return;}cancelGeneration(false);state.pendingRequest=null;state.profile={grade:$('grade').value,edition:$('edition').value,chapter:$('chapter').value,knowledge:[...document.querySelectorAll('input[name=knowledge]:checked')].map(c=>c.value),confirmed:true};current.step=0;current.level=0;current.methodId=permittedMethods()[0]?.id||'';$('settingsDialog').close();render();persist();toast('已按学过的知识重新筛选方法。');if(generateAfterSettings){generateAfterSettings=false;startGeneration();}};
+  $('settingsForm').onsubmit=e=>{e.preventDefault();cancelGeneration(false);state.pendingRequest=null;state.profile=withGradeDefaults({grade:$('grade').value,edition:$('edition').value,chapter:'',knowledge:[],confirmed:true});current.step=0;current.level=0;current.methodId=permittedMethods()[0]?.id||'';$('settingsDialog').close();render();persist();toast('已采用所选年级的默认知识范围。');if(generateAfterSettings){generateAfterSettings=false;startGeneration();}};
 
-  function plainStatement(l){const div=document.createElement('div');div.innerHTML=l.statementHTML+' '+l.goalHTML;return div.textContent.trim();}
+  function plainStatement(l){if(l.raw)return l.raw.statement;const div=document.createElement('div');div.innerHTML=l.statementHTML+' '+l.goalHTML;return div.textContent.trim();}
   function openQuestion(){selectedExample=lesson()?.generated?null:lesson()?.id||null;$('questionInput').value=lesson()?plainStatement(lesson()):state.customText;renderExamplePicker();showDialog('questionDialog');}
   function renderExamplePicker(){ $('examplePicker').innerHTML=builtins.map((l,i)=>`<button class="${selectedExample===l.id?'active':''}" data-lesson="${l.id}"><span>例题 ${String(i+1).padStart(2,'0')}</span><strong>${escape(l.shortTitle||l.title)}</strong></button>`).join('');$('examplePicker').querySelectorAll('button').forEach(b=>b.onclick=()=>{selectedExample=b.dataset.lesson;$('questionInput').value=plainStatement(lessons.find(l=>l.id===selectedExample));renderExamplePicker();}); }
   $('questionInput').oninput=()=>{selectedExample=null;renderExamplePicker();};
@@ -150,7 +188,7 @@
   $('generateCurrent').onclick=()=>startGeneration();
   async function startGeneration(){
     if(!state.profile.confirmed){generateAfterSettings=true;openSettings();return;}
-    if(!state.profile.knowledge.length){toast('先确认已经学过的知识。');openSettings();return;}
+    if(!state.profile.knowledge.length){toast('先选择年级。');openSettings();return;}
     cancelGeneration(false);
     const request=requestData();if(!request.question.trim()){toast('请先写下题目。');return;}
     const epoch=generationEpoch;state.pendingRequest=request;persist();
@@ -184,9 +222,10 @@
     state.generatedLessons=state.generatedLessons.filter(l=>l.id!==raw.id);state.generatedLessons.push(adapted.raw);
     // Keep complete editable sessions bounded; older drawings remain in exported records.
     if(state.generatedLessons.length>30){const removed=state.generatedLessons.shift();delete state.records['generated-'+removed.id];}
+    state.presentations=Object.fromEntries(Object.entries(state.presentations).filter(([id])=>state.generatedLessons.some(l=>l.request_id===id)));
     registerGenerated();state.lessonId=adapted.id;state.pendingRequest=null;
     state.records[adapted.id]={...previous,methodId:adapted.methods[0].id,step:0,level:0,hintsOpen:false};
-    current=clone(state.records[adapted.id]);render();updateDrawingControls(drawing.getState());$('generationBox').hidden=true;persist();toast('题图已画好。需要时，再打开一点提示。');
+    current=clone(state.records[adapted.id]);if(current.photo)fitBoard('compare');render();updateDrawingControls(drawing.getState());$('generationBox').hidden=true;persist();toast('题图已画好。需要时，再打开一点提示。');
   }
   $('exportRequest').onclick=()=>{
     if(!state.profile.confirmed){toast('请先确认学习范围，再导出题目。');openSettings();return;}
@@ -203,7 +242,7 @@
   $('strokeWidth').onchange=()=>drawing.setStyle({width:Number($('strokeWidth').value)});
   $('undoButton').onclick=()=>drawing.undo();$('redoButton').onclick=()=>drawing.redo();
   function zoom(factor){const v=view();const width=Math.min(3000,Math.max(250,v.width*factor));const height=width*.7;drawing.setView({x:v.x+(v.width-width)/2,y:v.y+(v.height-height)/2,width,height});updateDrawingControls(drawing.getState());scheduleSave();}
-  $('zoomIn').onclick=()=>zoom(.8);$('zoomOut').onclick=()=>zoom(1.25);$('zoomReset').onclick=()=>{drawing.resetView();updateDrawingControls(drawing.getState());scheduleSave();};
+  $('zoomIn').onclick=()=>zoom(.8);$('zoomOut').onclick=()=>zoom(1.25);$('zoomReset').onclick=()=>fitBoard(current.photo?(current.photoView||'compare'):'redraw');
   $('textForm').onsubmit=e=>{e.preventDefault();const value=$('annotationInput').value.trim();if(value){textCallback?.(value);textCallback=null;$('textDialog').close();}};
   $('textDialog').addEventListener('close',()=>{if(textCallback){textCallback('');textCallback=null;}});
   $('moreButton').onclick=()=>{$('moreMenu').hidden=!$('moreMenu').hidden;$('moreButton').setAttribute('aria-expanded',String(!$('moreMenu').hidden));};
@@ -225,16 +264,15 @@
 
   function openPhoto(){ $('photoControls').hidden=!current.photo;$('photoScale').value=current.photo?current.photo.scale*100:100;showDialog('photoDialog'); }
   $('photoButton').onclick=openPhoto;$('uploadPhoto').onclick=()=>{pendingPhoto=null;$('photoInput').click();};
-  $('photoInput').onchange=async e=>{const file=e.target.files[0];e.target.value='';if(!file)return;if(!['image/png','image/jpeg','image/webp'].includes(file.type)){toast('请选择 PNG、JPEG 或 WebP 图片。');return;}if(file.size>15000000){toast('图片较大，请选择 15 MB 以内的题图。');return;}
+  $('photoInput').onchange=async e=>{const file=e.target.files[0];e.target.value='';if(!file)return;if(!['image/png','image/jpeg','image/webp'].includes(file.type)){toast('请选择 PNG、JPEG 或 WebP 图片。');return;}if(file.size>5500000){toast('图片较大，请选择 5.5 MB 以内的题图。');return;}
     try{const data=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);});const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=data;});
-      const ratio=Math.min(1,1400/Math.max(img.width,img.height));const canvas=document.createElement('canvas');canvas.width=Math.round(img.width*ratio);canvas.height=Math.round(img.height*ratio);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);const fit=Math.min(680/img.width,450/img.height);
-      if(pendingPhoto){switchLesson('custom',pendingPhoto.text||'请根据上传的题图进行思考和演算。');pendingPhoto=null;if($('questionDialog').open)$('questionDialog').close();}else if(lesson())switchLesson('custom','请根据上传的题图进行思考和演算。');
-      current.photo={src:canvas.toDataURL('image/png'),x:500-img.width*fit/2,y:350-img.height*fit/2,width:img.width*fit,height:img.height*fit,scale:1};render();persist();if($('photoDialog').open){$('photoControls').hidden=false;$('photoScale').value=100;}toast('题图已放入画板，可以在上面写画。');
+      if(pendingPhoto){switchLesson('custom',pendingPhoto.text||'请根据上传的题图进行思考和演算。');pendingPhoto=null;if($('questionDialog').open)$('questionDialog').close();}
+      current.photo=photoPlacement(data,img.width,img.height);current.sourceInitialized=true;fitBoard(lesson()?'compare':'photo');render();persist();if($('photoDialog').open){$('photoControls').hidden=false;$('photoScale').value=100;}toast('题图已放入画板，可以在上面写画。');
     }catch{toast('图片无法读取，请换一张试试。');}
   };
   $('photoScale').oninput=()=>{if(current.photo){const p=current.photo,next=Number($('photoScale').value)/100;p.x+=(p.width*p.scale-p.width*next)/2;p.y+=(p.height*p.scale-p.height*next)/2;p.scale=next;renderPhoto();scheduleSave();}};
   document.querySelectorAll('[data-move]').forEach(b=>b.onclick=()=>{if(!current.photo)return;const p=current.photo;({left:()=>p.x-=20,right:()=>p.x+=20,up:()=>p.y-=20,down:()=>p.y+=20}[b.dataset.move])();renderPhoto();scheduleSave();});
-  $('removePhoto').onclick=()=>{current.photo=null;renderPhoto();$('photoControls').hidden=true;persist();};
+  $('removePhoto').onclick=()=>{current.photo=null;current.sourceInitialized=true;fitBoard('redraw');renderPhoto();$('photoControls').hidden=true;persist();};
   $('aboutButton').onclick=()=>showDialog('aboutDialog');
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
   document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
@@ -246,6 +284,11 @@
   window.addEventListener('beforeunload',persist);
   loadCurrent();
   updateConnection();
+  if(boot.photo&&boot.lesson&&!current.sourceInitialized){
+    const target=state.lessonId,img=new Image();
+    img.onload=()=>{if(state.lessonId!==target)return;if(!current.photo)current.photo=photoPlacement(boot.photo,img.naturalWidth,img.naturalHeight);current.sourceInitialized=true;fitBoard('compare');render();persist();};
+    img.onerror=()=>toast('原题照片未能加载，请重新附上题图。');img.src=boot.photo;
+  }
   if(bridge&&state.pendingRequest&&state.lessonId==='custom'){
     const saved=clone(state.pendingRequest),epoch=generationEpoch;activeJob=saved.id;
     generationMessage('正在恢复这道题的生成状态…',true);render();

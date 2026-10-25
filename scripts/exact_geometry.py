@@ -5,7 +5,7 @@ import re
 
 NAME = re.compile(r'^[A-Za-z][A-Za-z0-9_]{0,31}$')
 OPS = {'isosceles':(3,2), 'isosceles_angle':(3,2), 'triangle':(3,3),
-       'midpoint':(3,0), 'foot':(4,0), 'on_segment':(3,1), 'reflection':(4,0), 'intersection':(5,0)}
+       'midpoint':(3,0), 'foot':(4,0), 'on_segment':(3,1), 'on_line':(3,1), 'reflection':(4,0), 'intersection':(5,0)}
 
 def number(s):
     if not isinstance(s,str) or len(s)>40: raise ValueError('数值须为短的有理数字符串')
@@ -53,9 +53,10 @@ def construct(operations):
             # Put independent triangles side by side; translation is not a mathematical premise.
             off=Fraction(0) if not pts else max(p[0] for p in pts.values())+bc/2+2
             pts.update({names[0]:(x+off,y), names[1]:(off,Fraction(0)), names[2]:(bc+off,Fraction(0))});seeds+=1
-        elif kind in ('midpoint','on_segment'):
+        elif kind in ('midpoint','on_segment','on_line'):
             a,b=(pts[n] for n in names[1:]);t=Fraction(1,2) if kind=='midpoint' else val[0]
-            if not 0<t<1: raise ValueError('分点必须在线段内部')
+            if kind!='on_line' and not 0<t<1: raise ValueError('分点必须在线段内部')
+            if kind=='on_line' and t in (0,1): raise ValueError('直线分点不能与端点重合')
             if a==b: raise ValueError('零长度线段')
             pts[names[0]]=tuple(a[i]+t*(b[i]-a[i]) for i in (0,1))
         elif kind in ('foot','reflection'):

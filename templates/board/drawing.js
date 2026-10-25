@@ -186,6 +186,8 @@
     setView(view) {
       if (!view || !bounded(view.x) || !bounded(view.y) || !finite(view.width) || !finite(view.height) || view.width <= 0 || view.height <= 0) return false;
       this.svg.setAttribute('viewBox', [view.x, view.y, view.width, view.height].join(' '));
+      const clip=this.svg.querySelector('[data-view-clip]');
+      if(clip)for(const key of ['x','y','width','height'])clip.setAttribute(key,view[key]);
       return true;
     }
 

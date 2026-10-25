@@ -103,7 +103,8 @@
               "foot",
               "on_segment",
               "reflection",
-              "intersection"
+              "intersection",
+              "on_line"
             ]
           },
           "points": {

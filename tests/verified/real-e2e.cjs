@@ -2,18 +2,18 @@
 const {chromium}=require('playwright');const fs=require('node:fs');const path=require('node:path');const assert=require('node:assert/strict');
 const ROOT=path.resolve(__dirname,'../..'),OUT=path.join(ROOT,'tests/verified/evidence-real'),WORK=path.join(ROOT,'.runtime/verified-v0.3/jobs');fs.mkdirSync(OUT,{recursive:true});
 const cases=[
-{id:'isosceles70',source:'https://www.ecsponline.com/yz/B10A6526763AD4825AB36B4D3C2271BBF000.pdf',reference:'作业7 等腰三角形的轴对称性(1)，第6(1)题；将填空改写为求角并展开角名',q:'在三角形ABC中，AB=AC，∠BAC=70°。求∠ABC和∠ACB的度数。',knowledge:['angle','isosceles'],status:'ready',answer:'55',rule:'isosceles_base_angles'},
-{id:'isosceles90',source:'https://www.ecsponline.com/yz/B10A6526763AD4825AB36B4D3C2271BBF000.pdf',reference:'同一作业第6(2)题；未使用提示词示范的70度数值，验证新题参数与解题结果',q:'在三角形ABC中，AB=AC，∠BAC=90°。求∠ABC和∠ACB的度数。',knowledge:['angle','isosceles'],status:'ready',answer:'45',rule:'isosceles_base_angles'},
-{id:'kiteSSS',source:'https://v3.ykt.cbern.com.cn/65/document/d726106ca51c11ec9c6bfa20200f090a/pdf.pdf',reference:'青岛版八上，第16页练习2；按题意将∠A、∠C写为∠BAD、∠BCD，证据为官方PDF搜索索引文本，未声称原图像素核验',q:'四边形ABCD中，AB=CB，AD=CD。求证∠BAD=∠BCD。',knowledge:['angle','congruence'],status:'ready',answer:'∠BAD = ∠BCD',rule:'SSS'},
-{id:'equilateralSSS',source:'https://v3.ykt.cbern.com.cn/65/document/d726106ca51c11ec9c6bfa20200f090a/pdf.pdf',reference:'青岛版八上，第16页练习1(3)；给两个等边三角形及相等的一边命名，改为求证形式',q:'△ABC是等边三角形，△DEF是等边三角形，AB=DE。求证△ABC≌△DEF。',knowledge:['angle','isosceles','congruence'],status:'ready',answer:'△ABC ≌ △DEF',rule:'SSS'},
-{id:'scopeBlocked',reference:'范围反例：与 kiteSSS 同题，取消全等知识',q:'四边形ABCD中，AB=CB，AD=CD。求证∠BAD=∠BCD。',knowledge:['angle'],status:'out_of_scope'},
-{id:'ambiguous',reference:'语义边界：角的位置未提供；当前引擎不作分类讨论',q:'一个等腰三角形有一个角是55°。求另外两个角的度数。',knowledge:['angle','isosceles'],status:'needs_clarification'}
+{id:'isosceles70',source:'https://www.ecsponline.com/yz/B10A6526763AD4825AB36B4D3C2271BBF000.pdf',reference:'作业7 等腰三角形的轴对称性(1)，第6(1)题；将填空改写为求角并展开角名',q:'在三角形ABC中，AB=AC，∠BAC=70°。求∠ABC和∠ACB的度数。',grade:'8',status:'ready',answer:'55',rule:'isosceles_base_angles'},
+{id:'isosceles90',source:'https://www.ecsponline.com/yz/B10A6526763AD4825AB36B4D3C2271BBF000.pdf',reference:'同一作业第6(2)题；未使用提示词示范的70度数值，验证新题参数与解题结果',q:'在三角形ABC中，AB=AC，∠BAC=90°。求∠ABC和∠ACB的度数。',grade:'8',status:'ready',answer:'45',rule:'isosceles_base_angles'},
+{id:'kiteSSS',source:'https://v3.ykt.cbern.com.cn/65/document/d726106ca51c11ec9c6bfa20200f090a/pdf.pdf',reference:'青岛版八上，第16页练习2；按题意将∠A、∠C写为∠BAD、∠BCD，证据为官方PDF搜索索引文本，未声称原图像素核验',q:'四边形ABCD中，AB=CB，AD=CD。求证∠BAD=∠BCD。',grade:'8',status:'ready',answer:'∠BAD = ∠BCD',rule:'SSS'},
+{id:'equilateralSSS',source:'https://v3.ykt.cbern.com.cn/65/document/d726106ca51c11ec9c6bfa20200f090a/pdf.pdf',reference:'青岛版八上，第16页练习1(3)；给两个等边三角形及相等的一边命名，改为求证形式',q:'△ABC是等边三角形，△DEF是等边三角形，AB=DE。求证△ABC≌△DEF。',grade:'8',status:'ready',answer:'△ABC ≌ △DEF',rule:'SSS'},
+{id:'scopeBlocked',reference:'范围反例：与 kiteSSS 同题，选七年级默认范围',q:'四边形ABCD中，AB=CB，AD=CD。求证∠BAD=∠BCD。',grade:'7',status:'out_of_scope'},
+{id:'ambiguous',reference:'语义边界：角的位置未提供；当前引擎不作分类讨论',q:'一个等腰三角形有一个角是55°。求另外两个角的度数。',grade:'8',status:'needs_clarification'}
 ].filter(c=>!process.env.CASE||process.env.CASE.split(',').includes(c.id));
 (async()=>{const browser=await chromium.launch({channel:'chrome',headless:true});const results=[];
 for(const c of cases){const out=path.join(OUT,c.id);fs.mkdirSync(out,{recursive:true});const context=await browser.newContext({viewport:{width:1440,height:1000}});await context.tracing.start({screenshots:true,snapshots:true,sources:true});const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));let job=null,result={...c,real_model_called:true,passed:false,errors};
 try{
- await page.goto(process.env.VERIFIED_URL||'http://127.0.0.1:8768/');await page.locator('#settingsButton').click();await page.locator('#grade').selectOption('8');await page.locator('#edition').selectOption('pep');await page.locator('#chapter').fill('等腰三角形与全等三角形');
- const checks=page.locator('input[name=knowledge]');for(let n=0;n<await checks.count();n++)await checks.nth(n).setChecked(c.knowledge.includes(await checks.nth(n).getAttribute('value')));
+ await page.goto(process.env.VERIFIED_URL||'http://127.0.0.1:8768/');await page.locator('#settingsButton').click();await page.locator('#grade').selectOption(c.grade);await page.locator('#edition').selectOption('pep');
+
  await page.locator('#settingsForm button[type=submit]').click();await page.locator('#newQuestion').click();await page.locator('#questionInput').fill(c.q);
  let finalResolve;const finalPromise=new Promise(resolve=>finalResolve=resolve);
  page.on('response',async response=>{if(!response.url().includes('/api/jobs/'))return;try{const j=await response.json();if(job&&j.id===job.id&&['ready','needs_clarification','out_of_scope','failed','canceled'].includes(j.status))finalResolve(j);}catch{}});

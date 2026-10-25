@@ -23,6 +23,8 @@
 !/tests/verified/manual-e2e.cjs
 !/tests/verified/real-e2e.cjs
 !/tests/verified/replay-e2e.cjs
+!/tests/verified/grade-defaults-e2e.cjs
+!/tests/verified/doorframe-photo-e2e.cjs
 __pycache__/
 *.pyc
 .DS_Store

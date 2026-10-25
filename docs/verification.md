@@ -45,3 +45,23 @@ node tests/verified/real-e2e.cjs
 可用 `CASE=isosceles90 node tests/verified/real-e2e.cjs` 只跑一个用例。结果留在被 Git 忽略的 tests/verified/evidence-* 目录。
 
 触发词用例位于 evals/。它们用于描述路由的启发式检查，不是 WorkBuddy/Codex 原生 Skill 路由准确率的实测。
+
+
+## 2026-10-24 年级默认范围与门框题（本地）
+
+- 页面与宿主读取同一份 `references/grade-defaults.json`。仅选择年级，不再填写章节或勾选单个定理；旧记录打开和导入时会重新计算默认范围。该表是整学年通用范围，不是逐教材学期进度。
+- 既有数学内核检查 36/36、手工计划与本地服务浏览器回归 10/10 通过。新增 `tests/verified/grade-defaults-e2e.cjs` 覆盖三个年级的实际提交、旧记录恢复和导入，共 5 项通过，输出 `evidence-grade-defaults/report.json`、截图和 trace。
+- 用户上传的门框题完成一次真实 Codex 自动生成，SSS → 对应角 → SAS → 对应角 → 相等邻补角，目标 `AE⊥BD` 通过校验。自动题图倾斜；宿主调整为竖直铅垂线的示意构图，重新编译后通过画板数据导入。两者均保留来源，不将宿主修正称为模型自动结果。
+- 在实际学习画板逐步展开五步，核对依据、公共边、图形联动；最后一步标题不提前显示 90°；返回上一步撤去直角，测试笔迹可撤销，交付时提示收起。原图、证明报告与逐步截图保存在本地学习目录，不进入公开仓库。
+- 数学内核检查垂直关系；“铅垂线竖直，因此门框水平”的情境解释由宿主核对。此次未发布 GitHub 新版本。
+
+复现年级流程：在已安装 Playwright 与 Chrome 的测试环境执行 `node tests/verified/grade-defaults-e2e.cjs`。
+
+
+## 2026-10-24 原图嵌入、门框场景与正确页面（本地修复）
+
+- 门框题完整 E2E 14/14：原图字节哈希和像素加载、三个视图、五步图形联动、最后的水平结论、回退/收起和撤销、上传照片保留题目、学习记录导出/导入、PNG 导出、重开固定本题、手机控件与工具栏避让。原图、截图、trace 与报告保留在用户的本地学习目录，没有进入公共仓库。
+- CLI 端到端拒绝 4 个无效输入：直线分点两端重合、非法有理数、另一道题的场景。原有内核 36/36、服务/浏览器 10/10、年级流程 5/5 通过。Skill 验证通过。
+- 新的场景是宿主依据照片绑定的有限模板，未调用新一轮模型服务，不宣称通用图片识别或通用物体重绘已验收。数学证明仍由本地有限定理内核复核，场景不进入证明前提。
+- 复现：提供本机题目文件目录 `DOORFRAME_DIR`，在有 Playwright 和 Chrome 的环境运行 `node tests/verified/doorframe-photo-e2e.cjs`。输入需有 `original.png`、`request.json`、`plan.json`、`lesson.json`、`presentation.json`。测试通过本机服务重新编译计划，不依赖线上模型。
+- 交付的单文件学习页内嵌原图；实时页面用 `serve.py --plan ... --request ... --presentation ...` 启动，固定到本题并重新核对当前可见内容。未创建新 GitHub release。

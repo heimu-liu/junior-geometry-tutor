@@ -154,6 +154,14 @@ def prove(rule,points,givens,knowledge):
                 left,right=[a[i],a[j]],[b[i],b[j]]
                 groups.append(''.join(left)+' = '+''.join(right)+('（同一条公共边）' if seg(left)==seg(right) else ''))
             detail='按顶点顺序比较 △'+''.join(a)+' 和 △'+''.join(b)+'：'+ '；'.join(groups)+'。三组对应边都相等。'
+        elif rule=='SAS':
+            i=next(i for i in range(3) if angles[i] and side(i,(i+1)%3) and side(i,(i+2)%3))
+            groups=[]
+            for j in ((i+1)%3,(i+2)%3):
+                left,right=[a[i],a[j]],[b[i],b[j]]
+                groups.append(''.join(left)+' = '+''.join(right)+('（同一条公共边）' if seg(left)==seg(right) else ''))
+            groups.append('∠'+a[(i+1)%3]+a[i]+a[(i+2)%3]+' = ∠'+b[(i+1)%3]+b[i]+b[(i+2)%3]+'（两边的夹角）')
+            detail='比较 △'+''.join(a)+' 和 △'+''.join(b)+'：'+'；'.join(groups)+'。两边和它们的夹角分别相等，符合 SAS（边角边）。'
         else: detail='按顶点顺序比较 △'+''.join(a)+' 和 △'+''.join(b)+'，上述条件满足 '+rule+'。'
     elif rule in ('corresponding_side','corresponding_angle'):
         size=2 if rule=='corresponding_side' else 3;target='length_eq' if size==2 else 'angle_eq';ok=False

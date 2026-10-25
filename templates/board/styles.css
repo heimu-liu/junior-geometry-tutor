@@ -15,3 +15,8 @@
 @media(max-width:600px){.history-controls .icon-button{min-width:46px;padding:5px;font-size:10px}.history-controls .icon-button svg{width:13px;height:13px}.generation-box{margin:6px 0;grid-column:1/-1}.question-content>#generateCurrent{grid-column:1/-1}}
 
 .parsed-conditions{font-size:12px;line-height:1.9;margin:14px 0;grid-column:1/-1}.parsed-conditions summary{cursor:pointer;color:var(--muted)}.parsed-conditions ul{padding-left:18px}.step-reason{padding-top:10px;border-top:1px solid var(--line);font-size:.92em}
+
+.source-views{display:flex;justify-content:center;gap:4px;padding:6px 12px;border-bottom:1px solid var(--line);background:#f2f6e9;flex:none}.source-views button{font-size:12px;padding:6px 14px;border-radius:6px;color:#607658}.source-views button[aria-pressed=true]{background:#dce8d2;color:#284d3e}.context-explanation{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+/* Keep drawing content outside the floating toolbars and bottom actions. */
+.board-surface>svg#drawingBoard{position:absolute;left:76px;top:76px;width:calc(100% - 92px);height:calc(100% - 144px);min-height:0}
+@media(max-width:600px){.board-surface>svg#drawingBoard{left:8px;top:102px;width:calc(100% - 16px);height:calc(100% - 160px);min-height:0}}

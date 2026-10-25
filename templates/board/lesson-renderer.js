@@ -48,7 +48,7 @@
     const pending=[[raw,0]];
     while(pending.length){const [x,n]=pending.pop();if(n>48)fail('$','嵌套超过48层');if(x&&typeof x==='object')Object.values(x).forEach(v=>pending.push([v,n+1]));}
   }
-  const primitiveFields={line:[['a','b'],[]],polygon:[['points'],[]],circle:[['center','radius'],[]],point:[['point'],['label','dx','dy']],label:[['at','text'],[]],rightAngle:[['vertex','a','b'],['size']]};
+  const primitiveFields={line:[['a','b'],[]],polygon:[['points'],[]],circle:[['center','radius'],[]],point:[['point'],['label','dx','dy']],label:[['at','text'],[]],rightAngle:[['vertex','a','b'],['size']],angleArc:[['vertex','a','b'],['size']]};
   function check(raw,expected){
     depth(raw);
     object(raw,['schema','request_id','id','title','statement','givens','goal','status','message','questions','profile','scene','methods','audit']);
@@ -90,9 +90,11 @@
         case 'circle':references=[point(p.center,path+'.center')];num(p.radius,0,1000,path+'.radius');if(p.radius<=0)fail(path+'.radius','半径须大于0');break;
         case 'point':references=[point(p.point,path+'.point')];if(Object.hasOwn(p,'label'))text(p.label,160,false,path+'.label');if(Object.hasOwn(p,'dx'))num(p.dx,-1000,1000,path+'.dx');if(Object.hasOwn(p,'dy'))num(p.dy,-700,700,path+'.dy');break;
         case 'label':coordinate(p.at,path+'.at');text(p.text,160,true,path+'.text');break;
+        case 'angleArc':
         case 'rightAngle':{
           references=[point(p.vertex,path+'.vertex'),point(p.a,path+'.a'),point(p.b,path+'.b')];
-          if(!perpendicular(vector(p.vertex,p.a,path),vector(p.vertex,p.b,path)))fail(path,'直角标记与真实几何不符');
+          const first=vector(p.vertex,p.a,path),second=vector(p.vertex,p.b,path);
+          if(p.kind==='rightAngle'&&!perpendicular(first,second))fail(path,'直角标记与真实几何不符');
           if(Object.hasOwn(p,'size'))num(p.size,4,80,path+'.size');break;
         }
       }
@@ -101,7 +103,7 @@
     function shape(p){
       if(p.kind==='line')return JSON.stringify([p.kind,...[p.a,p.b].sort()]);
       if(p.kind==='circle')return JSON.stringify([p.kind,p.center,p.radius]);
-      if(p.kind==='rightAngle')return JSON.stringify([p.kind,p.vertex,...[p.a,p.b].sort()]);
+      if(p.kind==='rightAngle'||p.kind==='angleArc')return JSON.stringify([p.kind,p.vertex,...[p.a,p.b].sort()]);
       return null;
     }
     function stage(items,path,visible,drawn,observe=false,maximum=100){
@@ -167,6 +169,7 @@
       case 'circle':mark=`<circle ${attrs} cx="${xy(p.center,0)}" cy="${xy(p.center,1)}" r="${p.radius}" fill="${p.fill?color:'none'}" ${p.fill?'fill-opacity=".12"':''}/>`;break;
       case 'point':mark=`<circle ${attrs} cx="${xy(p.point,0)}" cy="${xy(p.point,1)}" r="3" fill="${color}"/><text x="${xy(p.point,0)+(p.dx??10)}" y="${xy(p.point,1)+(p.dy??-12)}" font-size="23" fill="${color}">${esc(p.label??p.point)}</text>`;break;
       case 'label':mark=`<text data-primitive="${esc(p.id)}" x="${p.at[0]}" y="${p.at[1]}" font-size="21" fill="${color}" opacity="${p.opacity??1}">${esc(p.text)}</text>`;break;
+      case 'angleArc':{const v=pts[p.vertex],a=pts[p.a],b=pts[p.b],r=p.size||30;let start=Math.atan2(a[1]-v[1],a[0]-v[0]),delta=Math.atan2(b[1]-v[1],b[0]-v[0])-start;while(delta>Math.PI)delta-=2*Math.PI;while(delta< -Math.PI)delta+=2*Math.PI;const end=start+delta;mark=`<path ${attrs} data-angle-arc fill="none" d="M${v[0]+r*Math.cos(start)} ${v[1]+r*Math.sin(start)} A${r} ${r} 0 0 ${delta>=0?1:0} ${v[0]+r*Math.cos(end)} ${v[1]+r*Math.sin(end)}"/>`;break;}
       case 'rightAngle':{const v=pts[p.vertex],a=pts[p.a],b=pts[p.b],size=p.size||17;const al=Math.hypot(a[0]-v[0],a[1]-v[1]),bl=Math.hypot(b[0]-v[0],b[1]-v[1]);if(!al||!bl)return '';const u=[(a[0]-v[0])*size/al,(a[1]-v[1])*size/al],w=[(b[0]-v[0])*size/bl,(b[1]-v[1])*size/bl];mark=`<path ${attrs} fill="none" d="M${v[0]+u[0]} ${v[1]+u[1]} L${v[0]+u[0]+w[0]} ${v[1]+u[1]+w[1]} L${v[0]+w[0]} ${v[1]+w[1]}"/>`;break;}
     }
     return mark;

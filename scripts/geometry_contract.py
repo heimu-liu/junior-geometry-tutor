@@ -36,6 +36,7 @@ PRIMITIVE_FIELDS = {
     "point": ({"point"}, {"label", "dx", "dy"}),
     "label": ({"at", "text"}, set()),
     "rightAngle": ({"vertex", "a", "b"}, {"size"}),
+    "angleArc": ({"vertex", "a", "b"}, {"size"}),
 }
 
 
@@ -228,7 +229,7 @@ def _primitive(value, scene_points, path, identifiers):
         if field in value and not isinstance(value[field], bool):
             _fail(path + "." + field, "must be a boolean")
     references = []
-    if kind in ("line", "rightAngle"):
+    if kind in ("line", "rightAngle", "angleArc"):
         references = [_reference(value[key], scene_points, path + "." + key) for key in ("a", "b")]
         if kind == "line":
             _vector(*references, scene_points, path)
@@ -236,7 +237,7 @@ def _primitive(value, scene_points, path, identifiers):
             vertex = _reference(value["vertex"], scene_points, path + ".vertex")
             first = _vector(vertex, references[0], scene_points, path)
             second = _vector(vertex, references[1], scene_points, path)
-            if not _perpendicular(first, second):
+            if kind == "rightAngle" and not _perpendicular(first, second):
                 _fail(path, "rightAngle rays are not numerically perpendicular")
             references.append(vertex)
             if "size" in value:
@@ -280,7 +281,7 @@ def _shape(value):
         return (kind, *sorted((value["a"], value["b"])))
     if kind == "circle":
         return (kind, value["center"], value["radius"])
-    if kind == "rightAngle":
+    if kind in ("rightAngle", "angleArc"):
         return (kind, value["vertex"], *sorted((value["a"], value["b"])))
     return None
 

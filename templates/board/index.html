@@ -50,12 +50,13 @@
         <button id="clearDrawing">清空我的笔迹</button>
       </div>
     </div>
+    <div id="sourceViews" class="source-views" role="group" aria-label="画板视图" hidden><button data-board-view="compare">对照</button><button data-board-view="photo">原题图</button><button data-board-view="redraw">重绘图</button></div>
     <div class="board-surface" id="boardSurface">
       <svg id="drawingBoard" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" role="img" aria-label="几何题图与自由绘画区">
-        <defs><pattern id="dotGrid" width="25" height="25" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.7" fill="#c7d4c0"/></pattern></defs>
+        <defs><clipPath id="boardViewClip" clipPathUnits="userSpaceOnUse"><rect data-view-clip x="0" y="0" width="1000" height="700"/></clipPath><pattern id="dotGrid" width="25" height="25" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.7" fill="#c7d4c0"/></pattern></defs>
         <rect id="boardBackground" x="-10000" y="-10000" width="20000" height="20000" fill="#f9fbf5"/>
         <rect x="-10000" y="-10000" width="20000" height="20000" fill="url(#dotGrid)"/>
-        <g id="photoLayer"></g><g id="lessonLayer"></g><g id="userLayer"></g>
+        <g clip-path="url(#boardViewClip)"><g id="photoLayer"></g><g id="contextLayer"></g><g id="lessonLayer"></g><g id="userLayer"></g></g>
       </svg>
       <div class="drawing-toolbar" role="toolbar" aria-label="绘图工具">
         <button data-tool="select" data-icon="cursor" aria-label="选择与移动" title="选择与移动 (V)"></button>
@@ -108,9 +109,8 @@
   <form id="settingsForm">
     <div class="modal-heading"><h2>我的学习范围</h2><button type="button" data-close="settingsDialog" class="icon-button" aria-label="关闭学习设置" data-icon="close"></button></div>
     <div class="form-row"><label>年级<select id="grade"><option value="7">七年级</option><option value="8">八年级</option><option value="9">九年级</option></select></label><label>教材版本<select id="edition"><option value="unknown">不确定 / 其他</option><option value="pep">人教版</option><option value="bnu">北师大版</option><option value="su">苏科版</option></select></label></div>
-    <label class="field-label">学到哪里了<input id="chapter" placeholder="例如：全等三角形（可留空）" maxlength="100"></label>
-    <fieldset><legend>这些知识，我学过了</legend><div id="knowledgeChoices" class="knowledge-choices"></div></fieldset>
-    <p class="form-note">解法只使用你勾选的知识。年级与教材用于记录，暂不自动推定你学过什么。</p>
+    <p class="form-note">自动采用所选年级的整学年常用知识范围。</p>
+    <details class="grade-scope"><summary>查看默认知识范围</summary><p id="gradeScopeSummary" class="form-note"></p></details>
     <div class="modal-actions"><button type="submit" class="primary-button">保存学习范围</button></div>
   </form>
 </dialog>
@@ -129,12 +129,12 @@
 
 <dialog id="confirmDialog" class="modal small-modal"><div class="modal-heading"><h2 id="confirmTitle">清空笔迹？</h2></div><p id="confirmMessage" class="form-note"></p><div class="modal-actions"><button data-close="confirmDialog" class="outline-button">取消</button><button id="confirmAction" class="primary-button">确定</button></div></dialog>
 
-<dialog id="aboutDialog" class="modal small-modal"><div class="modal-heading"><h2>几何自习室</h2><button data-close="aboutDialog" class="icon-button" aria-label="关闭使用说明" data-icon="close"></button></div><p class="about-text">先确认学习范围，再输入完整题目。提示默认收起，需要时逐步展开。</p><p class="form-note">通过本地服务可调用已配置的 Agent CLI。离线页面可导出题目、导入 Agent 解题。方法按已学知识约束；生成内容仍需核对。</p><p class="form-note">快捷键：P 画笔 · L 线段 · C 圆 · E 橡皮 · V 选择 · H 平移。选中笔迹后按 Delete 删除。</p></dialog>
+<dialog id="aboutDialog" class="modal small-modal"><div class="modal-heading"><h2>几何自习室</h2><button data-close="aboutDialog" class="icon-button" aria-label="关闭使用说明" data-icon="close"></button></div><p class="about-text">先选择年级，再输入完整题目。提示默认收起，需要时逐步展开。</p><p class="form-note">通过本地服务可调用已配置的 Agent CLI。离线页面可导出题目、导入 Agent 解题。方法按年级默认知识约束；生成内容仍需核对。</p><p class="form-note">快捷键：P 画笔 · L 线段 · C 圆 · E 橡皮 · V 选择 · H 平移。选中笔迹后按 Delete 删除。</p></dialog>
 <input id="photoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
 <input id="lessonInput" type="file" accept="application/json,.json" hidden>
 <input id="sessionInput" type="file" accept="application/json,.json" hidden>
 <div id="toast" class="toast" role="status" hidden></div>
 <!-- BOOTSTRAP -->
-<script src="lessons.js"></script><script src="lesson-renderer.js"></script><script src="drawing.js"></script><script src="app.js"></script>
+<script src="lessons.js"></script><script src="lesson-renderer.js"></script><script src="presentation.js"></script><script src="drawing.js"></script><script src="app.js"></script>
 </body>
 </html>

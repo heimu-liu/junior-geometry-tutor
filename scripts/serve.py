@@ -266,7 +266,7 @@ class GeometryServer(ThreadingHTTPServer):
     daemon_threads = True
     allow_reuse_address = True
 
-    def __init__(self, port: int, store: JobStore):
+    def __init__(self, port: int, store: JobStore, lesson=None, request=None, presentation=None):
         super().__init__(("127.0.0.1", port), Handler)
         self.store = store
         self.token = secrets.token_urlsafe(32)
@@ -276,7 +276,8 @@ class GeometryServer(ThreadingHTTPServer):
         self.url = f"http://127.0.0.1:{actual_port}/"
         try:
             from build_page import build_html
-            html = build_html(bridge={"token": self.token, "provider": store.provider, "baseUrl": ""})
+            html = build_html(lesson=lesson, request=request, presentation=presentation,
+                              bridge={"token": self.token, "provider": store.provider, "baseUrl": ""})
             self.html = html.encode("utf-8") if isinstance(html, str) else html
         except Exception:
             self.server_close()
@@ -411,14 +412,26 @@ def main() -> int:
     parser.add_argument("--port", type=int, default=8768)
     parser.add_argument("--timeout", type=float, default=300)
     parser.add_argument("--no-open", action="store_true")
+    parser.add_argument("--plan", type=Path, help="启动时编译并打开这道题，避免落到默认例题")
+    parser.add_argument("--request", type=Path, help="与启动计划绑定的题目和原照片")
+    parser.add_argument("--presentation", type=Path, help="与启动题目绑定的场景描述")
     args = parser.parse_args()
     if not 0 <= args.port <= 65535 or not 1 <= args.timeout <= 3600:
         parser.error("端口须为 0–65535，超时须为 1–3600 秒。")
+    if bool(args.plan) != bool(args.request) or (args.presentation and not args.plan):
+        parser.error("--plan 与 --request 必须一起提供；--presentation 需要启动题目。")
     store = None
     server = None
     try:
+        lesson = request = presentation = None
+        if args.plan:
+            from compile_plan import compile_plan
+            from geometry_contract import load_json
+            request = load_json(args.request)
+            lesson, _ = compile_plan(load_json(args.plan), request)
+            presentation = load_json(args.presentation) if args.presentation else None
         store = JobStore(args.workspace, args.provider, args.timeout, args.engine)
-        server = GeometryServer(args.port, store)
+        server = GeometryServer(args.port, store, lesson, request, presentation)
         print(json.dumps({"url": server.url, "provider": args.provider,
                           "mode": "manual" if args.provider == "manual" else "automatic",
                           "available": providers.available(args.provider), "workspace": str(store.workspace)}, ensure_ascii=False), flush=True)

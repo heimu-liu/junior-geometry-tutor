@@ -1,0 +1,15 @@
+{
+  "version": "2026-10-24",
+  "default_grade": "8",
+  "basis": "按整学年常用知识设置的辅导默认范围；不是逐教材、逐学期的进度表。允许的知识范围不代表本地证明器已实现全部题型。",
+  "sources": [
+    "https://www.pep.com.cn/products/jc/czjks/201510/t20151026_1250721.shtml",
+    "https://www.pep.com.cn/products/jc/jks/201602/t20160219_1258155.shtml",
+    "https://www.pep.com.cn/xw/zt/xkzt/csazy/csax8s/"
+  ],
+  "grades": {
+    "7": ["angle", "parallel", "coordinate"],
+    "8": ["angle", "parallel", "coordinate", "area", "isosceles", "congruence", "pythagoras", "factorization", "quadrilateral"],
+    "9": ["angle", "parallel", "coordinate", "area", "isosceles", "congruence", "pythagoras", "factorization", "quadrilateral", "similarity", "circle"]
+  }
+}

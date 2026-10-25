@@ -19,6 +19,7 @@ construction 元素只有 `{id,op,points,values,stage}`。values 全是有理数
 | triangle | A,B,C | AB,BC,AC | 由三条边构造；可以选择满足题意的一组示意长度，不能把示意长度加入证明 |
 | midpoint | D,B,C | 空 | D 是 BC 中点 |
 | on_segment | D,B,C | 比例 t | D=B+t(C−B)，0<t<1 |
+| on_line | D,B,C | 有理比例 t，不能为 0 或 1 | D=B+t(C−B)，可在延长线上；仅为构图参数 |
 | foot | D,A,B,C | 空 | 从 A 向直线 BC 作垂足 D |
 | reflection | D,A,B,C | 空 | 将 A 关于直线 BC 反射得到 D |
 | intersection | X,A,B,C,D | 空 | 直线 AB 与 CD 的唯一交点 |
@@ -78,7 +79,7 @@ methods 每项 `{id,title,steps}`；1–3 种方法，每种 2–12 步。仅在
 
 等价角依赖被引用的 between/midpoint 来识别同向射线。引用前提要完整。例如 D 在 BC 内，使用 ∠ABD=∠ACD 时要一并引用说明 D 在线段内的步骤。
 
-学习范围为 REQUEST.profile.knowledge；年级、教材和章节不代表全部已学。模型先选合适路线，本地按实际 rule 的固定知识分类再次拦截。当前全等是一个整体选项，尚未精确到“只学过 SSS、没有学过 HL”。
+学习范围为 REQUEST.profile.knowledge，由页面或宿主根据 `grade-defaults.json` 自动设置。默认表按整学年提供常用范围，不等于个人掌握清单或逐教材学期进度。模型先选合适路线，本地按实际 rule 的固定知识分类再次拦截。当前全等是一个整体类别；不要求孩子逐项维护 SSS、SAS、HL 等清单。
 
 ## 示例套路（不能把示例条件抄入新题）
 
